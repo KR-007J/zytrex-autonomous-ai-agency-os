@@ -2385,30 +2385,17 @@
       if (homeTbody) homeTbody.innerHTML = tableHTML;
     }
 
-    window.inspectLead = async function(leadId) {
-      document.getElementById('inspector-modal').classList.add('open');
-      document.getElementById('modal-company-title').innerText = 'Loading prospect details...';
-      document.getElementById('modal-pitch-body').innerText = 'Rendering tailored AI pitch...';
-
-      let lead = cachedLeads.find(l => l.id === leadId);
-
-      try {
-        const res = await fetch(`/api/leads/${leadId}`);
-        if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
-          lead = await res.json();
-        }
-      } catch (e) {}
-
-      if (!lead) lead = cachedLeads[0];
-
+    window.inspectLead = function(leadId) {
+      let lead = cachedLeads.find(l => l.id == leadId) || cachedLeads[0];
       document.getElementById('modal-company-title').innerText = lead.company_name;
       document.getElementById('modal-company-location').innerText = `📍 ${lead.location || 'Mumbai, Maharashtra'}`;
       document.getElementById('modal-company-email').innerText = lead.email || 'contact@' + (lead.source_domain || 'domain.com');
-      document.getElementById('modal-company-domain').innerText = lead.source_url || lead.source_domain || '—';
+      document.getElementById('modal-company-domain').innerText = lead.source_url || (lead.source_domain ? 'https://' + lead.source_domain : '—');
 
       const pitchText = `Subject: Quick idea to modernize ${lead.company_name}'s web & mobile roadmap in ${lead.location || 'your region'}\n\nHi there,\n\nI noticed ${lead.company_name}'s digital presence and wanted to share a quick idea on upgrading your application performance with modern Next.js and Tailwind architecture.\n\nWe build custom high-performance software and autonomous test pipelines for leading businesses across ${lead.location || 'your area'}.\n\nWould you be open to a 5-minute preview of what an upgraded architecture would look like?\n\nBest regards,\nAlex Vance | Zytrex Engineering Operations`;
       currentPitch = pitchText;
       document.getElementById('modal-pitch-body').innerText = pitchText;
+      document.getElementById('inspector-modal').classList.add('open');
     };
 
     window.closeInspectorModal = function() {
