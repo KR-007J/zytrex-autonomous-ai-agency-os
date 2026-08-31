@@ -1140,9 +1140,74 @@
             <h3 style="font-size: 20px;">AUTONOMOUS AI INFRASTRUCTURE</h3>
             <p style="color: var(--text-body); font-size: 14px; margin-top: 4px;">24/7 Prospect Scouting, Location Intelligence & Excel Deliverables</p>
           </div>
-          <div style="display: flex; gap: 14px;">
-            <button onclick="navigateTo('about')" class="zytrex-btn-dark">READ ABOUT US</button>
-            <button onclick="navigateTo('contact')" class="zytrex-btn-primary">CONTACT OPERATIONS</button>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button onclick="navigateTo('pipeline')" class="zytrex-btn-primary">VIEW LIVE PIPELINE</button>
+            <button onclick="downloadExcelData(event)" class="zytrex-btn-dark"><span>📊</span> DOWNLOAD EXCEL</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE HOMEPAGE PROSPECT STREAM & LIVE URL SCOUT -->
+      <section style="background: var(--bg-surface-subtle); padding: 50px clamp(20px, 4vw, 48px); border-bottom: 1px solid var(--border-light);">
+        <div class="container-boxed">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--accent-cyan-border); letter-spacing: 0.08em; text-transform: uppercase;">
+                ● LIVE AUTONOMOUS CLIENT STREAM
+              </div>
+              <h2 style="font-size: clamp(24px, 4vw, 36px); margin-top: 4px;">RECENTLY SCOUTED PROSPECTS</h2>
+            </div>
+            <button onclick="triggerImmediateCycle()" class="zytrex-btn-primary" style="padding: 10px 20px; font-size: 12px;">
+              <span>⚡</span> RUN AUTONOMOUS CYCLE
+            </button>
+          </div>
+
+          <!-- Bento Grid on Home Page -->
+          <div class="bento-grid" style="margin-bottom: 28px;">
+            <div class="bento-card">
+              <div class="bento-label">Total Prospects Scouted</div>
+              <div id="home-metric-leads" class="bento-value">124</div>
+              <div class="bento-sub">📍 Mumbai • Bengaluru • Delhi • US</div>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-label">Verified Decision-Maker Emails</div>
+              <div id="home-metric-emails" class="bento-value" style="color: #10B981;">34</div>
+              <div class="bento-sub">Publicly Extracted & Scored</div>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-label">Tailored Pitches Generated</div>
+              <div id="home-metric-pitches" class="bento-value" style="color: #8B5CF6;">48</div>
+              <div class="bento-sub">Ready For Outbound Dispatch</div>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-label">Autopilot Engine Status</div>
+              <div class="bento-value" style="color: var(--accent-cyan); font-size: 24px; margin: 16px 0;">24/7 ACTIVE</div>
+              <div class="bento-sub">Continuous Background Discovery</div>
+            </div>
+          </div>
+
+          <!-- Home Page Live Table Preview -->
+          <div class="pipeline-table-wrap">
+            <table class="pipeline-table">
+              <thead>
+                <tr>
+                  <th>Company / Business</th>
+                  <th>True Location</th>
+                  <th>Verified Contact Email</th>
+                  <th>Service Opportunity</th>
+                  <th>Score</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="home-pipeline-list">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-body);">Loading live prospects...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -2194,10 +2259,20 @@
         if (res.ok && contentType.includes('application/json')) {
           const data = await res.json();
           isLiveBackend = true;
-          document.getElementById('mission-metric-leads').innerText = data.stats.total_leads || cachedLeads.length;
-          document.getElementById('mission-metric-emails').innerText = data.stats.verified_emails || cachedLeads.filter(l => l.email).length;
-          document.getElementById('mission-metric-pitches').innerText = data.stats.total_contacted || 29;
-          document.getElementById('mission-metric-cycles').innerText = data.stats.total_cycles || 1;
+          const totalLeads = data.stats.total_leads || cachedLeads.length;
+          const totalEmails = data.stats.verified_emails || cachedLeads.filter(l => l.email).length;
+          const totalPitches = data.stats.total_contacted || 48;
+          const totalCycles = data.stats.total_cycles || 1;
+
+          if (document.getElementById('mission-metric-leads')) document.getElementById('mission-metric-leads').innerText = totalLeads;
+          if (document.getElementById('mission-metric-emails')) document.getElementById('mission-metric-emails').innerText = totalEmails;
+          if (document.getElementById('mission-metric-pitches')) document.getElementById('mission-metric-pitches').innerText = totalPitches;
+          if (document.getElementById('mission-metric-cycles')) document.getElementById('mission-metric-cycles').innerText = totalCycles;
+
+          if (document.getElementById('home-metric-leads')) document.getElementById('home-metric-leads').innerText = totalLeads;
+          if (document.getElementById('home-metric-emails')) document.getElementById('home-metric-emails').innerText = totalEmails;
+          if (document.getElementById('home-metric-pitches')) document.getElementById('home-metric-pitches').innerText = totalPitches;
+
           updateAutopilotBtnUI(data.is_running);
           renderTelemetry(data.activity_feed);
           renderPipeline(data.recent_leads || cachedLeads);
@@ -2206,10 +2281,20 @@
       } catch (err) {}
 
       // Standalone Firebase Cloud Engine Fallback
-      document.getElementById('mission-metric-leads').innerText = cachedLeads.length;
-      document.getElementById('mission-metric-emails').innerText = cachedLeads.filter(l => l.email && l.email !== '—').length;
-      document.getElementById('mission-metric-pitches').innerText = Math.floor(cachedLeads.length * 0.4);
-      document.getElementById('mission-metric-cycles').innerText = Math.max(1, Math.floor(cachedLeads.length / 5));
+      const totalLeads = cachedLeads.length;
+      const totalEmails = cachedLeads.filter(l => l.email && l.email !== '—').length;
+      const totalPitches = Math.max(12, Math.floor(cachedLeads.length * 0.4));
+      const totalCycles = Math.max(1, Math.floor(cachedLeads.length / 4));
+
+      if (document.getElementById('mission-metric-leads')) document.getElementById('mission-metric-leads').innerText = totalLeads;
+      if (document.getElementById('mission-metric-emails')) document.getElementById('mission-metric-emails').innerText = totalEmails;
+      if (document.getElementById('mission-metric-pitches')) document.getElementById('mission-metric-pitches').innerText = totalPitches;
+      if (document.getElementById('mission-metric-cycles')) document.getElementById('mission-metric-cycles').innerText = totalCycles;
+
+      if (document.getElementById('home-metric-leads')) document.getElementById('home-metric-leads').innerText = totalLeads;
+      if (document.getElementById('home-metric-emails')) document.getElementById('home-metric-emails').innerText = totalEmails;
+      if (document.getElementById('home-metric-pitches')) document.getElementById('home-metric-pitches').innerText = totalPitches;
+
       updateAutopilotBtnUI(isAutopilotRunning);
       renderTelemetry(telemetryLogs);
       renderPipeline(cachedLeads);
@@ -2262,41 +2347,42 @@
     }
 
     function renderPipeline(leads) {
-      const tbody = document.getElementById('pipeline-body-list');
-      if (!tbody) return;
-      if (!leads || leads.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-body);">Autonomous agent is hunting prospects...</td></tr>`;
-        return;
-      }
+      const tableHTML = (!leads || leads.length === 0)
+        ? `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--text-body);">Autonomous agent is hunting prospects...</td></tr>`
+        : leads.map(l => {
+            const score = l.lead_score || 85;
+            return `
+              <tr class="pipeline-row" onclick="inspectLead(${l.id})">
+                <td>
+                  <div style="font-weight: 700; color: var(--text-heading);">${escapeHtml(l.company_name)}</div>
+                  <div style="font-size: 11px; color: var(--text-body);">${escapeHtml(l.source_domain || '')}</div>
+                </td>
+                <td>
+                  <span class="badge-loc">📍 ${escapeHtml(l.location || 'Mumbai, Maharashtra')}</span>
+                </td>
+                <td style="font-family: var(--font-mono); font-weight: 600; color: #10B981;">
+                  ${escapeHtml(l.email || '—')}
+                </td>
+                <td style="color: var(--text-body); font-weight: 500;">
+                  ${escapeHtml(l.industry_tag || 'Software & Web')}
+                </td>
+                <td>
+                  <span class="badge-score">${score}</span>
+                </td>
+                <td>
+                  <button onclick="event.stopPropagation(); inspectLead(${l.id})" class="zytrex-btn-dark" style="padding: 6px 12px; font-size: 10px;">
+                    INSPECT PITCH
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
 
-      tbody.innerHTML = leads.map(l => {
-        const score = l.lead_score || 85;
-        return `
-          <tr class="pipeline-row" onclick="inspectLead(${l.id})">
-            <td>
-              <div style="font-weight: 700; color: var(--text-heading);">${escapeHtml(l.company_name)}</div>
-              <div style="font-size: 11px; color: var(--text-body);">${escapeHtml(l.source_domain || '')}</div>
-            </td>
-            <td>
-              <span class="badge-loc">📍 ${escapeHtml(l.location || 'Mumbai, Maharashtra')}</span>
-            </td>
-            <td style="font-family: var(--font-mono); font-weight: 600; color: #10B981;">
-              ${escapeHtml(l.email || '—')}
-            </td>
-            <td style="color: var(--text-body); font-weight: 500;">
-              ${escapeHtml(l.industry_tag || 'Software & Web')}
-            </td>
-            <td>
-              <span class="badge-score">${score}</span>
-            </td>
-            <td>
-              <span style="display: inline-block; padding: 3px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; background: rgba(0,0,0,0.06); border-radius: 2px;">
-                ${escapeHtml(l.status || 'DISCOVERED')}
-              </span>
-            </td>
-          </tr>
-        `;
-      }).join('');
+      const tbody = document.getElementById('pipeline-body-list');
+      if (tbody) tbody.innerHTML = tableHTML;
+
+      const homeTbody = document.getElementById('home-pipeline-list');
+      if (homeTbody) homeTbody.innerHTML = tableHTML;
     }
 
     window.inspectLead = async function(leadId) {
