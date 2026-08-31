@@ -1,0 +1,121 @@
+# ==============================================================================
+# Enterprise Lead Generation & LinkedIn Outreach Agent Configuration
+# ==============================================================================
+# Live-editable software agency client acquisition settings
+
+app:
+  name: "Software Agency Client Hunter"
+  version: "1.2.0"
+  database_url: "sqlite:///./data/leads.db"
+  environment: "production"
+  log_level: "INFO"
+  host: "0.0.0.0"
+  port: 8000
+
+agency_prospecting:
+  default_region: "New York, NY"
+  default_niche: "Real Estate & Property Management"
+  default_opportunity: "web_redesign"
+  target_regions:
+    - "New York, NY"
+    - "San Francisco & Bay Area, CA"
+    - "Austin, TX"
+    - "Miami & South Florida, FL"
+    - "Chicago, IL"
+    - "Los Angeles, CA"
+    - "Seattle, WA"
+    - "Boston, MA"
+    - "Nationwide USA"
+  target_niches:
+    - "Healthcare & Medical Clinics"
+    - "Real Estate & Property Management"
+    - "Law Firms & Legal Practices"
+    - "Logistics, Freight & Supply Chain"
+    - "E-Commerce & D2C Brands"
+    - "Early-Stage Tech Startups"
+    - "Financial Services"
+
+scraping:
+  rate_limiting:
+    min_delay_seconds: 1.0
+    max_delay_seconds: 2.5
+    jitter: true
+    respect_robots_txt: true
+    max_retries: 3
+    timeout_seconds: 15
+    concurrency_limit: 3
+
+  user_agents:
+    - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+
+  search_engines:
+    enabled: true
+    queries:
+      - "Real estate agency New York website redesign contact email"
+      - "Healthcare clinic Austin mobile app developer contact"
+      - "B2B tech startup San Francisco custom software developer"
+    max_results_per_query: 15
+
+  classified_sites:
+    - name: "HackerNews Startup & Tech Directory"
+      enabled: true
+      base_url: "https://news.ycombinator.com/"
+      listing_selector: "tr.athing"
+      fields:
+        company_name: ".titleline a"
+        contact_name: ".hnuser"
+        email: "a[href^='mailto:'], .email"
+        phone: "a[href^='tel:'], .phone"
+        source_url: ".titleline a"
+        industry_tag: ".sitebit"
+        location: ".subtext"
+
+linkedin:
+  mode: "manual_assist"
+  manual_assist:
+    auto_generate_drafts: true
+    default_template_id: "website_modernization"
+  official_api:
+    client_id: ""
+    client_secret: ""
+    redirect_uri: "http://localhost:8000/api/linkedin/callback"
+
+  templates:
+    website_modernization:
+      id: "website_modernization"
+      name: "Website Modernization & Digital Presence"
+      subject: "Quick idea to modernize {{ company_name }}'s web presence in {{ location or 'your area' }}"
+      body: "Hi {{ contact_name or 'there' }},\n\nI was looking through {{ source_url or 'your website' }} while researching top {{ industry_tag or 'businesses' }} in {{ location or 'the US' }}.\n\nWe are a software development team specializing in high-conversion modern websites and mobile apps. We recently helped a similar company in your industry revamp their digital presence, increasing inbound client inquiries by 180%.\n\nWould you be open to a 5-min chat this Thursday to see a free design mockup for {{ company_name }}?\n\nBest regards,\nLead Software Architect"
+
+    custom_app_mvp:
+      id: "custom_app_mvp"
+      name: "Custom Web & Mobile App Engineering"
+      subject: "Custom web & mobile app engineering for {{ company_name }}"
+      body: "Hi {{ contact_name or 'Leader' }},\n\nNoticed {{ company_name }}'s work in {{ industry_tag or 'the industry' }}.\n\nWe build custom web platforms, client portals, and mobile apps (iOS & Android) for ambitious businesses in {{ location or 'the US' }}. We handle the full product lifecycle from UI/UX design to cloud deployment with dedicated senior engineers.\n\nAre you currently exploring any internal software or customer app projects for {{ company_name }}?\n\nCheers,\nEngineering Director"
+
+    dedicated_dev_team:
+      id: "dedicated_dev_team"
+      name: "Dedicated Senior Developers / Tech Scaling"
+      subject: "Dedicated senior software developers for {{ company_name }}"
+      body: "Hello {{ contact_name or 'Founder' }},\n\nI came across {{ company_name }} and wanted to reach out. We provide on-demand, vetted full-stack engineers (React, Next.js, Node, Python, Mobile) to help businesses scale technical roadmaps without recruitment overhead.\n\nAre you looking to accelerate any software or web deliverables this quarter?\n\nBest regards,\nTech Talent Team"
+
+notifications:
+  hermes_gateway:
+    enabled: true
+    report_schedule: "0 9 * * *"
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
+  slack:
+    enabled: false
+    webhook_url: ""
+  email:
+    enabled: false
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_user: ""
+    smtp_pass: ""
+    recipient: ""
