@@ -32636,7 +32636,7 @@ leads = res.json()["items"]</pre>
       if (document.getElementById('global-badge-count')) document.getElementById('global-badge-count').innerText = countBadge;
       if (document.getElementById('global-page-info-top')) document.getElementById('global-page-info-top').innerText = pageInfo;
       if (document.getElementById('global-page-info-bottom')) document.getElementById('global-page-info-bottom').innerText = pageInfo;
-      if (document.getElementById('stat-global-total')) document.getElementById('stat-global-total').innerText = total;
+      if (document.getElementById('stat-global-total')) document.getElementById('stat-global-total').innerText = (typeof GLOBAL_MASTER_LEADS_DATASET !== 'undefined' ? GLOBAL_MASTER_LEADS_DATASET.length : total).toLocaleString() + '+';
 
       // Populate Navigation Buttons
       const navHtml = buildGlobalPaginationNavHtml(globalCurrentPage, totalPages, false);
@@ -34251,9 +34251,7 @@ leads = res.json()["items"]</pre>
       // If user is on page 1 with no active search, re-render top rows gently
       const searchVal = document.getElementById('global-search-input')?.value.trim();
       const platVal = document.getElementById('global-filter-platform')?.value;
-      if (globalCurrentPage === 1 && !searchVal && !platVal) {
-        renderGlobalLeadsTable(GLOBAL_MASTER_LEADS_DATASET.slice(0, globalPageSize), globalTotalLeads);
-      }
+      if (globalCurrentPage === 1 && !searchVal && !platVal) { fetchGlobalLeads(); }
     }
 
     // Start 24/7 Autonomous Crawler
