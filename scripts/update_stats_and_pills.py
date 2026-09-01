@@ -1,4 +1,4 @@
-"""Update stat counters and quick-pills for 1,152 100% verified real active sites."""
+"""Update stat counters and quick-pills for 1,147 clean commercial active sites."""
 
 from pathlib import Path
 import re
@@ -13,15 +13,15 @@ for filepath in [
     # 1. Update stat counter
     content = re.sub(
         r'<div id="stat-global-total"[^>]*>[\d,]+</div>',
-        '<div id="stat-global-total" style="font-size: 28px; font-weight: 700; color: var(--text-heading);">1,152</div>',
+        '<div id="stat-global-total" style="font-size: 28px; font-weight: 700; color: var(--text-heading);">1,147</div>',
         content
     )
 
     # 2. Update quick pills ribbon
-    NEW_PILLS = """        <!-- Targeted Quick-Filter Ribbon (1,152 Real Live DNS-Verified Active Stores) -->
+    NEW_PILLS = """        <!-- Targeted Quick-Filter Ribbon (1,147 Real Live Clean DNS-Verified Active Stores) -->
         <div class="cat-pills-container" id="category-pills-bar">
           <button onclick="selectQuickFilter('', '')" class="cat-pill-btn active" id="pill-all">
-            <span>🌐</span> All Real Stores <span class="cat-pill-count" id="pill-cnt-all">1,152</span>
+            <span>🌐</span> All Real Stores <span class="cat-pill-count" id="pill-cnt-all">1,147</span>
           </button>
           <button onclick="selectQuickFilter('OpenCart', '')" class="cat-pill-btn" id="pill-opencart" style="border: 1.5px solid #10B981;">
             <span>🛒</span> OpenCart Stores <span class="cat-pill-count" style="background: rgba(16,185,129,0.2); color: #047857;">19</span>
@@ -36,7 +36,7 @@ for filepath in [
             <span>🛍️</span> Shopify Stores <span class="cat-pill-count" style="background: rgba(139,92,246,0.2); color: #7C3AED;">15</span>
           </button>
           <button onclick="selectQuickFilter('', 'Retail & E-Commerce')" class="cat-pill-btn" id="pill-retail">
-            <span>🛍️</span> Retail & E-Commerce <span class="cat-pill-count">818</span>
+            <span>🛍️</span> Retail & E-Commerce <span class="cat-pill-count">812</span>
           </button>
           <button onclick="selectQuickFilter('', 'B2B SaaS & Tech')" class="cat-pill-btn" id="pill-saas">
             <span>⚡</span> B2B SaaS & Tech <span class="cat-pill-count">282</span>
@@ -53,7 +53,7 @@ for filepath in [
               <option value="100">100 / page</option>
               <option value="250">250 / page</option>
               <option value="500">500 / page</option>
-              <option value="1152">All (1,152) / page</option>
+              <option value="1147">All (1,147) / page</option>
             </select>"""
 
     content = re.sub(r'<select id="global-page-size"[\s\S]*?</select>', NEW_PAGE_SELECT.strip(), content)
