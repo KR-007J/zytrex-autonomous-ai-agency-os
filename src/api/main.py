@@ -24,15 +24,30 @@ from src.database.db import (
     init_db,
     get_db,
     LeadRepository,
+    GlobalLeadRepository,
+    SuppressionRepository,
+    IngestionJobRepository,
     get_db_session,
 )
-from src.database.models import Lead, ScrapeJob, OutreachDraft, ContactedMemory
+from src.database.models import (
+    Lead,
+    ScrapeJob,
+    OutreachDraft,
+    ContactedMemory,
+    GlobalEnterpriseLead,
+    SuppressionRecord,
+    IngestionPipelineJob,
+)
 from src.scraper.agency_engine import (
     AgencyLeadDiscoveryEngine,
     TARGET_REGIONS,
     TARGET_NICHES,
     INTENT_CATEGORIES,
 )
+from src.scraper.crawlee_pipeline import CrawleePipeline
+from src.scraper.common_crawl_indexer import CommonCrawlIndexer
+from src.scraper.nlp_classifier import BusinessCategoryClassifier, RegionResolver, INDUSTRY_TAXONOMY, COUNTRY_REGIONS
+from src.compliance.guardrails import ComplianceManager
 from src.scraper.extractors import (
     calculate_lead_score,
     normalize_domain,
@@ -605,29 +620,204 @@ def download_leads_csv(db: Session = Depends(get_db)):
 
 
 # ==============================================================================
-# Leads & Pitch Inspector Endpoints
+# Enterprise Schemas
+# ==============================================================================
+
+class SuppressionAddSchema(BaseModel):
+    domain_or_email: str = Field(..., min_length=3)
+    reason: str = Field("User Opt-Out / Compliance Request", min_length=2)
+    scope: str = Field("GLOBAL")
+    notes: Optional[str] = None
+
+
+class PipelineRunSchema(BaseModel):
+    category: str = Field("B2B SaaS & Tech")
+    region: str = Field("Global")
+    seed_limit: int = Field(20, ge=1, le=100)
+
+
+# ==============================================================================
+# Enterprise Global Leads & Data Platform Endpoints
 # ==============================================================================
 
 @app.get("/api/leads")
-def list_leads(
-    skip: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=500),
-    status: Optional[str] = None,
+def list_global_leads(
+    page: int = Query(1, ge=1),
+    limit: int = Query(25, ge=1, le=500),
+    category: Optional[str] = None,
+    region: Optional[str] = None,
+    country_code: Optional[str] = None,
+    platform: Optional[str] = None,
+    min_score: int = Query(0, ge=0, le=100),
     search: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
-    leads, total = LeadRepository.get_leads(
+    """Search and filter global business leads across categories, platforms (OpenCart, WordPress), and regions."""
+    skip = (page - 1) * limit
+    leads, total = GlobalLeadRepository.get_leads(
         session=db,
         skip=skip,
         limit=limit,
-        status=status,
+        category=category,
+        region=region,
+        country_code=country_code,
+        platform_cms=platform,
+        min_score=min_score,
         search=search,
+        exclude_suppressed=True,
     )
     return {
         "total": total,
-        "skip": skip,
+        "page": page,
         "limit": limit,
+        "total_pages": max(1, (total + limit - 1) // limit),
         "items": [lead.to_dict() for lead in leads],
+    }
+
+
+@app.get("/api/leads/platforms")
+def get_lead_platforms(db: Session = Depends(get_db)):
+    """Return list of all CMS / platforms (OpenCart, WordPress, Shopify) and counts."""
+    db_platforms = GlobalLeadRepository.get_platforms_breakdown(db)
+    core_platforms = ["OpenCart", "WordPress", "Shopify", "Custom"]
+    seen = {p["platform"] for p in db_platforms}
+    for cp in core_platforms:
+        if cp not in seen:
+            db_platforms.append({"platform": cp, "count": 0})
+    return {"platforms": db_platforms}
+
+
+@app.get("/api/leads/categories")
+def get_lead_categories(db: Session = Depends(get_db)):
+    """Return list of all industry categories and counts."""
+    db_cats = GlobalLeadRepository.get_categories_breakdown(db)
+    all_cats = []
+    seen = set()
+    for item in db_cats:
+        all_cats.append(item)
+        seen.add(item["category"])
+
+    for cat_name in INDUSTRY_TAXONOMY:
+        if cat_name not in seen:
+            all_cats.append({"category": cat_name, "count": 0})
+
+    return {"categories": all_cats}
+
+
+@app.get("/api/leads/regions")
+def get_lead_regions(db: Session = Depends(get_db)):
+    """Return list of all regions and country breakdowns."""
+    db_regs = GlobalLeadRepository.get_regions_breakdown(db)
+    return {"regions": db_regs}
+
+
+@app.get("/api/leads/compliance-whitepaper")
+def get_compliance_whitepaper():
+    """Return client-facing compliance paper."""
+    return {
+        "title": "Zytrex Enterprise Lead Gen Compliance & Legal Architecture",
+        "content": ComplianceManager.get_compliance_whitepaper(),
+    }
+
+
+# ==============================================================================
+# Suppression & Do-Not-Contact Endpoints
+# ==============================================================================
+
+@app.get("/api/suppression/list")
+def list_suppression_records(
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=200),
+    db: Session = Depends(get_db),
+):
+    skip = (page - 1) * limit
+    records, total = SuppressionRepository.get_all(db, skip=skip, limit=limit)
+    return {
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "items": [r.to_dict() for r in records],
+    }
+
+
+@app.post("/api/suppression/add")
+def add_to_suppression(req: SuppressionAddSchema, db: Session = Depends(get_db)):
+    rec = SuppressionRepository.add_suppression(
+        session=db,
+        domain_or_email=req.domain_or_email,
+        reason=req.reason,
+        scope=req.scope,
+        notes=req.notes or "",
+    )
+    db.commit()
+    return {"status": "suppressed", "record": rec.to_dict()}
+
+
+@app.delete("/api/suppression/remove")
+def remove_from_suppression(domain_or_email: str = Query(...), db: Session = Depends(get_db)):
+    success = SuppressionRepository.remove_suppression(db, domain_or_email)
+    db.commit()
+    if not success:
+        raise HTTPException(status_code=404, detail="Entry not found in suppression list")
+    return {"status": "removed", "domain_or_email": domain_or_email}
+
+
+# ==============================================================================
+# Ingestion Pipeline Endpoints
+# ==============================================================================
+
+@app.get("/api/pipeline/jobs")
+def get_pipeline_jobs(limit: int = Query(20, ge=1, le=100), db: Session = Depends(get_db)):
+    jobs = IngestionJobRepository.get_recent(db, limit=limit)
+    return {"jobs": [j.to_dict() for j in jobs]}
+
+
+@app.post("/api/pipeline/run")
+async def trigger_ingestion_pipeline(req: PipelineRunSchema, db: Session = Depends(get_db)):
+    """Dispatches asynchronous Crawlee & search API ingestion job for specified category and region."""
+    job = IngestionJobRepository.create_job(
+        session=db,
+        pipeline_type="crawlee_search_seed",
+        category=req.category,
+        region=req.region,
+    )
+    db.commit()
+
+    # Run seed discovery asynchronously
+    async def run_crawler_task():
+        seeds = await CommonCrawlIndexer.discover_domains_by_query(
+            category=req.category,
+            region=req.region,
+            limit=req.seed_limit,
+        )
+        crawler = CrawleePipeline(concurrency=3, timeout=6.0)
+        extracted = 0
+
+        with get_db_session() as sess:
+            for seed in seeds:
+                lead_data = await crawler.crawl_site(
+                    target_url=seed["url"],
+                    category_hint=req.category,
+                    region_hint=req.region,
+                )
+                if lead_data:
+                    GlobalLeadRepository.upsert_lead(sess, lead_data)
+                    extracted += 1
+
+            IngestionJobRepository.update_job(
+                session=sess,
+                job_id=job.id,
+                status="COMPLETED",
+                seeds=len(seeds),
+                pages=len(seeds) * 3,
+                leads=extracted,
+            )
+
+    asyncio.create_task(run_crawler_task())
+    return {
+        "status": "dispatched",
+        "job_id": job.id,
+        "message": f"Crawlee pipeline initiated for '{req.category}' in '{req.region}'.",
     }
 
 
@@ -656,23 +846,6 @@ def get_lead_personalized_pitch(lead_id: int, db: Session = Depends(get_db)):
         "subject": subject,
         "personalized_pitch": body,
     }
-
-
-@app.post("/api/leads", status_code=status.HTTP_201_CREATED)
-def create_lead(lead_in: LeadCreateSchema, db: Session = Depends(get_db)):
-    normalized = normalize_lead_dict(lead_in.model_dump())
-    lead_score = calculate_lead_score(
-        has_email=bool(normalized.get("email")),
-        has_phone=bool(normalized.get("phone")),
-        has_contact_name=bool(normalized.get("contact_name")),
-        has_linkedin=bool(normalized.get("linkedin_url")),
-        has_domain=bool(normalized.get("source_domain")),
-    )
-    normalized["lead_score"] = lead_score
-
-    lead, is_new = LeadRepository.create_or_update(db, normalized)
-    db.commit()
-    return {"lead": lead.to_dict(), "is_new": is_new}
 
 
 @app.delete("/api/leads/{lead_id}")
@@ -715,6 +888,10 @@ def send_test_email(req: EmailTestSchema):
 # ==============================================================================
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/explorer", response_class=HTMLResponse)
+@app.get("/pipelines", response_class=HTMLResponse)
+@app.get("/compliance", response_class=HTMLResponse)
+@app.get("/api-docs", response_class=HTMLResponse)
 @app.get("/about", response_class=HTMLResponse)
 @app.get("/services", response_class=HTMLResponse)
 @app.get("/mission-control", response_class=HTMLResponse)
@@ -725,4 +902,4 @@ def serve_dashboard():
     if dashboard_html_path.exists():
         with open(dashboard_html_path, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>Zytrex Autonomous OS</h1><p>System loading...</p>"
+    return "<h1>Zytrex Enterprise Platform</h1><p>System loading...</p>"

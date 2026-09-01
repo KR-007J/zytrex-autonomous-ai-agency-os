@@ -45,28 +45,93 @@ class ExcelReportGenerator:
         zebra_fill = PatternFill(start_color="F8FAFC", end_color="F8FAFC", fill_type="solid")
 
         # ==============================================================================
-        # SHEET 1: Master Leads Explorer
+        # SHEET 1: Global Business & Stores Intelligence
         # ==============================================================================
-        ws_leads = wb.create_sheet(title="All Verified Leads")
+        ws_global = wb.create_sheet(title="Global Store & Tech Leads")
+        ws_global.views.sheetView[0].showGridLines = True
+
+        ws_global.merge_cells("A1:K1")
+        ws_global["A1"] = f"Zytrex Global Business Intelligence & Store Registry — Generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        ws_global["A1"].font = title_font
+        ws_global["A1"].alignment = left_align
+
+        ws_global.merge_cells("A2:K2")
+        ws_global["A2"] = "Multi-platform business directory covering OpenCart, WordPress/WooCommerce, Shopify, Supplements & Steroids Stores, and Global B2B SaaS."
+        ws_global["A2"].font = sub_font
+        ws_global["A2"].alignment = left_align
+
+        headers_global = [
+            "ID", "Store / Company Name", "Platform / CMS", "Category / Niche", "Region / Country",
+            "Live Store URL", "Contact Email", "Contact Phone", "Detected Tech Stack", "Confidence", "Compliance Status"
+        ]
+
+        row_num = 4
+        for col_idx, h in enumerate(headers_global, 1):
+            cell = ws_global.cell(row=row_num, column=col_idx, value=h)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = center_align
+
+        from src.database.models import GlobalEnterpriseLead
+        global_leads = session.query(GlobalEnterpriseLead).order_by(GlobalEnterpriseLead.confidence_score.desc(), GlobalEnterpriseLead.created_at.desc()).all()
+        for idx, g in enumerate(global_leads, 1):
+            row_num += 1
+            is_even = (idx % 2 == 0)
+
+            tech_str = ""
+            if g.tech_stack:
+                try:
+                    tech_str = ", ".join(json.loads(g.tech_stack))
+                except Exception:
+                    tech_str = str(g.tech_stack)
+
+            row_values = [
+                g.id,
+                g.company_name,
+                g.platform_cms,
+                g.category,
+                f"{g.region} ({g.country_code})",
+                g.live_url,
+                g.contact_email or "—",
+                g.contact_phone or "—",
+                tech_str or "Web Standard",
+                f"{g.confidence_score}%",
+                g.compliance_status,
+            ]
+
+            for col_idx, val in enumerate(row_values, 1):
+                c = ws_global.cell(row=row_num, column=col_idx, value=val)
+                c.font = cell_font
+                c.border = thin_border
+                if is_even:
+                    c.fill = zebra_fill
+                if col_idx in (1, 3, 10, 11):
+                    c.alignment = center_align
+                else:
+                    c.alignment = left_align
+
+        for col in ws_global.columns:
+            max_len = max(len(str(cell.value or '')) for cell in col)
+            col_letter = get_column_letter(col[0].column)
+            ws_global.column_dimensions[col_letter].width = max(max_len + 4, 12)
+
+        # ==============================================================================
+        # SHEET 2: Agency Leads Explorer
+        # ==============================================================================
+        ws_leads = wb.create_sheet(title="Agency Scout Pipeline")
         ws_leads.views.sheetView[0].showGridLines = True
 
-        # Sheet Title Banner
-        ws_leads.merge_cells("A1:I1")
-        ws_leads["A1"] = f"Enterprise Master Leads Database — Generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        ws_leads.merge_cells("A1:J1")
+        ws_leads["A1"] = f"Agency Real-Time Prospect Pipeline — Generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         ws_leads["A1"].font = title_font
         ws_leads["A1"].alignment = left_align
 
-        ws_leads.merge_cells("A2:I2")
-        ws_leads["A2"] = "Automated 24/7 lead extraction across LinkedIn, Twitter/X, GitHub, Reddit, and Web Sources."
-        ws_leads["A2"].font = sub_font
-        ws_leads["A2"].alignment = left_align
-
         headers_leads = [
             "ID", "Company Name", "Contact Person", "Email Address", "Phone Number",
-            "Social / Platform Source", "Website URL", "Lead Score", "Status", "Date Added"
+            "Niche / Opportunity", "Website URL", "Lead Score", "Status", "Date Discovered"
         ]
-        
-        row_num = 4
+
+        row_num = 3
         for col_idx, h in enumerate(headers_leads, 1):
             cell = ws_leads.cell(row=row_num, column=col_idx, value=h)
             cell.font = header_font
@@ -77,7 +142,6 @@ class ExcelReportGenerator:
         for idx, l in enumerate(leads, 1):
             row_num += 1
             is_even = (idx % 2 == 0)
-
             row_values = [
                 l.id,
                 l.company_name,
@@ -102,13 +166,11 @@ class ExcelReportGenerator:
                 else:
                     c.alignment = left_align
 
-                # Highlight high lead score
                 if col_idx == 8 and val >= 70:
                     c.font = Font(name="Calibri", size=10, bold=True, color="16A34A")
                 elif col_idx == 9 and val == "CONTACTED":
                     c.font = Font(name="Calibri", size=10, bold=True, color="2563EB")
 
-        # Auto-fit column widths
         for col in ws_leads.columns:
             max_len = max(len(str(cell.value or '')) for cell in col)
             col_letter = get_column_letter(col[0].column)

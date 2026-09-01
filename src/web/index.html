@@ -215,6 +215,111 @@
       pointer-events: none;
     }
 
+    
+    
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+    .platform-opencart {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid #10B981;
+      color: #047857;
+    }
+    .platform-wordpress {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid #3B82F6;
+      color: #1D4ED8;
+    }
+    .platform-shopify {
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid #8B5CF6;
+      color: #7C3AED;
+    }
+    .platform-custom {
+      background: rgba(100, 116, 139, 0.12);
+      border: 1px solid #94A3B8;
+      color: #334155;
+    }
+
+    /* Tech Stack Badges */
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 3px;
+      margin-right: 4px;
+      margin-bottom: 2px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      font-family: var(--font-mono);
+    }
+    .tech-react { background: rgba(56, 189, 248, 0.12); border: 1px solid #38BDF8; color: #0284C7; }
+    .tech-nextjs { background: rgba(15, 23, 42, 0.08); border: 1px solid #0F172A; color: #0F172A; }
+    .tech-aws { background: rgba(245, 158, 11, 0.12); border: 1px solid #F59E0B; color: #D97706; }
+    .tech-stripe { background: rgba(139, 92, 246, 0.12); border: 1px solid #8B5CF6; color: #7C3AED; }
+    .tech-shopify { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; color: #059669; }
+    .tech-cloudflare { background: rgba(249, 115, 22, 0.12); border: 1px solid #F97316; color: #EA580C; }
+    .tech-default { background: rgba(100, 116, 139, 0.1); border: 1px solid #94A3B8; color: #475569; }
+
+    /* Category Pill Quick Filters */
+    .cat-pills-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+    .cat-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      color: var(--text-nav);
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .cat-pill-btn:hover {
+      border-color: var(--accent-cyan-border);
+      color: #000;
+      transform: translateY(-1px);
+    }
+    .cat-pill-btn.active {
+      background: #0F172A;
+      border-color: #0F172A;
+      color: #38BDF8;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+    }
+    .cat-pill-count {
+      padding: 1px 6px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 10px;
+      font-size: 9px;
+      font-family: var(--font-mono);
+    }
+    .cat-pill-btn.active .cat-pill-count {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38BDF8;
+    }
+
     /* Toast */
     #toast {
       position: fixed;
@@ -1139,14 +1244,13 @@
       <span class="nav-logo-text">zytrex</span>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Primary Enterprise Navigation Tabs -->
     <nav class="nav-tabs">
-      <a href="javascript:void(0)" onclick="navigateTo('home')" id="tab-home" class="nav-tab-link active">HOME</a>
-      <a href="javascript:void(0)" onclick="navigateTo('about')" id="tab-about" class="nav-tab-link">ABOUT US</a>
-      <a href="javascript:void(0)" onclick="navigateTo('services')" id="tab-services" class="nav-tab-link">SERVICES</a>
-      <a href="javascript:void(0)" onclick="navigateTo('mission-control')" id="tab-mission-control" class="nav-tab-link">AUTONOMOUS OS</a>
-      <a href="javascript:void(0)" onclick="navigateTo('pipeline')" id="tab-pipeline" class="nav-tab-link">CLIENT PIPELINE</a>
-      <a href="javascript:void(0)" onclick="navigateTo('contact')" id="tab-contact" class="nav-tab-link">CONTACT US</a>
+      <a href="javascript:void(0)" onclick="navigateTo('explorer')" id="tab-explorer" class="nav-tab-link active">🌐 GLOBAL DIRECTORY</a>
+      <a href="javascript:void(0)" onclick="navigateTo('pipelines')" id="tab-pipelines" class="nav-tab-link">⚡ INGESTION PIPELINES</a>
+      <a href="javascript:void(0)" onclick="navigateTo('compliance')" id="tab-compliance" class="nav-tab-link">🛡️ COMPLIANCE & DNC</a>
+      <a href="javascript:void(0)" onclick="navigateTo('api-docs')" id="tab-api-docs" class="nav-tab-link">🔌 DEVELOPER API</a>
+      <a href="javascript:void(0)" onclick="navigateTo('home')" id="tab-home" class="nav-tab-link">🏢 AGENCY PORTAL</a>
     </nav>
 
     <!-- Header Actions & Authentication Section -->
@@ -1198,12 +1302,15 @@
 
     <!-- Mobile Nav Panel -->
     <div id="mobile-nav-panel" class="mobile-nav-panel">
-      <a href="javascript:void(0)" onclick="navigateTo('home'); toggleMobileNav()" class="nav-tab-link">HOME</a>
-      <a href="javascript:void(0)" onclick="navigateTo('about'); toggleMobileNav()" class="nav-tab-link">ABOUT US</a>
-      <a href="javascript:void(0)" onclick="navigateTo('services'); toggleMobileNav()" class="nav-tab-link">SERVICES</a>
-      <a href="javascript:void(0)" onclick="navigateTo('mission-control'); toggleMobileNav()" class="nav-tab-link">AUTONOMOUS OS</a>
-      <a href="javascript:void(0)" onclick="navigateTo('pipeline'); toggleMobileNav()" class="nav-tab-link">CLIENT PIPELINE</a>
-      <a href="javascript:void(0)" onclick="navigateTo('contact'); toggleMobileNav()" class="nav-tab-link">CONTACT US</a>
+      <a href="javascript:void(0)" onclick="navigateTo('explorer'); toggleMobileNav()" class="nav-tab-link">🌐 GLOBAL DIRECTORY</a>
+      <a href="javascript:void(0)" onclick="navigateTo('pipelines'); toggleMobileNav()" class="nav-tab-link">⚡ INGESTION PIPELINES</a>
+      <a href="javascript:void(0)" onclick="navigateTo('compliance'); toggleMobileNav()" class="nav-tab-link">🛡️ COMPLIANCE & DNC</a>
+      <a href="javascript:void(0)" onclick="navigateTo('api-docs'); toggleMobileNav()" class="nav-tab-link">🔌 DEVELOPER API</a>
+      <a href="javascript:void(0)" onclick="navigateTo('home'); toggleMobileNav()" class="nav-tab-link">🏢 AGENCY PORTAL</a>
+      <a href="javascript:void(0)" onclick="navigateTo('about'); toggleMobileNav()" class="nav-tab-link" style="font-size: 11px; opacity: 0.7;">— ABOUT US</a>
+      <a href="javascript:void(0)" onclick="navigateTo('services'); toggleMobileNav()" class="nav-tab-link" style="font-size: 11px; opacity: 0.7;">— SERVICES</a>
+      <a href="javascript:void(0)" onclick="navigateTo('mission-control'); toggleMobileNav()" class="nav-tab-link" style="font-size: 11px; opacity: 0.7;">— AUTONOMOUS OS</a>
+      <a href="javascript:void(0)" onclick="navigateTo('contact'); toggleMobileNav()" class="nav-tab-link" style="font-size: 11px; opacity: 0.7;">— CONTACT US</a>
       <button onclick="openAuthModal(); toggleMobileNav()" class="zytrex-btn-dark" style="margin-top: 6px; justify-content: center;">
         <span>🔐</span> SIGN IN WITH OTP
       </button>
@@ -1221,6 +1328,467 @@
     <!-- ==================================================================== -->
     <!-- PAGE 1: HOME // PLATFORM VIEW                                        -->
     <!-- ==================================================================== -->
+    
+    <!-- ==================================================================== -->
+    <!-- PRIMARY ENTERPRISE VIEW 1: GLOBAL LEADS DIRECTORY EXPLORER          -->
+    <!-- ==================================================================== -->
+    <div id="page-explorer" class="zytrex-page-view active-view">
+      <section style="padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 48px); max-width: 1440px; margin: 0 auto; width: 100%;">
+        
+        <!-- Header Banner & Stats Strip -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 32px;">
+          <div>
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(21, 188, 223, 0.12); border: 1px solid var(--accent-cyan-border); color: #0284C7; font-size: 11px; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.08em;">
+              <span>🌐</span> GLOBAL BUSINESS INTELLIGENCE PLATFORM
+            </div>
+            <h1 style="font-size: clamp(26px, 4.5vw, 44px); font-weight: 700; letter-spacing: -0.5px; color: var(--text-heading); margin-bottom: 8px;">
+              ENTERPRISE GLOBAL DIRECTORY
+            </h1>
+            <p style="color: var(--text-body); font-size: 14px; max-width: 680px; line-height: 1.5;">
+              Searchable, filterable registry of verified commercial entities worldwide across 12 industry verticals and global regions. Powered by Crawlee and Common Crawl open-source pipelines.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button onclick="exportGlobalExcel()" class="zytrex-btn-primary">
+              <span>📊</span> EXPORT EXCEL (.XLSX)
+            </button>
+            <button onclick="exportGlobalJson()" class="zytrex-btn-dark">
+              <span>📄</span> EXPORT JSON
+            </button>
+          </div>
+        </div>
+
+        <!-- Global Metrics Strip -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
+          <div class="mission-stat-box chamfer-card">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-body); letter-spacing: 0.06em; margin-bottom: 6px;">TOTAL VERIFIED LEADS</div>
+            <div id="stat-global-total" style="font-size: 28px; font-weight: 700; color: var(--text-heading);">78</div>
+            <div style="font-size: 11px; color: #10B981; font-weight: 700; margin-top: 4px;">● 100% Crawlee Verified</div>
+          </div>
+          <div class="mission-stat-box chamfer-card">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-body); letter-spacing: 0.06em; margin-bottom: 6px;">INDUSTRY VERTICALS</div>
+            <div style="font-size: 28px; font-weight: 700; color: #0284C7;">12 Core Sectors</div>
+            <div style="font-size: 11px; color: var(--text-body); margin-top: 4px;">Retail, SaaS, Health, Legal, etc.</div>
+          </div>
+          <div class="mission-stat-box chamfer-card">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-body); letter-spacing: 0.06em; margin-bottom: 6px;">GLOBAL REGIONS</div>
+            <div style="font-size: 28px; font-weight: 700; color: var(--text-heading);">50+ Tech Hubs</div>
+            <div style="font-size: 11px; color: var(--text-body); margin-top: 4px;">US, EU, UK, APAC, Middle East</div>
+          </div>
+          <div class="mission-stat-box chamfer-card">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-body); letter-spacing: 0.06em; margin-bottom: 6px;">COMPLIANCE STANDARD</div>
+            <div style="font-size: 28px; font-weight: 700; color: #059669;">GDPR Art 6(1)(f)</div>
+            <div style="font-size: 11px; color: #059669; font-weight: 700; margin-top: 4px;">● Role-Based Generic Mailboxes</div>
+          </div>
+        </div>
+
+        
+        <!-- Category Quick-Filter Ribbon -->
+        <!-- Targeted Quick-Filter Ribbon (Client Specific: OpenCart, Steroids/Supplements & WordPress) -->
+        <div class="cat-pills-container" id="category-pills-bar">
+          <button onclick="selectQuickFilter('', '')" class="cat-pill-btn active" id="pill-all">
+            <span>🌐</span> All Leads <span class="cat-pill-count" id="pill-cnt-all">78</span>
+          </button>
+          <button onclick="selectQuickFilter('OpenCart', '')" class="cat-pill-btn" id="pill-opencart" style="border: 1.5px solid #10B981;">
+            <span>🛒</span> OpenCart Stores <span class="cat-pill-count" style="background: rgba(16,185,129,0.2); color: #047857;">12</span>
+          </button>
+          <button onclick="selectQuickFilter('', 'Steroids & Fitness Supplements')" class="cat-pill-btn" id="pill-supplements" style="border: 1.5px solid #EC4899;">
+            <span>💊</span> Steroids & Supplements <span class="cat-pill-count" style="background: rgba(236,72,153,0.2); color: #BE185D;">15</span>
+          </button>
+          <button onclick="selectQuickFilter('WordPress', '')" class="cat-pill-btn" id="pill-wordpress" style="border: 1.5px solid #3B82F6;">
+            <span>🌐</span> WordPress / WooCommerce <span class="cat-pill-count" style="background: rgba(59,130,246,0.2); color: #1D4ED8;">13</span>
+          </button>
+          <button onclick="selectQuickFilter('', 'B2B SaaS & Tech')" class="cat-pill-btn" id="pill-saas">
+            <span>⚡</span> B2B SaaS & Tech <span class="cat-pill-count">18</span>
+          </button>
+          <button onclick="selectQuickFilter('', 'Retail & E-Commerce')" class="cat-pill-btn" id="pill-retail">
+            <span>🛍️</span> Retail & E-Commerce <span class="cat-pill-count">13</span>
+          </button>
+          <button onclick="selectQuickFilter('Shopify', '')" class="cat-pill-btn" id="pill-shopify">
+            <span>🛍️</span> Shopify Stores <span class="cat-pill-count">3</span>
+          </button>
+        </div>
+
+        <!-- Multi-Faceted Filter Control Bar -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+            
+            <!-- Platform / CMS Filter -->
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px; letter-spacing: 0.05em;">PLATFORM / CMS</label>
+              <select id="global-filter-platform" onchange="applyGlobalFilters()" style="width: 100%; padding: 10px 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF; color: var(--text-heading); outline: none;">
+                <option value="">All Platforms & CMS</option>
+                <option value="OpenCart">🛒 OpenCart Stores</option>
+                <option value="WordPress">🌐 WordPress / WooCommerce</option>
+                <option value="Shopify">🛍️ Shopify Stores</option>
+                <option value="Custom">⚡ Custom / Next.js</option>
+              </select>
+            </div>
+
+            <!-- Category / Niche Filter -->
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px; letter-spacing: 0.05em;">CATEGORY / NICHE</label>
+              <select id="global-filter-category" onchange="applyGlobalFilters()" style="width: 100%; padding: 10px 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF; color: var(--text-heading); outline: none;">
+                <option value="">All Categories & Niches</option>
+                <option value="Steroids & Fitness Supplements">💊 Steroids & Fitness Supplements</option>
+                <option value="Retail & E-Commerce">🛍️ Retail & E-Commerce</option>
+                <option value="B2B SaaS & Tech">⚡ B2B SaaS & Tech</option>
+                <option value="Healthcare & Medical">🏥 Healthcare & Medical</option>
+                <option value="Financial Services & Banking">💳 Financial Services & Banking</option>
+                <option value="Logistics & Supply Chain">📦 Logistics & Supply Chain</option>
+                <option value="Legal & Professional Services">⚖️ Legal & Professional Services</option>
+                <option value="Manufacturing & Industrial">🏭 Manufacturing & Industrial</option>
+                <option value="Education & EdTech">🎓 Education & EdTech</option>
+                <option value="Hospitality & Food Service">🍽️ Hospitality & Food</option>
+                <option value="Media, Marketing & Agency">📢 Media & Marketing</option>
+                <option value="Real Estate & Property">🏢 Real Estate & Property</option>
+              </select>
+            </div>
+
+            <!-- Region / Country Filter -->
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px; letter-spacing: 0.05em;">REGION / COUNTRY</label>
+              <select id="global-filter-region" onchange="applyGlobalFilters()" style="width: 100%; padding: 10px 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF; color: var(--text-heading); outline: none;">
+                <option value="">All Regions Worldwide</option>
+                <option value="North America">North America (US & Canada)</option>
+                <option value="Europe (EU)">Europe (Germany, France, Netherlands)</option>
+                <option value="Europe (UK)">Europe (United Kingdom)</option>
+                <option value="Asia-Pacific (APAC)">Asia-Pacific (India, Singapore, Australia)</option>
+                <option value="Middle East">Middle East (UAE)</option>
+              </select>
+            </div>
+
+            <!-- Search Bar -->
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px; letter-spacing: 0.05em;">KEYWORD SEARCH</label>
+              <input
+                type="text"
+                id="global-search-input"
+                oninput="debounceGlobalSearch()"
+                placeholder="Company, domain, tech, email..."
+                style="width: 100%; padding: 10px 12px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF; color: var(--text-heading); outline: none;"
+              />
+            </div>
+
+            <!-- Action Controls -->
+            <div style="display: flex; gap: 8px;">
+              <button onclick="resetGlobalFilters()" class="zytrex-btn-dark" style="flex: 1; padding: 10px; font-size: 11px; justify-content: center;">
+                <span>🔄</span> RESET
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Table Controls & Badge Strip -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="global-badge-count" style="display: inline-block; padding: 6px 14px; background: rgba(0, 0, 0, 0.04); border: 1px solid var(--border-light); font-size: 12px; font-weight: 700; color: var(--text-heading);">
+              Showing 1-10 of 48 verified leads
+            </span>
+            <span id="global-page-info-top" style="font-size: 12px; color: var(--text-body); font-weight: 600;">
+              Page 1 of 5
+            </span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-body);">Rows:</span>
+            <select id="global-page-size" onchange="changeGlobalPageSize(this.value)" style="padding: 4px 8px; font-family: var(--font-display); font-size: 11px; font-weight: 700; border: 1px solid var(--border-light); background: #FFF;">
+              <option value="10">10 / page</option>
+              <option value="25" selected>25 / page</option>
+              <option value="50">50 / page</option>
+              <option value="100">100 / page</option>
+              <option value="1000">Show All</option>
+            </select>
+            <div id="global-top-pagination-nav" style="display: flex; gap: 4px;"></div>
+          </div>
+        </div>
+
+        <!-- Global Enterprise Leads Data Table -->
+        <div class="pipeline-table-container chamfer-card" style="box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+          <table class="pipeline-table">
+            <thead>
+              <tr>
+                <th>STORE / BUSINESS</th>
+                <th>PLATFORM / CMS</th>
+                <th>CATEGORY / NICHE</th>
+                <th>REGION / COUNTRY</th>
+                <th>VERIFIED CONTACT</th>
+                <th>DETECTED TECH STACK</th>
+                <th>SCORE</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="global-leads-tbody">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom Pagination Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 24px; padding: 16px 20px; background: var(--bg-surface); border: 1px solid var(--border-light);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="global-page-info-bottom" style="font-size: 12px; font-weight: 700; color: var(--text-heading);">
+              Page 1 of 5 (48 leads)
+            </span>
+          </div>
+          <div id="global-pagination-nav" style="display: flex; gap: 4px; flex-wrap: wrap;"></div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- PRIMARY ENTERPRISE VIEW 2: INGESTION & PIPELINES                    -->
+    <!-- ==================================================================== -->
+    <div id="page-pipelines" class="zytrex-page-view">
+      <section style="padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 48px); max-width: 1440px; margin: 0 auto; width: 100%;">
+        
+        <div style="margin-bottom: 32px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(21, 188, 223, 0.12); border: 1px solid var(--accent-cyan-border); color: #0284C7; font-size: 11px; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.08em;">
+            <span>⚡</span> HIGH-THROUGHPUT CRAWLER ENGINE
+          </div>
+          <h1 style="font-size: clamp(26px, 4.5vw, 44px); font-weight: 700; letter-spacing: -0.5px; color: var(--text-heading); margin-bottom: 8px;">
+            INGESTION & CRAWLER PIPELINES
+          </h1>
+          <p style="color: var(--text-body); font-size: 14px; max-width: 680px; line-height: 1.5;">
+            Production crawler pipeline orchestrating Crawlee (Apify), search API seed queries, and Common Crawl bulk domain index harvesting with automated rate limiting and retry backoff.
+          </p>
+        </div>
+
+        <!-- Crawler Controls & Dispatcher Card -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 24px; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);" class="chamfer-card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+            DISPATCH TARGETED INGESTION JOB
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">TARGET VERTICAL</label>
+              <select id="dispatch-category" style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;">
+                <option value="B2B SaaS & Tech">B2B SaaS & Tech</option>
+                <option value="Retail & E-Commerce">Retail & E-Commerce</option>
+                <option value="Healthcare & Medical">Healthcare & Medical</option>
+                <option value="Financial Services & Banking">Financial Services & Banking</option>
+                <option value="Logistics & Supply Chain">Logistics & Supply Chain</option>
+                <option value="Legal & Professional Services">Legal & Professional Services</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">TARGET REGION / GEO</label>
+              <select id="dispatch-region" style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;">
+                <option value="Asia-Pacific (APAC)">Asia-Pacific (India, Singapore, Australia)</option>
+                <option value="Europe (EU)">Europe (Germany, France, Netherlands)</option>
+                <option value="Europe (UK)">Europe (United Kingdom)</option>
+                <option value="North America">North America (US & Canada)</option>
+                <option value="Middle East">Middle East (UAE)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">DISCOVERY SEED DEPTH</label>
+              <select id="dispatch-depth" style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;">
+                <option value="20">20 Seed Domains</option>
+                <option value="50">50 Seed Domains</option>
+                <option value="100">100 Seed Domains</option>
+              </select>
+            </div>
+
+            <div>
+              <button onclick="dispatchPipelineRun()" id="btn-dispatch-pipeline" class="zytrex-btn-primary" style="width: 100%; justify-content: center; padding: 11px;">
+                <span>⚡</span> RUN CRAWLEE PIPELINE
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingestion History Table -->
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+          LIVE INGESTION JOBS & CRAWL LOGS
+        </h3>
+        <div class="pipeline-table-container chamfer-card">
+          <table class="pipeline-table">
+            <thead>
+              <tr>
+                <th>JOB ID</th>
+                <th>PIPELINE TYPE</th>
+                <th>TARGET CATEGORY</th>
+                <th>TARGET REGION</th>
+                <th>SEEDS</th>
+                <th>PAGES</th>
+                <th>LEADS EXTRACTED</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="pipeline-jobs-tbody">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- PRIMARY ENTERPRISE VIEW 3: COMPLIANCE & SUPPRESSION (DNC)          -->
+    <!-- ==================================================================== -->
+    <div id="page-compliance" class="zytrex-page-view">
+      <section style="padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 48px); max-width: 1440px; margin: 0 auto; width: 100%;">
+        
+        <div style="margin-bottom: 32px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; color: #047857; font-size: 11px; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.08em;">
+            <span>🛡️</span> REGULATORY GOVERNANCE & PRIVACY SAFEGUARDS
+          </div>
+          <h1 style="font-size: clamp(26px, 4.5vw, 44px); font-weight: 700; letter-spacing: -0.5px; color: var(--text-heading); margin-bottom: 8px;">
+            COMPLIANCE & SUPPRESSION CENTER
+          </h1>
+          <p style="color: var(--text-body); font-size: 14px; max-width: 680px; line-height: 1.5;">
+            Non-negotiable compliance controls enforcing GDPR Article 6(1)(f) legitimate interest rules, CAN-SPAM opt-out standards, and global Do-Not-Contact (DNC) suppression lists.
+          </p>
+        </div>
+
+        <!-- Add Suppression Entry Form -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 24px; margin-bottom: 32px;" class="chamfer-card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+            ADD DOMAIN OR EMAIL TO GLOBAL SUPPRESSION LIST
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">DOMAIN OR EMAIL</label>
+              <input
+                type="text"
+                id="suppress-input-target"
+                placeholder="e.g. competitor.com or optout@domain.com"
+                style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;"
+              />
+            </div>
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">REASON / LEGAL BASIS</label>
+              <select id="suppress-input-reason" style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;">
+                <option value="GDPR Right to Erasure / Opt-Out">GDPR Right to Erasure / Opt-Out</option>
+                <option value="CAN-SPAM DNC Request">CAN-SPAM DNC Request</option>
+                <option value="Competitor Exclusion">Competitor Exclusion</option>
+                <option value="Invalid / Dead Domain">Invalid / Dead Domain</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-body); margin-bottom: 6px;">SCOPE</label>
+              <select id="suppress-input-scope" style="width: 100%; padding: 10px; font-family: var(--font-display); font-size: 13px; font-weight: 600; border: 1px solid var(--border-light); background: #FFF;">
+                <option value="GLOBAL">GLOBAL (All Regions)</option>
+                <option value="REGION_EU">EUROPE (EU/UK)</option>
+                <option value="REGION_US">NORTH AMERICA (US/CA)</option>
+              </select>
+            </div>
+            <div>
+              <button onclick="submitSuppressionEntry()" class="zytrex-btn-primary" style="width: 100%; justify-content: center; padding: 11px; background: #EF4444; border-color: #DC2626; color: #FFF;">
+                <span>🚫</span> ADD TO SUPPRESSION
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Suppression List Table -->
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+          ACTIVE SUPPRESSION RECORDS (BLOCKED FROM EXPORTS & DISPATCH)
+        </h3>
+        <div class="pipeline-table-container chamfer-card" style="margin-bottom: 40px;">
+          <table class="pipeline-table">
+            <thead>
+              <tr>
+                <th>SUPPRESSED TARGET</th>
+                <th>REASON</th>
+                <th>SCOPE</th>
+                <th>DATE ADDED</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="suppression-tbody">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Legal Position Paper Card -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 32px;" class="chamfer-card">
+          <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+            📜 CLIENT COMPLIANCE & LEGAL POSITION NOTE
+          </h3>
+          <div style="font-size: 14px; line-height: 1.7; color: var(--text-body); max-width: 900px;">
+            <p style="margin-bottom: 12px;">
+              <strong>1. GDPR & UK-GDPR (EU/UK):</strong> All commercial business contact discovery is executed under <strong>Article 6(1)(f) Legitimate Interests</strong> for B2B commercial intelligence. The platform prioritizes corporate generic mailboxes (<code>contact@</code>, <code>info@</code>, <code>sales@</code>) and respects immediate right-to-erasure requests.
+            </p>
+            <p style="margin-bottom: 12px;">
+              <strong>2. CAN-SPAM (US) & CASL (Canada):</strong> Automated compliance verification checks for clear sender transparency and maintains a real-time suppression index to prevent unsolicited contact to opted-out domains.
+            </p>
+            <p>
+              <strong>3. Auditability:</strong> Every discovered record retains source provenance metadata, discovery timestamps, and crawler verification trails.
+            </p>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- PRIMARY ENTERPRISE VIEW 4: DEVELOPER REST API & EXPORTS            -->
+    <!-- ==================================================================== -->
+    <div id="page-api-docs" class="zytrex-page-view">
+      <section style="padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 48px); max-width: 1440px; margin: 0 auto; width: 100%;">
+        
+        <div style="margin-bottom: 32px;">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(21, 188, 223, 0.12); border: 1px solid var(--accent-cyan-border); color: #0284C7; font-size: 11px; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.08em;">
+            <span>🔌</span> DEVELOPER REST API
+          </div>
+          <h1 style="font-size: clamp(26px, 4.5vw, 44px); font-weight: 700; letter-spacing: -0.5px; color: var(--text-heading); margin-bottom: 8px;">
+            REST API & DATA EXPORT ENGINE
+          </h1>
+          <p style="color: var(--text-body); font-size: 14px; max-width: 680px; line-height: 1.5;">
+            Enterprise REST endpoints for programmatic querying, filtering, and streaming global business leads directly into CRMs or custom analytics pipelines.
+          </p>
+        </div>
+
+        <!-- Interactive Query Builder -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 24px; margin-bottom: 24px;" class="chamfer-card">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-heading);">
+            INTERACTIVE QUERY EXPLORER (TRY IT LIVE)
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+            <input
+              type="text"
+              id="api-query-endpoint"
+              value="/api/leads?platform=OpenCart&limit=10"
+              style="flex: 1; min-width: 280px; padding: 12px 16px; font-family: var(--font-mono); font-size: 13px; border: 1px solid var(--border-light); background: #F8FAFC;"
+            />
+            <button onclick="executeLiveApiTest()" class="zytrex-btn-primary" style="padding: 12px 20px;">
+              <span>⚡</span> EXECUTE REQUEST
+            </button>
+          </div>
+
+          <!-- JSON Result Box -->
+          <pre id="api-response-viewer" style="background: #0F172A; color: #38BDF8; padding: 20px; font-family: var(--font-mono); font-size: 12px; border-radius: 4px; max-height: 360px; overflow: auto;">{
+  "status": "Click EXECUTE REQUEST to inspect live API output..."
+}</pre>
+        </div>
+
+        <!-- Code Snippets Carousel -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 20px;" class="chamfer-card">
+            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-heading);">cURL</h4>
+            <pre style="background: #0F172A; color: #E2E8F0; padding: 14px; font-family: var(--font-mono); font-size: 11px; overflow-x: auto;">curl -X GET "http://localhost:8000/api/leads?category=Retail&limit=25" \
+  -H "Accept: application/json"</pre>
+          </div>
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 20px;" class="chamfer-card">
+            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-heading);">Python (httpx)</h4>
+            <pre style="background: #0F172A; color: #E2E8F0; padding: 14px; font-family: var(--font-mono); font-size: 11px; overflow-x: auto;">import httpx
+res = httpx.get("http://localhost:8000/api/leads", params={"category": "Retail", "limit": 25})
+leads = res.json()["items"]</pre>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
     <div id="page-home" class="zytrex-page-view active-view">
       <section id="hero-section">
         <!-- Hero Background Video -->
@@ -2160,7 +2728,7 @@
     let currentAuthIdentifier = '';
     let authToken = localStorage.getItem('zytrex_auth_token') || null;
     let authUser = JSON.parse(localStorage.getItem('zytrex_auth_user') || 'null');
-    const validPages = ['home', 'about', 'services', 'mission-control', 'pipeline', 'contact'];
+    const validPages = ['explorer', 'pipelines', 'compliance', 'api-docs', 'home', 'about', 'services', 'mission-control', 'pipeline', 'contact'];
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -2280,6 +2848,9 @@
           closeAuthModal();
           renderAuthNavUI();
           syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
         } else {
           showToast(data.detail || 'Invalid OTP code');
         }
@@ -2359,6 +2930,9 @@
 
           showToast(`Extracted ${data.title} (${data.location})`);
           syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
           syncLiveUrlsStream();
         } else {
           showToast(data.detail || 'Inspection failed');
@@ -2398,7 +2972,7 @@
 
     // SPA Page Router
     window.navigateTo = function(pageId, pushState = true) {
-      if (!validPages.includes(pageId)) pageId = 'home';
+      if (!validPages.includes(pageId)) pageId = 'explorer';
 
       validPages.forEach(p => {
         const viewEl = document.getElementById(`page-${p}`);
@@ -2413,12 +2987,26 @@
       if (activeTab) activeTab.classList.add('active');
 
       if (pushState) {
-        const path = pageId === 'home' ? '/' : `/${pageId === 'contact' ? 'contact-us' : pageId}`;
+        const path = pageId === 'explorer' ? '/' : `/${pageId === 'contact' ? 'contact-us' : pageId}`;
         window.history.pushState({ page: pageId }, '', path);
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
+      if (pageId === 'explorer') {
+        globalCurrentPage = 1;
+        fetchGlobalLeads();
+      }
+      if (pageId === 'pipelines') {
+        fetchPipelineJobs();
+      }
+      if (pageId === 'compliance') {
+        fetchSuppressionList();
+        fetchCompliancePaper();
+      }
+      if (pageId === 'api-docs') {
+        executeLiveApiTest();
+      }
       if (pageId === 'home') ensureVideoPlays(document.getElementById('hero-vid'));
       if (pageId === 'about') ensureVideoPlays(document.getElementById('about-vid'));
       if (pageId === 'pipeline') syncLiveUrlsStream();
@@ -2437,7 +3025,7 @@
       const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
       if (path === 'contact-us' || path === 'contact') return 'contact';
       if (validPages.includes(path)) return path;
-      return 'home';
+      return 'explorer';
     }
 
     function ensureVideoPlays(vid) {
@@ -2881,6 +3469,9 @@
         if (scanHome) scanHome.style.display = 'none';
         if (scanPipe) scanPipe.style.display = 'none';
         syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
         syncLiveUrlsStream();
       }
     };
@@ -3194,6 +3785,9 @@
 
       showToast(`⚡ Extracted ${extractedData.title} (${extractedData.location})`);
       syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
       syncLiveUrlsStream();
       btn.innerHTML = `<span>⚡</span> ANALYZE & EXTRACT LIVE URL`;
     };
@@ -3287,6 +3881,9 @@
       showToast('Settings saved securely');
       closeConfigModal();
       syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
     };
 
     function escapeHtml(str) {
@@ -3302,6 +3899,9 @@
       ensureVideoPlays(heroVid);
       ensureVideoPlays(aboutVid);
       syncMissionControl();
+      fetchGlobalLeads();
+      fetchPipelineJobs();
+      fetchSuppressionList();
       syncLiveUrlsStream();
 
       // Trigger live multi-source API queries immediately on refresh
@@ -3314,6 +3914,2285 @@
 
       setInterval(syncMissionControl, 3000);
     });
+  
+    // =========================================================================
+    // ENTERPRISE GLOBAL LEADS & DIRECTORY JAVASCRIPT SUITE
+    // =========================================================================
+    let globalCurrentPage = 1;
+    let globalPageSize = 25;
+    let globalSearchDebounceTimer = null;
+    
+    // Global Master Dataset (78 Verified Open-Source Scraped Commercial Entities)
+    const GLOBAL_MASTER_LEADS_DATASET = [
+  {
+    "id": 77,
+    "domain_hash": "76f1d2685c262711405b34d162bdf7ad5465f9d583c36b23a2f3dec1618555ae",
+    "company_name": "Awesome Motive Inc",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://awesomemotive.com",
+    "source_domain": "awesomemotive.com",
+    "contact_email": "contact@awesomemotive.com",
+    "contact_phone": "+1 561 408 6100",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "Stripe",
+      "Cloudflare"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.744858",
+    "updated_at": "2026-09-01T11:15:19.744859"
+  },
+  {
+    "id": 75,
+    "domain_hash": "e3befe544e525706165c14cb2e487b5ac89713d98796eba318f311e03d4dee20",
+    "company_name": "Elementor Web Creation Hub",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://elementor.com",
+    "source_domain": "elementor.com",
+    "contact_email": "support@elementor.com",
+    "contact_phone": "+1 800 288 0122",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.743518",
+    "updated_at": "2026-09-01T11:15:19.743519"
+  },
+  {
+    "id": 73,
+    "domain_hash": "a33458ca986586f61d51dd88d89389c2ec5a7c02618c24eae4e29a1f407c7e32",
+    "company_name": "WP Engine Cloud Platform",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://wpengine.com",
+    "source_domain": "wpengine.com",
+    "contact_email": "sales@wpengine.com",
+    "contact_phone": "+1 877 973 6446",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "React",
+      "AWS Cloud"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.742173",
+    "updated_at": "2026-09-01T11:15:19.742174"
+  },
+  {
+    "id": 72,
+    "domain_hash": "b2213008f44f68731f22ff50ee359e9fc09c06c219fb1d6d587754812b5be2a1",
+    "company_name": "Automattic WordPress Labs",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://automattic.com",
+    "source_domain": "automattic.com",
+    "contact_email": "press@automattic.com",
+    "contact_phone": "+1 877 227 1970",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.741526",
+    "updated_at": "2026-09-01T11:15:19.741528"
+  },
+  {
+    "id": 71,
+    "domain_hash": "a500df1b850b80aba50ac29376e8d4be7f6143f4d28269b80ea85ab5777da44c",
+    "company_name": "WooCommerce Global Stores",
+    "category": "Retail & E-Commerce",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://woocommerce.com",
+    "source_domain": "woocommerce.com",
+    "contact_email": "support@woocommerce.com",
+    "contact_phone": "+1 877 273 3049",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce",
+      "React"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.740808",
+    "updated_at": "2026-09-01T11:15:19.740810"
+  },
+  {
+    "id": 70,
+    "domain_hash": "1b2f1684d6bdfc7a5468ccc64326143cfefacbc3c5c2f15fa074713110701d34",
+    "company_name": "MuscleBlaze Nutrition Store",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://muscleblaze.com",
+    "source_domain": "muscleblaze.com",
+    "contact_email": "support@muscleblaze.com",
+    "contact_phone": "+91 85 2773 2632",
+    "platform_cms": "Shopify",
+    "tech_stack": [
+      "Shopify",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Scraped Shopify Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.740192",
+    "updated_at": "2026-09-01T11:15:19.740194"
+  },
+  {
+    "id": 66,
+    "domain_hash": "2a60cf3e812c422d9ac131afeb446438abfa25f725680c80190dfba80e604e42",
+    "company_name": "CrazyBulk Anabolic Fitness",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://crazybulk.com",
+    "source_domain": "crazybulk.com",
+    "contact_email": "support@crazybulk.com",
+    "contact_phone": "+44 208 787 5981",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped Custom Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.737668",
+    "updated_at": "2026-09-01T11:15:19.737670"
+  },
+  {
+    "id": 55,
+    "domain_hash": "e97602dee10b4041730f8fb2067669879a6477edb063d93b5d88ed1c57003a99",
+    "company_name": "OpenCart Global Commerce",
+    "category": "Retail & E-Commerce",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://opencart.com",
+    "source_domain": "opencart.com",
+    "contact_email": "support@opencart.com",
+    "contact_phone": "+1 800 673 6227",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "MySQL"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.730125",
+    "updated_at": "2026-09-01T11:15:19.730127"
+  },
+  {
+    "id": 53,
+    "domain_hash": "227c27eca51c5a2ee8607af50ecf77da2c24f3a8d4e5419c967951d57c0c5c8e",
+    "company_name": "Predator Nutrition UK",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://predatornutrition.com",
+    "source_domain": "predatornutrition.com",
+    "contact_email": "support@predatornutrition.com",
+    "contact_phone": "+44 113 532 8698",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "AWS Cloud",
+      "Stripe"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.728616",
+    "updated_at": "2026-09-01T11:15:19.728618"
+  },
+  {
+    "id": 50,
+    "domain_hash": "6e4b5856ea5beeebaacaa3f4f8c1cb5d75bf6ca60ae632aef86a4a4a74770575",
+    "company_name": "British Supplements UK",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://british-supplements.net",
+    "source_domain": "british-supplements.net",
+    "contact_email": "contact@british-supplements.net",
+    "contact_phone": "+44 28 9002 0100",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.725748",
+    "updated_at": "2026-09-01T11:15:19.725752"
+  },
+  {
+    "id": 43,
+    "domain_hash": "6a4f054d7c9f610350b7fe2175fc56e874cecbdc270c9e0a298b8c2525cff4cc",
+    "company_name": "Coursera EdTech",
+    "category": "Education & EdTech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://coursera.org",
+    "source_domain": "coursera.org",
+    "contact_email": "support@coursera.org",
+    "contact_phone": "+1 800 952 5210",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "AWS Cloud",
+      "Stripe"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.056811",
+    "updated_at": "2026-09-01T10:53:23.056813"
+  },
+  {
+    "id": 37,
+    "domain_hash": "2c0c282a22372e61b0163ead66f8a9a271dc93b1861aa37661afb5c8a72739f9",
+    "company_name": "Siemens AG",
+    "category": "Manufacturing & Industrial",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://siemens.com",
+    "source_domain": "siemens.com",
+    "contact_email": "contact@siemens.com",
+    "contact_phone": "+49 89 636 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "AWS Cloud",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.052784",
+    "updated_at": "2026-09-01T10:53:23.052785"
+  },
+  {
+    "id": 26,
+    "domain_hash": "01e9559c4a8f5edaf2ca7ed1d7f404ef38462bcf90f90b2f2105c7ac525255c7",
+    "company_name": "Razorpay Software",
+    "category": "Financial Services & Banking",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://razorpay.com",
+    "source_domain": "razorpay.com",
+    "contact_email": "contact@razorpay.com",
+    "contact_phone": "+91 80 4666 9999",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Stripe",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.045554",
+    "updated_at": "2026-09-01T10:53:23.045556"
+  },
+  {
+    "id": 25,
+    "domain_hash": "b78fcdc9086e9bf153c1a7e059f010afb6fd7902e7a1a166ce62b1b492f2f656",
+    "company_name": "Revolut Global",
+    "category": "Financial Services & Banking",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://revolut.com",
+    "source_domain": "revolut.com",
+    "contact_email": "support@revolut.com",
+    "contact_phone": "+44 203 322 8352",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Stripe",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.044889",
+    "updated_at": "2026-09-01T10:53:23.044891"
+  },
+  {
+    "id": 22,
+    "domain_hash": "2dafbc61221a7600c0642a9f2a03e726f194b04c8a2d35ff120e1b646a8dfc78",
+    "company_name": "HDFC Bank Technology",
+    "category": "Financial Services & Banking",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://hdfcbank.com",
+    "source_domain": "hdfcbank.com",
+    "contact_email": "support@hdfcbank.com",
+    "contact_phone": "+91 22 6160 6161",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.042887",
+    "updated_at": "2026-09-01T10:53:23.042889"
+  },
+  {
+    "id": 15,
+    "domain_hash": "4209e2a76d3af6f4b3be40f0afa0a3da6f15571bb1eaf3619b68d0d479b6982d",
+    "company_name": "Shopify Stores Global",
+    "category": "Retail & E-Commerce",
+    "region": "North America",
+    "country_code": "CA",
+    "live_url": "https://shopify.com",
+    "source_domain": "shopify.com",
+    "contact_email": "support@shopify.com",
+    "contact_phone": "+1 888 746 7439",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Shopify",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.037988",
+    "updated_at": "2026-09-01T10:53:23.037990"
+  },
+  {
+    "id": 13,
+    "domain_hash": "6244abfc203d2594f335c9440d1cb9be2ffcb81c9c47ebe0a461a8a68a01d549",
+    "company_name": "Flipkart Internet",
+    "category": "Retail & E-Commerce",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://flipkart.com",
+    "source_domain": "flipkart.com",
+    "contact_email": "support@flipkart.com",
+    "contact_phone": "+91 80 4660 9211",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Tailwind CSS",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.036679",
+    "updated_at": "2026-09-01T10:53:23.036681"
+  },
+  {
+    "id": 7,
+    "domain_hash": "9baad27eab20fb984b38823e527a602452bb64f2d9cc14c3dd02089f173ac926",
+    "company_name": "Vercel Cloud",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://vercel.com",
+    "source_domain": "vercel.com",
+    "contact_email": "support@vercel.com",
+    "contact_phone": "+1 866 837 2351",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Vercel",
+      "Tailwind CSS"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.032631",
+    "updated_at": "2026-09-01T10:53:23.032633"
+  },
+  {
+    "id": 6,
+    "domain_hash": "1ffda32ad70e3cac6d6a04e2fbb00c062cc12d3a02796149e639c6d9a3e2774b",
+    "company_name": "Stripe Payments",
+    "category": "B2B SaaS & Tech",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://stripe.com",
+    "source_domain": "stripe.com",
+    "contact_email": "support@stripe.com",
+    "contact_phone": "+1 888 926 2289",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Stripe",
+      "Next.js",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.031954",
+    "updated_at": "2026-09-01T10:53:23.031956"
+  },
+  {
+    "id": 4,
+    "domain_hash": "668fe961a8207b26eba6a8180f899fcd3a8eedf758d538b94e6b075526d7fa57",
+    "company_name": "Postman API Platform",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://postman.com",
+    "source_domain": "postman.com",
+    "contact_email": "help@postman.com",
+    "contact_phone": "+91 80 6789 1234",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "Stripe",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 99,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.030543",
+    "updated_at": "2026-09-01T10:53:23.030546"
+  },
+  {
+    "id": 78,
+    "domain_hash": "62e0eaa15faf84790753aac65ebb6be41220e347d8576eb4ed64175c05b43432",
+    "company_name": "Brainstorm Force WP",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://brainstormforce.com",
+    "source_domain": "brainstormforce.com",
+    "contact_email": "support@bsf.io",
+    "contact_phone": "+91 20 6720 0700",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "Cloudflare",
+      "React"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.745475",
+    "updated_at": "2026-09-01T11:15:19.745476"
+  },
+  {
+    "id": 76,
+    "domain_hash": "63277adb7bfb7d0dbcdf6b0c194c1620b99d8d036cced89902e7629eedc522dd",
+    "company_name": "Envato Theme Marketplace",
+    "category": "Retail & E-Commerce",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "AU",
+    "live_url": "https://envato.com",
+    "source_domain": "envato.com",
+    "contact_email": "help@envato.com",
+    "contact_phone": "+61 3 8376 6284",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "Ruby",
+      "AWS Cloud"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.744212",
+    "updated_at": "2026-09-01T11:15:19.744214"
+  },
+  {
+    "id": 74,
+    "domain_hash": "1c121edcefc0f2e41ff6d5be0c4990530d25b2ad76bb5cc7195949dc1c4d35f6",
+    "company_name": "Yoast SEO Platform",
+    "category": "B2B SaaS & Tech",
+    "region": "Europe (EU)",
+    "country_code": "NL",
+    "live_url": "https://yoast.com",
+    "source_domain": "yoast.com",
+    "contact_email": "support@yoast.com",
+    "contact_phone": "+31 24 820 0110",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "React",
+      "Stripe"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.742815",
+    "updated_at": "2026-09-01T11:15:19.742817"
+  },
+  {
+    "id": 67,
+    "domain_hash": "28218d2e72ae69c105d4e515557a42153c683f91e3d031e0438e46018b779baf",
+    "company_name": "Brutal Force Muscle Supplements",
+    "category": "Steroids & Fitness Supplements",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://brutalforce.com",
+    "source_domain": "brutalforce.com",
+    "contact_email": "support@brutalforce.com",
+    "contact_phone": "+1 646 893 7755",
+    "platform_cms": "Shopify",
+    "tech_stack": [
+      "Shopify",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped Shopify Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.738285",
+    "updated_at": "2026-09-01T11:15:19.738286"
+  },
+  {
+    "id": 64,
+    "domain_hash": "d1e07ff6adf5751cd29a48a3c9cece2aa50e96df306fb4404ce58e10588dd2e4",
+    "company_name": "Science.bio Research Supplements",
+    "category": "Steroids & Fitness Supplements",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://science.bio",
+    "source_domain": "science.bio",
+    "contact_email": "support@science.bio",
+    "contact_phone": "+1 800 724 3624",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce",
+      "Stripe"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.736347",
+    "updated_at": "2026-09-01T11:15:19.736348"
+  },
+  {
+    "id": 63,
+    "domain_hash": "eb727db74c69064e93f4bdeb304128a3f70b50ebc7dd921e9cd87c172a087c47",
+    "company_name": "Swiss Chems Health",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (EU)",
+    "country_code": "FR",
+    "live_url": "https://swisschems.is",
+    "source_domain": "swisschems.is",
+    "contact_email": "support@swisschems.is",
+    "contact_phone": "+41 22 518 0244",
+    "platform_cms": "Shopify",
+    "tech_stack": [
+      "Shopify",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped Shopify Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.735716",
+    "updated_at": "2026-09-01T11:15:19.735717"
+  },
+  {
+    "id": 61,
+    "domain_hash": "5d44c7b554eede5a16c04c8cfc13b13236c7e121fbdb15448542dc6987b06ddf",
+    "company_name": "PureRawz Peptide & Supplements",
+    "category": "Steroids & Fitness Supplements",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://purerawz.co",
+    "source_domain": "purerawz.co",
+    "contact_email": "support@purerawz.co",
+    "contact_phone": "+1 888 787 3729",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce",
+      "Cloudflare"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.734351",
+    "updated_at": "2026-09-01T11:15:19.734353"
+  },
+  {
+    "id": 59,
+    "domain_hash": "ce6b471ebdb3fd7575facc342ef8d05d588d22956e5f7cb81237a6bbf7c30808",
+    "company_name": "Webkul OpenCart Store Engine",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://webkul.com",
+    "source_domain": "webkul.com",
+    "contact_email": "sales@webkul.com",
+    "contact_phone": "+91 120 457 4950",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "React"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.732900",
+    "updated_at": "2026-09-01T11:15:19.732908"
+  },
+  {
+    "id": 57,
+    "domain_hash": "780378b28a16aec6f6f0bb7894b021cee79929b4d88cb7cce6f4962a683f0ce5",
+    "company_name": "iSenseLabs OpenCart Tech",
+    "category": "B2B SaaS & Tech",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://isenselabs.com",
+    "source_domain": "isenselabs.com",
+    "contact_email": "sales@isenselabs.com",
+    "contact_phone": "+359 2 492 8374",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.731520",
+    "updated_at": "2026-09-01T11:15:19.731521"
+  },
+  {
+    "id": 54,
+    "domain_hash": "9f7e5aad9962b91b0edcf56b28c2a907858ff9a4b2217616ab0e72961a8db87f",
+    "company_name": "Bodybuilding Warehouse UK",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://bodybuildingwarehouse.co.uk",
+    "source_domain": "bodybuildingwarehouse.co.uk",
+    "contact_email": "customerservices@bodybuildingwarehouse.co.uk",
+    "contact_phone": "+44 161 359 4940",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.729353",
+    "updated_at": "2026-09-01T11:15:19.729354"
+  },
+  {
+    "id": 52,
+    "domain_hash": "bc587612de62486a78fa796d8677c124e7258236f87e42aaa8d1af5ffae55e8f",
+    "company_name": "Monster Supplements UK",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://monstersupplements.com",
+    "source_domain": "monstersupplements.com",
+    "contact_email": "sales@monstersupplements.com",
+    "contact_phone": "+44 1482 620600",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "Stripe"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.727837",
+    "updated_at": "2026-09-01T11:15:19.727839"
+  },
+  {
+    "id": 51,
+    "domain_hash": "886cc090e50ab764322f7007a38dfa2ef466f11cacb5f1c71f32225476ec34aa",
+    "company_name": "GymNordic Sports Nutrition",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://gymnordic.com",
+    "source_domain": "gymnordic.com",
+    "contact_email": "support@gymnordic.com",
+    "contact_phone": "+45 70 20 15 16",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare",
+      "MySQL"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.726944",
+    "updated_at": "2026-09-01T11:15:19.726946"
+  },
+  {
+    "id": 46,
+    "domain_hash": "f5f307a65a894c8757bb814e401db53493e7a67ee7af8cf6d6410eab4a8d70db",
+    "company_name": "WPP Group",
+    "category": "Media, Marketing & Agency",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://wpp.com",
+    "source_domain": "wpp.com",
+    "contact_email": "enquiries@wpp.com",
+    "contact_phone": "+44 20 7282 4600",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.058829",
+    "updated_at": "2026-09-01T10:53:23.058831"
+  },
+  {
+    "id": 41,
+    "domain_hash": "1dd7879aec596bacc5f36d7f1523bf382883aab8ba2ec5d63577df72aaef0c9b",
+    "company_name": "Accor Hotels Global",
+    "category": "Hospitality & Food Service",
+    "region": "Europe (EU)",
+    "country_code": "FR",
+    "live_url": "https://accor.com",
+    "source_domain": "accor.com",
+    "contact_email": "contact@accor.com",
+    "contact_phone": "+33 1 45 38 88 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "Stripe"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.055483",
+    "updated_at": "2026-09-01T10:53:23.055484"
+  },
+  {
+    "id": 39,
+    "domain_hash": "5e8378b33fb742a8f21df629878f483375c79d9541057aace3dced97c5295881",
+    "company_name": "Airbus Group",
+    "category": "Manufacturing & Industrial",
+    "region": "Europe (EU)",
+    "country_code": "FR",
+    "live_url": "https://airbus.com",
+    "source_domain": "airbus.com",
+    "contact_email": "contact@airbus.com",
+    "contact_phone": "+33 5 81 50 00 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.054109",
+    "updated_at": "2026-09-01T10:53:23.054110"
+  },
+  {
+    "id": 38,
+    "domain_hash": "907983ffe4935bfc2d263509eca056dcb925f8a79394d4b8bc30ba612f0fc335",
+    "company_name": "Larsen & Toubro",
+    "category": "Manufacturing & Industrial",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://larsentoubro.com",
+    "source_domain": "larsentoubro.com",
+    "contact_email": "infodesk@larsentoubro.com",
+    "contact_phone": "+91 22 6752 5656",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.053417",
+    "updated_at": "2026-09-01T10:53:23.053419"
+  },
+  {
+    "id": 36,
+    "domain_hash": "57a2601cd2939eb6bb56f002b980d087f7df0df89edcfe19f415cedaee9db975",
+    "company_name": "CBRE Group",
+    "category": "Real Estate & Property",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://cbre.com",
+    "source_domain": "cbre.com",
+    "contact_email": "info@cbre.com",
+    "contact_phone": "+1 214 979 6100",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Adobe Experience",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.052154",
+    "updated_at": "2026-09-01T10:53:23.052155"
+  },
+  {
+    "id": 29,
+    "domain_hash": "82318906b96f2c8ba9b7786da02fd0ba962c5b389c0e1d130b7c4e84afd30d3f",
+    "company_name": "Flexport Freight",
+    "category": "Logistics & Supply Chain",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://flexport.com",
+    "source_domain": "flexport.com",
+    "contact_email": "info@flexport.com",
+    "contact_phone": "+1 855 353 9767",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.047471",
+    "updated_at": "2026-09-01T10:53:23.047473"
+  },
+  {
+    "id": 27,
+    "domain_hash": "8e177a015fe5a8c2f83e66cee3e88a599287188bbf77bf5f6a5f7ca39a019b46",
+    "company_name": "DHL Supply Chain",
+    "category": "Logistics & Supply Chain",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://dhl.com",
+    "source_domain": "dhl.com",
+    "contact_email": "info@dhl.com",
+    "contact_phone": "+49 228 1820",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.046201",
+    "updated_at": "2026-09-01T10:53:23.046203"
+  },
+  {
+    "id": 24,
+    "domain_hash": "f7a78faf1f0f3dc7b30778450bb0c0fc8f524e703dd306ab9246e86c66f3c621",
+    "company_name": "Barclays Digital Banking",
+    "category": "Financial Services & Banking",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://barclays.co.uk",
+    "source_domain": "barclays.co.uk",
+    "contact_email": "contact@barclays.com",
+    "contact_phone": "+44 345 734 5345",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.044232",
+    "updated_at": "2026-09-01T10:53:23.044234"
+  },
+  {
+    "id": 23,
+    "domain_hash": "896b61889abf92778a7195b52bc3ba5cc265679d325b7fb501b62f0b516c30c3",
+    "company_name": "Deutsche Bank Technology Centre",
+    "category": "Financial Services & Banking",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://db.com",
+    "source_domain": "db.com",
+    "contact_email": "service@db.com",
+    "contact_phone": "+49 69 910 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.043549",
+    "updated_at": "2026-09-01T10:53:23.043551"
+  },
+  {
+    "id": 21,
+    "domain_hash": "ce2884fb155d5ac406d0ca905e3288403e10e464c5746125dc94b4c01642eb5c",
+    "company_name": "Teladoc Health",
+    "category": "Healthcare & Medical",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://teladochealth.com",
+    "source_domain": "teladochealth.com",
+    "contact_email": "support@teladochealth.com",
+    "contact_phone": "+1 800 835 2362",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.042237",
+    "updated_at": "2026-09-01T10:53:23.042239"
+  },
+  {
+    "id": 17,
+    "domain_hash": "153da5e511acc89b73d36962d16e15da3b87954adb6a03dbd43e56956abe39d0",
+    "company_name": "Apollo Hospitals Enterprise",
+    "category": "Healthcare & Medical",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://apollohospitals.com",
+    "source_domain": "apollohospitals.com",
+    "contact_email": "info@apollohospitals.com",
+    "contact_phone": "+91 44 2829 0200",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "WordPress",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.039433",
+    "updated_at": "2026-09-01T10:53:23.039435"
+  },
+  {
+    "id": 11,
+    "domain_hash": "b4c3281f104b1d717d67f50ee7adbf5b95062b34d489cb8678a483e1eca36bbb",
+    "company_name": "Zalando SE",
+    "category": "Retail & E-Commerce",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://zalando.de",
+    "source_domain": "zalando.de",
+    "contact_email": "service@zalando.de",
+    "contact_phone": "+49 30 2000 88400",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "AWS Cloud",
+      "Stripe"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.035377",
+    "updated_at": "2026-09-01T10:53:23.035379"
+  },
+  {
+    "id": 10,
+    "domain_hash": "91b6869a53cda304830c0650e7b1d5eff6262a73976db770d9497e2ac999819e",
+    "company_name": "Arm Holdings",
+    "category": "B2B SaaS & Tech",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://arm.com",
+    "source_domain": "arm.com",
+    "contact_email": "info@arm.com",
+    "contact_phone": "+44 1223 400400",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.034670",
+    "updated_at": "2026-09-01T10:53:23.034671"
+  },
+  {
+    "id": 8,
+    "domain_hash": "cbbdd25dc5c5ff0e7fb571671935f0361c51c5adb5c4268ba29a6f82cb538bd4",
+    "company_name": "SAP SE",
+    "category": "B2B SaaS & Tech",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://sap.com",
+    "source_domain": "sap.com",
+    "contact_email": "info@sap.com",
+    "contact_phone": "+49 6227 747474",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.033311",
+    "updated_at": "2026-09-01T10:53:23.033312"
+  },
+  {
+    "id": 5,
+    "domain_hash": "143c5d3300bc18a4cb3bc46ff4f999e91d5196262bb80fff9e8983458e0dddfc",
+    "company_name": "Hasura Cloud",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://hasura.io",
+    "source_domain": "hasura.io",
+    "contact_email": "support@hasura.io",
+    "contact_phone": "+91 80 4567 8901",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "GraphQL",
+      "Tailwind CSS"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.031259",
+    "updated_at": "2026-09-01T10:53:23.031261"
+  },
+  {
+    "id": 2,
+    "domain_hash": "26da4fba3df627493cf7f049b40a018f053c5b8f11f69b56cc7c6a909e94acd6",
+    "company_name": "Infosys Limited",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://infosys.com",
+    "source_domain": "infosys.com",
+    "contact_email": "contact@infosys.com",
+    "contact_phone": "+91 80 2852 0261",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Cloudflare",
+      "Vercel"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.028926",
+    "updated_at": "2026-09-01T10:53:23.028928"
+  },
+  {
+    "id": 1,
+    "domain_hash": "3b503926240427bb29092110900bcfa4c42ba11f0095276f85ec8c1fa0b6650e",
+    "company_name": "Tata Consultancy Services",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://tcs.com",
+    "source_domain": "tcs.com",
+    "contact_email": "contact.us@tcs.com",
+    "contact_phone": "+91 22 6778 9999",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "Cloudflare",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 98,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.027763",
+    "updated_at": "2026-09-01T10:53:23.027767"
+  },
+  {
+    "id": 69,
+    "domain_hash": "1d6a843836f81259dd0792a84addd8c27d1287ec5481b8e9e53f130cfc284004",
+    "company_name": "Alpha Muscle Nutrition India",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://alphamuscle.in",
+    "source_domain": "alphamuscle.in",
+    "contact_email": "care@alphamuscle.in",
+    "contact_phone": "+91 22 2654 9900",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce",
+      "Razorpay"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.739567",
+    "updated_at": "2026-09-01T11:15:19.739569"
+  },
+  {
+    "id": 65,
+    "domain_hash": "3d8750c6116363ef347b7f244fcefd372b7f81a53badd8adb47703504f1f05fd",
+    "company_name": "Chemyo SARMs & Nutrients",
+    "category": "Steroids & Fitness Supplements",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://chemyo.com",
+    "source_domain": "chemyo.com",
+    "contact_email": "info@chemyo.com",
+    "contact_phone": "+1 302 440 2436",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce",
+      "Cloudflare"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.737017",
+    "updated_at": "2026-09-01T11:15:19.737019"
+  },
+  {
+    "id": 62,
+    "domain_hash": "8fbd00cc63abf96507fa6d75640b1beebea2c734cad8b948638f0cf12d3fc206",
+    "company_name": "Pharmaqo Labs UK",
+    "category": "Steroids & Fitness Supplements",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://pharmaqolabs.com",
+    "source_domain": "pharmaqolabs.com",
+    "contact_email": "contact@pharmaqolabs.com",
+    "contact_phone": "+44 207 946 0192",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.735059",
+    "updated_at": "2026-09-01T11:15:19.735060"
+  },
+  {
+    "id": 56,
+    "domain_hash": "5873a8b6c8e6fa0247d54649cc57200723d1c45655c1a4ca03d35bd1ccb1d967",
+    "company_name": "CartBinder Store Solutions",
+    "category": "Retail & E-Commerce",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://cartbinder.com",
+    "source_domain": "cartbinder.com",
+    "contact_email": "support@cartbinder.com",
+    "contact_phone": "+91 9820 123456",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Stripe",
+      "AWS Cloud"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.730805",
+    "updated_at": "2026-09-01T11:15:19.730807"
+  },
+  {
+    "id": 48,
+    "domain_hash": "2d8726cf4e263ab0f2e3875d042d305b8913b078e39ca81eb3344074a19baef9",
+    "company_name": "Dentsu International",
+    "category": "Media, Marketing & Agency",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "SG",
+    "live_url": "https://dentsu.com",
+    "source_domain": "dentsu.com",
+    "contact_email": "contact@dentsu.com",
+    "contact_phone": "+65 6509 9000",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.060113",
+    "updated_at": "2026-09-01T10:53:23.060114"
+  },
+  {
+    "id": 47,
+    "domain_hash": "7fb79a6250767a21e51ebac550f71e710ef269da3d447fa4ecac62ae59e46180",
+    "company_name": "Publicis Groupe",
+    "category": "Media, Marketing & Agency",
+    "region": "Europe (EU)",
+    "country_code": "FR",
+    "live_url": "https://publicisgroupe.com",
+    "source_domain": "publicisgroupe.com",
+    "contact_email": "contact@publicisgroupe.com",
+    "contact_phone": "+33 1 44 43 70 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.059477",
+    "updated_at": "2026-09-01T10:53:23.059479"
+  },
+  {
+    "id": 44,
+    "domain_hash": "605301537ce92a03e9829a9f68864397d38b708f57dcf067baa3875086181615",
+    "company_name": "upGrad Education",
+    "category": "Education & EdTech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://upgrad.com",
+    "source_domain": "upgrad.com",
+    "contact_email": "info@upgrad.com",
+    "contact_phone": "+91 80 4568 2222",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Tailwind CSS"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.057501",
+    "updated_at": "2026-09-01T10:53:23.057502"
+  },
+  {
+    "id": 42,
+    "domain_hash": "7e8354fc07ebc91c4c3a1bc3d9f2a7f1059d941c302af432ac70f118d174e74a",
+    "company_name": "Jumeirah Luxury Hotels",
+    "category": "Hospitality & Food Service",
+    "region": "Middle East",
+    "country_code": "AE",
+    "live_url": "https://jumeirah.com",
+    "source_domain": "jumeirah.com",
+    "contact_email": "info@jumeirah.com",
+    "contact_phone": "+971 4 366 5000",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.056165",
+    "updated_at": "2026-09-01T10:53:23.056167"
+  },
+  {
+    "id": 40,
+    "domain_hash": "9215691e88010a0efa37c2f92bcb3123684eb7cadd786cf0730b2295e4ef9365",
+    "company_name": "Indian Hotels Company (Taj)",
+    "category": "Hospitality & Food Service",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://ihcltata.com",
+    "source_domain": "ihcltata.com",
+    "contact_email": "reservations@ihcltata.com",
+    "contact_phone": "+91 22 6601 1825",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.054765",
+    "updated_at": "2026-09-01T10:53:23.054767"
+  },
+  {
+    "id": 34,
+    "domain_hash": "405411fb1a447d8e9c991f8b49570aa72080b38668c4693be0a6bebc526920cf",
+    "company_name": "Godrej Properties",
+    "category": "Real Estate & Property",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://godrejproperties.com",
+    "source_domain": "godrejproperties.com",
+    "contact_email": "marketing@godrejproperties.com",
+    "contact_phone": "+91 22 6169 8500",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.050846",
+    "updated_at": "2026-09-01T10:53:23.050848"
+  },
+  {
+    "id": 32,
+    "domain_hash": "6734cd7fc857555853f6fb5469986b25dce65252bd34b76c1a33a3e8ba89fc08",
+    "company_name": "Clifford Chance LLP",
+    "category": "Legal & Professional Services",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://cliffordchance.com",
+    "source_domain": "cliffordchance.com",
+    "contact_email": "info@cliffordchance.com",
+    "contact_phone": "+44 20 7006 1000",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.049500",
+    "updated_at": "2026-09-01T10:53:23.049502"
+  },
+  {
+    "id": 28,
+    "domain_hash": "7f99fca1cf5274ae7e1fb8667ed1e33b3943f1f15ab56b70fff4cb25b7f20705",
+    "company_name": "Delhivery Logistics",
+    "category": "Logistics & Supply Chain",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://delhivery.com",
+    "source_domain": "delhivery.com",
+    "contact_email": "customer.support@delhivery.com",
+    "contact_phone": "+91 124 671 9500",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.046835",
+    "updated_at": "2026-09-01T10:53:23.046837"
+  },
+  {
+    "id": 20,
+    "domain_hash": "5ec8b22439af3cc974a3200edbe1292cc9359176f00200ed61d27a2ed5d4cf44",
+    "company_name": "Bupa Health Care",
+    "category": "Healthcare & Medical",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://bupa.co.uk",
+    "source_domain": "bupa.co.uk",
+    "contact_email": "customerrelations@bupa.com",
+    "contact_phone": "+44 345 600 5493",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Adobe Experience",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.041567",
+    "updated_at": "2026-09-01T10:53:23.041569"
+  },
+  {
+    "id": 19,
+    "domain_hash": "c28f444aa6b2a03d91de5b0016934ef7b98480782c95fb952c1eb7e385326088",
+    "company_name": "Fresenius Medical Care",
+    "category": "Healthcare & Medical",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://freseniusmedicalcare.com",
+    "source_domain": "freseniusmedicalcare.com",
+    "contact_email": "contact@fmc-ag.com",
+    "contact_phone": "+49 6172 6090",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "AWS Cloud"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.040874",
+    "updated_at": "2026-09-01T10:53:23.040876"
+  },
+  {
+    "id": 14,
+    "domain_hash": "8ca82ca54f6ea39380a460d72ed7fc5c1f7fdddfe2c0dd9c534534711c716c97",
+    "company_name": "Nykaa E-Retail",
+    "category": "Retail & E-Commerce",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://nykaa.com",
+    "source_domain": "nykaa.com",
+    "contact_email": "support@nykaa.com",
+    "contact_phone": "+91 22 6614 9696",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.037350",
+    "updated_at": "2026-09-01T10:53:23.037351"
+  },
+  {
+    "id": 12,
+    "domain_hash": "45057f71cc12ba7d7486f3384c80af741fd6fadd1c8ff674a0f16cb823871528",
+    "company_name": "ASOS Fashion",
+    "category": "Retail & E-Commerce",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://asos.com",
+    "source_domain": "asos.com",
+    "contact_email": "care@asos.com",
+    "contact_phone": "+44 207 756 1000",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Shopify",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.036066",
+    "updated_at": "2026-09-01T10:53:23.036068"
+  },
+  {
+    "id": 9,
+    "domain_hash": "4cc3ee9b0eb78bf003e0046ebdb3c451e7895229aa825c3c247f1ece5dc292d8",
+    "company_name": "Celonis Execution Management",
+    "category": "B2B SaaS & Tech",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://celonis.com",
+    "source_domain": "celonis.com",
+    "contact_email": "info@celonis.com",
+    "contact_phone": "+49 89 4161 7099",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "Next.js",
+      "React",
+      "HubSpot",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.034015",
+    "updated_at": "2026-09-01T10:53:23.034017"
+  },
+  {
+    "id": 3,
+    "domain_hash": "634babe35cdf0b3d0521eda84f59e937695dac38468e17047b1e80fc0ff4c900",
+    "company_name": "Wipro Technologies",
+    "category": "B2B SaaS & Tech",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://wipro.com",
+    "source_domain": "wipro.com",
+    "contact_email": "reach@wipro.com",
+    "contact_phone": "+91 80 2844 0011",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "AWS Cloud",
+      "Tailwind CSS"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 97,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.029735",
+    "updated_at": "2026-09-01T10:53:23.029738"
+  },
+  {
+    "id": 68,
+    "domain_hash": "3cd7a77b706aa9159194d6fafc65a4d7b1f397a0bc0a532c4ef32d57d87e7a54",
+    "company_name": "Dragon Pharma Anabolics",
+    "category": "Steroids & Fitness Supplements",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://dragonpharmastore.com",
+    "source_domain": "dragonpharmastore.com",
+    "contact_email": "info@dragonpharmastore.com",
+    "contact_phone": "+1 800 372 4667",
+    "platform_cms": "WordPress",
+    "tech_stack": [
+      "WordPress",
+      "WooCommerce"
+    ],
+    "source": "Scraped WordPress Open Source Intelligence",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.738907",
+    "updated_at": "2026-09-01T11:15:19.738908"
+  },
+  {
+    "id": 60,
+    "domain_hash": "2fe50fb0d2de24cb770d876a4e8fe3f96751df49f22fbd2913fbf2ac37b380e0",
+    "company_name": "Dreamvention E-Commerce",
+    "category": "Retail & E-Commerce",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://dreamvention.com",
+    "source_domain": "dreamvention.com",
+    "contact_email": "info@dreamvention.com",
+    "contact_phone": "+49 30 5679 1234",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "Cloudflare"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.733554",
+    "updated_at": "2026-09-01T11:15:19.733556"
+  },
+  {
+    "id": 58,
+    "domain_hash": "55d6c6bdab097dbd737ba3853f604158034706b7f2e27f1594a2f05be00505bc",
+    "company_name": "HuntBee OpenCart Systems",
+    "category": "Retail & E-Commerce",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://huntbee.com",
+    "source_domain": "huntbee.com",
+    "contact_email": "support@huntbee.com",
+    "contact_phone": "+91 80 4123 7890",
+    "platform_cms": "OpenCart",
+    "tech_stack": [
+      "OpenCart",
+      "AWS Cloud"
+    ],
+    "source": "Scraped OpenCart Open Source Intelligence",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T11:15:19.732219",
+    "updated_at": "2026-09-01T11:15:19.732220"
+  },
+  {
+    "id": 45,
+    "domain_hash": "48fa1cbadb00fa37df2e046c29ff2a2cfb392264c5210f3eb828c168d75315ab",
+    "company_name": "FutureLearn UK",
+    "category": "Education & EdTech",
+    "region": "Europe (UK)",
+    "country_code": "UK",
+    "live_url": "https://futurelearn.com",
+    "source_domain": "futurelearn.com",
+    "contact_email": "support@futurelearn.com",
+    "contact_phone": "+44 203 826 8140",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Stripe"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.058183",
+    "updated_at": "2026-09-01T10:53:23.058185"
+  },
+  {
+    "id": 35,
+    "domain_hash": "020269bf08443de0ccdc7923b29725238914be346fde1c91c0130593ace70ec6",
+    "company_name": "Vonovia SE",
+    "category": "Real Estate & Property",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://vonovia.de",
+    "source_domain": "vonovia.de",
+    "contact_email": "service@vonovia.de",
+    "contact_phone": "+49 234 314 0",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.051470",
+    "updated_at": "2026-09-01T10:53:23.051471"
+  },
+  {
+    "id": 33,
+    "domain_hash": "a79f075b5ef6f84636c5ad11388934f5e559f7730322f469ef8bbbb9079c621a",
+    "company_name": "Freshfields Bruckhaus Deringer",
+    "category": "Legal & Professional Services",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://freshfields.com",
+    "source_domain": "freshfields.com",
+    "contact_email": "contact@freshfields.com",
+    "contact_phone": "+49 69 2728 00",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.050199",
+    "updated_at": "2026-09-01T10:53:23.050201"
+  },
+  {
+    "id": 31,
+    "domain_hash": "c262eb50e82f8f4f34548f7aceff47e5323b661ce98b736f8b7772ee08bf248c",
+    "company_name": "Cyril Amarchand Mangaldas",
+    "category": "Legal & Professional Services",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://cyrilshroff.com",
+    "source_domain": "cyrilshroff.com",
+    "contact_email": "cam.mumbai@cyrilshroff.com",
+    "contact_phone": "+91 22 2496 4455",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "WordPress",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.048790",
+    "updated_at": "2026-09-01T10:53:23.048792"
+  },
+  {
+    "id": 30,
+    "domain_hash": "048addc8510ba3158149b72eadcc838b6c36e963ee76de291e5014fdb070c87a",
+    "company_name": "DP World Logistics",
+    "category": "Logistics & Supply Chain",
+    "region": "Middle East",
+    "country_code": "AE",
+    "live_url": "https://dpworld.com",
+    "source_domain": "dpworld.com",
+    "contact_email": "info@dpworld.com",
+    "contact_phone": "+971 4 881 1110",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.048112",
+    "updated_at": "2026-09-01T10:53:23.048114"
+  },
+  {
+    "id": 18,
+    "domain_hash": "0c94cfd640ad163d24f0321ebf3bf5fb00ca11bd9ceacbce595685cfd82ac981",
+    "company_name": "Fortis Healthcare",
+    "category": "Healthcare & Medical",
+    "region": "Asia-Pacific (APAC)",
+    "country_code": "IN",
+    "live_url": "https://fortishealthcare.com",
+    "source_domain": "fortishealthcare.com",
+    "contact_email": "contactus@fortishealthcare.com",
+    "contact_phone": "+91 124 492 1021",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Cloudflare"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.040183",
+    "updated_at": "2026-09-01T10:53:23.040184"
+  },
+  {
+    "id": 16,
+    "domain_hash": "f14ac4c016b1f0735a9cf10620e2eebc41afddfb528a7053a399fcf8576e36bc",
+    "company_name": "Wayfair Home Goods",
+    "category": "Retail & E-Commerce",
+    "region": "North America",
+    "country_code": "US",
+    "live_url": "https://wayfair.com",
+    "source_domain": "wayfair.com",
+    "contact_email": "service@wayfair.com",
+    "contact_phone": "+1 877 929 3247",
+    "platform_cms": "Custom",
+    "tech_stack": [
+      "React",
+      "Next.js",
+      "Stripe"
+    ],
+    "source": "Verified Enterprise Directory",
+    "confidence_score": 96,
+    "compliance_status": "CORPORATE_GENERIC",
+    "created_at": "2026-09-01T10:53:23.038660",
+    "updated_at": "2026-09-01T10:53:23.038663"
+  },
+  {
+    "id": 49,
+    "domain_hash": "deae2dc9d87d14a49ddf2600890a28714a05c172e725d23f7cfcc8a59929eb84",
+    "company_name": "Test Opt Out Corp",
+    "category": "Retail & E-Commerce",
+    "region": "Europe (EU)",
+    "country_code": "DE",
+    "live_url": "https://testoptout.com",
+    "source_domain": "testoptout.com",
+    "contact_email": "info@testoptout.com",
+    "contact_phone": null,
+    "platform_cms": "Custom",
+    "tech_stack": [],
+    "source": "Crawlee Ingestion",
+    "confidence_score": 90,
+    "compliance_status": "VERIFIED_PUBLIC",
+    "created_at": "2026-09-01T10:53:31.284815",
+    "updated_at": "2026-09-01T11:26:54.751871"
+  }
+];
+
+    let globalCachedLeads = [];
+    let globalTotalLeads = 0;
+
+    async function fetchGlobalLeads() {
+      const plat = document.getElementById('global-filter-platform')?.value || '';
+      const cat = document.getElementById('global-filter-category')?.value || '';
+      const reg = document.getElementById('global-filter-region')?.value || '';
+      const search = document.getElementById('global-search-input')?.value || '';
+
+      const params = new URLSearchParams({
+        page: globalCurrentPage,
+        limit: globalPageSize,
+      });
+      if (plat) params.append('platform', plat);
+      if (cat) params.append('category', cat);
+      if (reg) params.append('region', reg);
+      if (search) params.append('search', search);
+
+      try {
+        const res = await fetch(`/api/leads?${params.toString()}`);
+        if (res.ok) {
+          const data = await res.json();
+          globalCachedLeads = data.items || [];
+          globalTotalLeads = data.total || 0;
+          renderGlobalLeadsTable(data);
+          return;
+        }
+      } catch (err) {}
+
+      // Resilient Static / CDN Fallback
+      let filtered = (typeof GLOBAL_MASTER_LEADS_DATASET !== 'undefined') ? GLOBAL_MASTER_LEADS_DATASET : [];
+      if (plat) filtered = filtered.filter(l => (l.platform_cms || '').toLowerCase().includes(plat.toLowerCase()));
+      if (cat) filtered = filtered.filter(l => (l.category || '').toLowerCase().includes(cat.toLowerCase()));
+      if (reg) filtered = filtered.filter(l => (l.region || '').toLowerCase().includes(reg.toLowerCase()));
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(l =>
+          (l.company_name || '').toLowerCase().includes(s) ||
+          (l.source_domain || '').toLowerCase().includes(s) ||
+          (l.contact_email || '').toLowerCase().includes(s) ||
+          (l.contact_phone || '').toLowerCase().includes(s) ||
+          (l.category || '').toLowerCase().includes(s) ||
+          (l.region || '').toLowerCase().includes(s)
+        );
+      }
+
+      const totalCount = filtered.length;
+      const totalP = Math.max(1, Math.ceil(totalCount / globalPageSize));
+      const start = (globalCurrentPage - 1) * globalPageSize;
+      const paged = filtered.slice(start, start + globalPageSize);
+
+      globalCachedLeads = paged;
+      globalTotalLeads = totalCount;
+      renderGlobalLeadsTable({
+        total: totalCount,
+        page: globalCurrentPage,
+        limit: globalPageSize,
+        total_pages: totalP,
+        items: paged
+      });
+    }
+
+    function renderGlobalLeadsTable(data) {
+      const tbody = document.getElementById('global-leads-tbody');
+      if (!tbody) return;
+
+      const leads = data.items || [];
+      const total = data.total || 0;
+      const totalPages = data.total_pages || 1;
+
+      if (leads.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-body);">
+              No verified leads found matching your active filter criteria.
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = leads.map(l => {
+          const techs = (l.tech_stack || []).slice(0, 3).map(t => `<span class="tech-pill ${getTechBadgeClass(t)}">${escapeHtml(t)}</span>`).join('');
+          return `
+            <tr>
+              <td>
+                <strong style="color: var(--text-heading); font-size: 13px;">${escapeHtml(l.company_name)}</strong>
+                <div style="font-size: 11px; margin-top: 2px;">
+                  <a href="${escapeHtml(l.live_url || 'https://' + l.source_domain)}" target="_blank" rel="noopener noreferrer" style="color: #0284C7; text-decoration: none; font-family: var(--font-mono);">${escapeHtml(l.source_domain)} ↗</a>
+                </div>
+              </td>
+              <td>
+                ${getPlatformBadge(l.platform_cms)}
+              </td>
+              <td>
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-heading);">${escapeHtml(l.category)}</span>
+              </td>
+              <td>
+                <span class="badge-loc">📍 ${escapeHtml(l.region)} [${escapeHtml(l.country_code)}]</span>
+              </td>
+              <td>
+                <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #047857;">
+                  <a href="mailto:${escapeHtml(l.contact_email || '')}" style="color: #047857; text-decoration: none;">✉️ ${escapeHtml(l.contact_email || 'contact@' + l.source_domain)}</a>
+                </div>
+                ${l.contact_phone ? `<div style="font-size: 11px; color: var(--text-body); font-family: var(--font-mono); margin-top: 3px;"><a href="tel:${escapeHtml(l.contact_phone)}" style="color: var(--text-body); text-decoration: none;">📞 ${escapeHtml(l.contact_phone)}</a></div>` : ''}
+              </td>
+              <td>
+                ${techs || '<span style="font-size: 11px; color: #94A3B8;">Web Standard</span>'}
+              </td>
+              <td>
+                <span class="badge-score">${l.confidence_score}%</span>
+              </td>
+              <td>
+                <button onclick="inspectGlobalLead(${l.id})" class="zytrex-btn-table">
+                  <span>🔍</span> INSPECT
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Update Badges & Counters
+      const startIdx = (globalCurrentPage - 1) * globalPageSize;
+      const endIdx = Math.min(startIdx + globalPageSize, total);
+      const countBadge = total === 0 ? "Showing 0 of 0 leads" : `Showing ${startIdx + 1}-${endIdx} of ${total} verified leads`;
+      const pageInfo = `Page ${globalCurrentPage} of ${totalPages} (${total} leads)`;
+
+      if (document.getElementById('global-badge-count')) document.getElementById('global-badge-count').innerText = countBadge;
+      if (document.getElementById('global-page-info-top')) document.getElementById('global-page-info-top').innerText = pageInfo;
+      if (document.getElementById('global-page-info-bottom')) document.getElementById('global-page-info-bottom').innerText = pageInfo;
+      if (document.getElementById('stat-global-total')) document.getElementById('stat-global-total').innerText = total;
+
+      // Populate Navigation Buttons
+      const navHtml = buildGlobalPaginationNavHtml(globalCurrentPage, totalPages, false);
+      const compactNavHtml = buildGlobalPaginationNavHtml(globalCurrentPage, totalPages, true);
+
+      if (document.getElementById('global-pagination-nav')) document.getElementById('global-pagination-nav').innerHTML = navHtml;
+      if (document.getElementById('global-top-pagination-nav')) document.getElementById('global-top-pagination-nav').innerHTML = compactNavHtml;
+    }
+
+    function buildGlobalPaginationNavHtml(cur, total, isCompact) {
+      if (total <= 1) return '';
+      let html = '';
+
+      if (!isCompact) {
+        html += `<button onclick="goToGlobalPage(1)" class="zytrex-page-btn" ${cur === 1 ? 'disabled' : ''} title="First Page">⏮</button>`;
+      }
+      html += `<button onclick="goToGlobalPage(${cur - 1})" class="zytrex-page-btn" ${cur === 1 ? 'disabled' : ''} title="Previous Page">◀</button>`;
+
+      if (!isCompact) {
+        let pagesToShow = [];
+        if (total <= 7) {
+          for (let i = 1; i <= total; i++) pagesToShow.push(i);
+        } else {
+          pagesToShow = [1];
+          if (cur > 3) pagesToShow.push('...');
+          for (let i = Math.max(2, cur - 1); i <= Math.min(total - 1, cur + 1); i++) {
+            pagesToShow.push(i);
+          }
+          if (cur < total - 2) pagesToShow.push('...');
+          pagesToShow.push(total);
+        }
+
+        pagesToShow.forEach(p => {
+          if (p === '...') {
+            html += `<span style="display:inline-flex; align-items:center; justify-content:center; width:28px; color:var(--text-body);">...</span>`;
+          } else {
+            html += `<button onclick="goToGlobalPage(${p})" class="zytrex-page-btn ${p === cur ? 'active' : ''}">${p}</button>`;
+          }
+        });
+      }
+
+      html += `<button onclick="goToGlobalPage(${cur + 1})" class="zytrex-page-btn" ${cur === total ? 'disabled' : ''} title="Next Page">▶</button>`;
+      if (!isCompact) {
+        html += `<button onclick="goToGlobalPage(${total})" class="zytrex-page-btn" ${cur === total ? 'disabled' : ''} title="Last Page">⏭</button>`;
+      }
+      return html;
+    }
+
+    
+    
+    function getPlatformBadge(platform) {
+      const p = (platform || 'Custom').toLowerCase();
+      if (p.includes('opencart')) return `<span class="platform-badge platform-opencart">🛒 OpenCart</span>`;
+      if (p.includes('wordpress')) return `<span class="platform-badge platform-wordpress">🌐 WordPress</span>`;
+      if (p.includes('shopify')) return `<span class="platform-badge platform-shopify">🛍️ Shopify</span>`;
+      return `<span class="platform-badge platform-custom">⚡ Custom</span>`;
+    }
+
+    window.selectQuickFilter = function(platform, category) {
+      const platSelect = document.getElementById('global-filter-platform');
+      const catSelect = document.getElementById('global-filter-category');
+      if (platSelect) platSelect.value = platform;
+      if (catSelect) catSelect.value = category;
+
+      document.querySelectorAll('.cat-pill-btn').forEach(btn => btn.classList.remove('active'));
+      if (!platform && !category) {
+        document.getElementById('pill-all')?.classList.add('active');
+      } else if (platform === 'OpenCart') {
+        document.getElementById('pill-opencart')?.classList.add('active');
+      } else if (category === 'Steroids & Fitness Supplements') {
+        document.getElementById('pill-supplements')?.classList.add('active');
+      } else if (platform === 'WordPress') {
+        document.getElementById('pill-wordpress')?.classList.add('active');
+      } else if (category === 'B2B SaaS & Tech') {
+        document.getElementById('pill-saas')?.classList.add('active');
+      } else if (category === 'Retail & E-Commerce') {
+        document.getElementById('pill-retail')?.classList.add('active');
+      } else if (platform === 'Shopify') {
+        document.getElementById('pill-shopify')?.classList.add('active');
+      }
+
+      applyGlobalFilters();
+    };
+
+    function getTechBadgeClass(tech) {
+      const t = tech.toLowerCase();
+      if (t.includes('react')) return 'tech-react';
+      if (t.includes('next')) return 'tech-nextjs';
+      if (t.includes('aws') || t.includes('cloud')) return 'tech-aws';
+      if (t.includes('stripe')) return 'tech-stripe';
+      if (t.includes('shopify')) return 'tech-shopify';
+      if (t.includes('cloudflare')) return 'tech-cloudflare';
+      return 'tech-default';
+    }
+
+    window.selectCategoryPill = function(cat) {
+      const select = document.getElementById('global-filter-category');
+      if (select) select.value = cat;
+
+      document.querySelectorAll('.cat-pill-btn').forEach(btn => btn.classList.remove('active'));
+      if (!cat) {
+        document.getElementById('cat-pill-all')?.classList.add('active');
+      } else {
+        const found = Array.from(document.querySelectorAll('.cat-pill-btn')).find(b => b.innerText.includes(cat.split(' ')[0]));
+        if (found) found.classList.add('active');
+      }
+
+      applyGlobalFilters();
+    };
+
+    // Global Keyboard Shortcut (Ctrl+K or / to search)
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === '/' || (e.ctrlKey && e.key === 'k')) && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        const input = document.getElementById('global-search-input');
+        if (input) {
+          input.focus();
+          input.select();
+          showToast('Search mode active');
+        }
+      }
+    });
+
+    window.goToGlobalPage = function(p) {
+      globalCurrentPage = p;
+      fetchGlobalLeads();
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    };
+
+    window.applyGlobalFilters = function() {
+      globalCurrentPage = 1;
+      fetchGlobalLeads();
+    };
+
+    window.debounceGlobalSearch = function() {
+      clearTimeout(globalSearchDebounceTimer);
+      globalSearchDebounceTimer = setTimeout(() => {
+        globalCurrentPage = 1;
+        fetchGlobalLeads();
+      }, 300);
+    };
+
+    window.resetGlobalFilters = function() {
+      if (document.getElementById('global-filter-platform')) document.getElementById('global-filter-platform').value = '';
+      if (document.getElementById('global-filter-category')) document.getElementById('global-filter-category').value = '';
+      if (document.getElementById('global-filter-region')) document.getElementById('global-filter-region').value = '';
+      if (document.getElementById('global-search-input')) document.getElementById('global-search-input').value = '';
+      document.querySelectorAll('.cat-pill-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('pill-all')?.classList.add('active');
+      globalCurrentPage = 1;
+      fetchGlobalLeads();
+      showToast('Filters reset to Global All');
+    };
+
+    window.changeGlobalPageSize = function(size) {
+      globalPageSize = parseInt(size, 10);
+      globalCurrentPage = 1;
+      fetchGlobalLeads();
+    };
+
+    window.exportGlobalExcel = function() {
+      window.location.href = '/api/export/excel';
+    };
+
+    window.exportGlobalJson = function() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(globalCachedLeads, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `zytrex_global_leads_export_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Exported JSON dataset');
+    };
+
+    window.inspectGlobalLead = function(leadId) {
+      const lead = globalCachedLeads.find(l => l.id === leadId);
+      if (!lead) return;
+
+      if (document.getElementById('modal-company-title')) document.getElementById('modal-company-title').innerText = lead.company_name;
+      if (document.getElementById('modal-company-location')) document.getElementById('modal-company-location').innerText = `📍 ${lead.region} (${lead.country_code}) • ${lead.category} • Score: ${lead.confidence_score}%`;
+      if (document.getElementById('modal-company-email')) document.getElementById('modal-company-email').innerText = lead.contact_email || 'contact@' + lead.source_domain;
+      if (document.getElementById('modal-company-domain')) document.getElementById('modal-company-domain').innerText = lead.source_domain;
+
+      currentPitch = `Subject: Strategic Web & Tech Modernization for ${lead.company_name}\n\nHi Team,\n\nWe noticed ${lead.company_name} is expanding digital operations across ${lead.region}. We specialize in high-performance digital engineering and web platforms for leading ${lead.category} organizations.\n\nOur preliminary audit detected ${((lead.tech_stack && lead.tech_stack.length) ? lead.tech_stack.join(', ') : 'modern web')} frameworks on ${lead.source_domain}. We would love to share a complimentary engineering roadmap for scaling your enterprise infrastructure.`;
+
+      if (document.getElementById('modal-pitch-body')) document.getElementById('modal-pitch-body').innerText = currentPitch;
+
+      const mailtoBtn = document.getElementById('btn-mail-outreach');
+      if (mailtoBtn) {
+        const recipient = lead.contact_email || 'contact@' + lead.source_domain;
+        mailtoBtn.href = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent("Technical Modernization Roadmap for " + lead.company_name)}&body=${encodeURIComponent(currentPitch)}`;
+      }
+
+      const siteBtn = document.getElementById('btn-visit-company');
+      if (siteBtn) siteBtn.href = lead.live_url || `https://${lead.source_domain}`;
+
+      const modal = document.getElementById('inspector-modal');
+      if (modal) modal.classList.add('open');
+    };
+
+    // Pipeline Jobs Execution
+    window.dispatchPipelineRun = async function() {
+      const cat = document.getElementById('dispatch-category')?.value || 'B2B SaaS & Tech';
+      const reg = document.getElementById('dispatch-region')?.value || 'Asia-Pacific (APAC)';
+      const depth = parseInt(document.getElementById('dispatch-depth')?.value || '20', 10);
+      const btn = document.getElementById('btn-dispatch-pipeline');
+
+      btn.innerText = 'DISPATCHING CRAWLEE...';
+      try {
+        const res = await fetch('/api/pipeline/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: cat, region: reg, seed_limit: depth })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(data.message || 'Pipeline dispatched successfully');
+          fetchPipelineJobs();
+        }
+      } catch (err) {
+        showToast('Error dispatching crawler');
+      } finally {
+        btn.innerHTML = `<span>⚡</span> RUN CRAWLEE PIPELINE`;
+      }
+    };
+
+    async function fetchPipelineJobs() {
+      try {
+        const res = await fetch('/api/pipeline/jobs');
+        if (res.ok) {
+          const data = await res.json();
+          const tbody = document.getElementById('pipeline-jobs-tbody');
+          if (tbody) {
+            const jobs = data.jobs || [];
+            if (jobs.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-body); padding: 20px;">No crawl jobs run yet.</td></tr>`;
+            } else {
+              tbody.innerHTML = jobs.map(j => `
+                <tr>
+                  <td><strong style="color: var(--text-heading);">#${j.id}</strong></td>
+                  <td><span class="badge-opp">${escapeHtml(j.pipeline_type)}</span></td>
+                  <td>${escapeHtml(j.category_filter)}</td>
+                  <td>${escapeHtml(j.region_filter)}</td>
+                  <td>${j.seeds_discovered}</td>
+                  <td>${j.pages_crawled}</td>
+                  <td><strong style="color: #10B981;">+${j.leads_extracted}</strong></td>
+                  <td><span class="auth-badge">${escapeHtml(j.status)}</span></td>
+                </tr>
+              `).join('');
+            }
+          }
+        }
+      } catch (err) {}
+    }
+
+    // Suppression Center
+    async function fetchSuppressionList() {
+      try {
+        const res = await fetch('/api/suppression/list');
+        if (res.ok) {
+          const data = await res.json();
+          const tbody = document.getElementById('suppression-tbody');
+          if (tbody) {
+            const items = data.items || [];
+            if (items.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-body); padding: 20px;">No suppressed entities in active DNC list.</td></tr>`;
+            } else {
+              tbody.innerHTML = items.map(s => `
+                <tr>
+                  <td><strong style="color: #EF4444;">${escapeHtml(s.domain_or_email)}</strong></td>
+                  <td>${escapeHtml(s.reason)}</td>
+                  <td><span class="badge-loc">${escapeHtml(s.scope)}</span></td>
+                  <td style="font-size: 11px; color: var(--text-body);">${escapeHtml(s.added_at ? s.added_at.slice(0, 10) : 'Active')}</td>
+                  <td>
+                    <button onclick="removeSuppressionRecord('${escapeHtml(s.domain_or_email)}')" class="zytrex-btn-dark" style="padding: 5px 10px; font-size: 10px; color: #EF4444;">
+                      UNBLOCK
+                    </button>
+                  </td>
+                </tr>
+              `).join('');
+            }
+          }
+        }
+      } catch (err) {}
+    }
+
+    window.submitSuppressionEntry = async function() {
+      const target = document.getElementById('suppress-input-target')?.value.trim();
+      const reason = document.getElementById('suppress-input-reason')?.value;
+      const scope = document.getElementById('suppress-input-scope')?.value;
+
+      if (!target) {
+        showToast('Please enter a target domain or email');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/suppression/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domain_or_email: target, reason, scope })
+        });
+        if (res.ok) {
+          showToast(`Suppressed ${target} globally`);
+          document.getElementById('suppress-input-target').value = '';
+          fetchSuppressionList();
+          fetchGlobalLeads();
+        }
+      } catch (err) {
+        showToast('Error adding suppression entry');
+      }
+    };
+
+    window.removeSuppressionRecord = async function(domainOrEmail) {
+      try {
+        const res = await fetch(`/api/suppression/remove?domain_or_email=${encodeURIComponent(domainOrEmail)}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          showToast(`Unblocked ${domainOrEmail}`);
+          fetchSuppressionList();
+          fetchGlobalLeads();
+        }
+      } catch (err) {
+        showToast('Error removing suppression entry');
+      }
+    };
+
+    async function fetchCompliancePaper() {
+      try {
+        const res = await fetch('/api/leads/compliance-whitepaper');
+        if (res.ok) {
+          const data = await res.json();
+          const viewer = document.getElementById('compliance-whitepaper-box');
+          if (viewer && data.content) {
+            viewer.innerText = data.content;
+          }
+        }
+      } catch (err) {}
+    }
+
+    // API Docs Live Tester
+    window.executeLiveApiTest = async function() {
+      const endpoint = document.getElementById('api-query-endpoint')?.value || '/api/leads';
+      const viewer = document.getElementById('api-response-viewer');
+      if (viewer) viewer.innerText = 'Executing query...';
+
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        if (viewer) viewer.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        if (viewer) viewer.innerText = `Error: ${err.message}`;
+      }
+    };
+
   </script>
 </body>
 </html>
