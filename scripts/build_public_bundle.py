@@ -6,7 +6,7 @@ from src.database.db import init_db, get_db_session, GlobalLeadRepository
 
 init_db()
 with get_db_session() as session:
-    leads, total = GlobalLeadRepository.get_leads(session, skip=0, limit=500)
+    leads, total = GlobalLeadRepository.get_leads(session, skip=0, limit=3000)
     dataset = [l.to_dict() for l in leads]
     print(f"Loaded {len(dataset)} leads from database.")
 
