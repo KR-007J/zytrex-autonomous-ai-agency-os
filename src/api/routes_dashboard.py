@@ -66,22 +66,30 @@ def get_dashboard_analytics():
         activity_stream = [e.to_dict() for e in recent_events]
         if not activity_stream:
             # Fallback to recent audit logs or recent leads
-            recent_leads = session.query(Lead).order_by(desc(Lead.updated_at)).limit(8).all()
+            recent_leads = session.query(Lead).order_by(desc(Lead.last_verified_at)).limit(8).all()
             for rl in recent_leads:
                 activity_stream.append({
                     "event_type": "lead.verified",
                     "lead_domain": rl.domain,
                     "details": {"technology": rl.primary_technology, "score": rl.lead_score},
-                    "created_at": rl.updated_at.isoformat() if rl.updated_at else None,
+                    "created_at": rl.last_verified_at.isoformat() if rl.last_verified_at else None,
                 })
 
-        # Providers Health
+        # Registered Discovery Providers
+        from src.discovery.orchestrator import orchestrator
         providers = [
-            {"id": "crtsh", "name": "crt.sh Transparency Log", "status": "healthy", "latency_ms": 142, "type": "SSL/SAN Certificate Probe"},
-            {"id": "seeds", "name": "Verified Seed Registry", "status": "healthy", "latency_ms": 12, "type": "Live UK/US Commercial Seeds"},
-            {"id": "cc", "name": "Common Crawl Index", "status": "healthy", "latency_ms": 285, "type": "CC-MAIN Open Graph API"},
-            {"id": "doh", "name": "DoH DNS Resolver", "status": "healthy", "latency_ms": 34, "type": "Cloudflare & Google DoH RFC 8484"},
-            {"id": "sitemap", "name": "Sitemap XML Harvester", "status": "healthy", "latency_ms": 68, "type": "Autonomous XML Entity Parser"},
+            {
+                "id": p.name.lower().replace(" ", "_").replace(".", "_"),
+                "name": p.name,
+                "status": "active",
+                "type": p.__class__.__name__,
+            }
+            for p in orchestrator.providers
+        ]
+
+        recent_leads = [
+            l.to_dict()
+            for l in session.query(Lead).order_by(desc(Lead.last_verified_at)).limit(10).all()
         ]
 
         return {
@@ -100,4 +108,5 @@ def get_dashboard_analytics():
             "score_distribution": score_distribution,
             "activity_stream": activity_stream,
             "providers": providers,
+            "recent_leads": recent_leads,
         }

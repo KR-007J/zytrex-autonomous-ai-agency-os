@@ -421,8 +421,10 @@ def test_projects_and_lead_lists_workflow():
     assert leads_res.status_code == 200
     assert leads_res.json()["total"] >= 1
 
-    # 5. Cleanup List & Project
+    # 5. Cleanup List, Lead & Project
     assert client.delete(f"/api/v1/lists/{list_id}").status_code == 200
+    with get_db() as session:
+        session.query(Lead).filter(Lead.id == target_lead_id).delete()
     assert client.delete(f"/api/v1/projects/{project_id}").status_code == 200
 
 

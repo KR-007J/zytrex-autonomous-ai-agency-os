@@ -388,87 +388,86 @@ async function loadDashboardAnalytics() {
 
     // Summary numbers
     const s = data.summary;
-    document.getElementById("dash-stat-total").innerText = s.total_leads.toLocaleString();
-    document.getElementById("dash-stat-live").innerText = s.live_leads.toLocaleString();
-    document.getElementById("dash-stat-hot").innerText = s.hot_leads.toLocaleString();
-    document.getElementById("dash-stat-email").innerText = s.leads_with_email.toLocaleString();
-    document.getElementById("dash-stat-avg-score").innerText = `${s.average_score}%`;
-    document.getElementById("dash-stat-avg-lat").innerText = `${Math.round(s.average_latency_ms)}ms`;
+    const totalEl = document.getElementById("dash-stat-total");
+    if (totalEl) totalEl.innerText = s.total_leads.toLocaleString();
+    const liveEl = document.getElementById("dash-stat-live");
+    if (liveEl) liveEl.innerText = s.live_leads.toLocaleString();
+    const emailEl = document.getElementById("dash-stat-email");
+    if (emailEl) emailEl.innerText = s.leads_with_email.toLocaleString();
 
     const sideLeadsCount = document.getElementById("sidebar-leads-count");
     if (sideLeadsCount) sideLeadsCount.innerText = s.total_leads.toLocaleString();
 
-    // Score tiers
-    const sc = data.score_distribution;
-    document.getElementById("tier-count-90-100").innerText = sc["90_100"] || 0;
-    document.getElementById("tier-count-80-89").innerText = sc["80_89"] || 0;
-    document.getElementById("tier-count-60-79").innerText = sc["60_79"] || 0;
-    document.getElementById("tier-count-below-60").innerText = sc["below_60"] || 0;
+    // Render Recent Genuine Verified Leads Table
+    const recentTable = document.getElementById("dash-recent-leads-tbody");
+    if (recentTable) {
+      if (data.recent_leads && data.recent_leads.length > 0) {
+        recentTable.innerHTML = data.recent_leads.map(l => {
+          const techName = l.primary_technology || "Standard Web";
+          const sslBadge = l.has_ssl
+            ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">SSL Valid</span>`
+            : `<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-neutral-200 dark:bg-neutral-800 text-neutral-500">No SSL</span>`;
+          const httpBadge = (l.http_status === 200 || l.status === "LIVE")
+            ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">HTTP 200</span>`
+            : `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400">${l.http_status || 'Live'}</span>`;
+          const emailDisplay = l.primary_email
+            ? `<a href="mailto:${escapeHtml(l.primary_email)}" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-mono text-[11px]"><i data-lucide="mail" class="w-3 h-3"></i>${escapeHtml(l.primary_email)}</a>`
+            : `<span class="text-neutral-400 text-[11px]">—</span>`;
 
-    // Tech distribution bars
-    const techContainer = document.getElementById("dash-tech-bars");
-    if (techContainer && data.technologies) {
-      const maxCount = Math.max(...data.technologies.map(t => t.count), 1);
-      techContainer.innerHTML = data.technologies.map(t => {
-        const pct = Math.round((t.count / maxCount) * 100);
-        return `
-          <div>
-            <div class="flex justify-between text-xs font-semibold mb-1">
-              <span class="text-neutral-800 dark:text-neutral-200">${escapeHtml(t.name)}</span>
-              <span class="font-mono text-neutral-500">${t.count} stores</span>
-            </div>
-            <div class="w-full bg-neutral-100 dark:bg-neutral-800 rounded-full h-2 overflow-hidden">
-              <div class="bg-[#ef4d23] h-2 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
-            </div>
-          </div>
+          return `
+            <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
+              <td class="py-3 px-4">
+                <div class="font-bold text-neutral-900 dark:text-white">${escapeHtml(l.business_name || l.domain)}</div>
+                <a href="${escapeHtml(l.canonical_url || 'https://' + l.domain)}" target="_blank" class="text-neutral-400 hover:text-[#ef4d23] text-[11px] font-mono flex items-center gap-1">
+                  <span>${escapeHtml(l.domain)}</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </td>
+              <td class="py-3 px-3">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold text-[11px] bg-orange-100 dark:bg-orange-950/80 text-[#ef4d23] border border-orange-200/80 dark:border-orange-800/40">
+                  <i data-lucide="tag" class="w-3 h-3"></i>
+                  <span>${escapeHtml(techName)}</span>
+                </span>
+              </td>
+              <td class="py-3 px-3">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  ${httpBadge}
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400">DNS OK</span>
+                  ${sslBadge}
+                </div>
+              </td>
+              <td class="py-3 px-3">${emailDisplay}</td>
+              <td class="py-3 px-3 text-neutral-500 dark:text-neutral-400 font-medium">${escapeHtml(l.country || 'United Kingdom')}</td>
+              <td class="py-3 px-4 text-right">
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="openLeadDossier(${l.id})" class="bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-[11px] font-bold px-2.5 py-1 rounded-lg transition inline-flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="file-text" class="w-3 h-3 text-[#ef4d23]"></i>
+                    <span>Dossier</span>
+                  </button>
+                  <button onclick="reverifyLeadInline(${l.id}, this)" class="bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 text-[11px] font-semibold px-2 py-1 rounded-lg transition inline-flex items-center gap-1 cursor-pointer" title="Re-verify HTTP & DNS">
+                    <i data-lucide="refresh-cw" class="w-3 h-3 text-neutral-400"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      } else {
+        recentTable.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-12 text-neutral-400">
+              <div class="max-w-sm mx-auto space-y-2">
+                <i data-lucide="search" class="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto"></i>
+                <div class="font-medium text-neutral-700 dark:text-neutral-300 text-sm">No verified leads yet</div>
+                <p class="text-xs text-neutral-400">Use the search box above to discover and verify your first technology leads.</p>
+              </div>
+            </td>
+          </tr>
         `;
-      }).join("");
+      }
     }
 
-    // Geographic distribution
-    const geoContainer = document.getElementById("dash-geo-list");
-    if (geoContainer && data.geography) {
-      geoContainer.innerHTML = data.geography.map(g => `
-        <div class="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800/60 text-xs">
-          <span class="font-medium text-neutral-800 dark:text-neutral-200">${escapeHtml(g.country)}</span>
-          <span class="font-mono font-bold text-neutral-600 dark:text-neutral-400">${g.count}</span>
-        </div>
-      `).join("");
-    }
-
-    // Live Event Stream Feed
-    const feedContainer = document.getElementById("dash-stream-feed");
-    if (feedContainer && data.activity_stream && data.activity_stream.length) {
-      feedContainer.innerHTML = data.activity_stream.map(ev => {
-        const ts = ev.created_at ? new Date(ev.created_at).toLocaleTimeString() : "--:--";
-        return `
-          <div class="text-neutral-300">
-            <span class="text-neutral-500">[${ts}]</span>
-            <span class="text-emerald-400 font-bold">${escapeHtml(ev.event_type || 'lead.verified')}</span>:
-            <span class="text-white">${escapeHtml(ev.lead_domain || 'store')}</span>
-            ${ev.details ? `<span class="text-neutral-400">(${escapeHtml(JSON.stringify(ev.details))})</span>` : ''}
-          </div>
-        `;
-      }).join("");
-    }
-
-    // 5 Discovery Providers
-    const provContainer = document.getElementById("dash-providers-grid");
-    if (provContainer && data.providers) {
-      provContainer.innerHTML = data.providers.map(p => `
-        <div class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/80 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">${p.latency_ms}ms</span>
-            </div>
-            <strong class="text-xs text-neutral-900 dark:text-white block truncate">${escapeHtml(p.name)}</strong>
-            <span class="text-[10px] text-neutral-400 block mt-0.5 leading-tight">${escapeHtml(p.type)}</span>
-          </div>
-          <span class="text-[9px] font-mono font-bold text-emerald-700 dark:text-emerald-300 mt-2 bg-emerald-100 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded self-start">OPERATIONAL</span>
-        </div>
-      `).join("");
-    }
+    if (window.lucide) lucide.createIcons();
 
   } catch (err) {
     console.error("Dashboard error:", err);
@@ -476,6 +475,63 @@ async function loadDashboardAnalytics() {
     if (icon) icon.classList.remove("animate-spin");
   }
 }
+
+// Hero Search Controls
+function setHeroSearch(tech, country) {
+  const techSelect = document.getElementById("hero-tech-select");
+  const geoInput = document.getElementById("hero-geo-input");
+  if (techSelect) techSelect.value = tech;
+  if (geoInput) geoInput.value = country;
+  executeHeroSearch();
+}
+
+async function executeHeroSearch() {
+  const techSelect = document.getElementById("hero-tech-select");
+  const geoInput = document.getElementById("hero-geo-input");
+  const tech = techSelect ? techSelect.value : "OpenCart";
+  const geo = geoInput ? geoInput.value.trim() : "United Kingdom";
+
+  // Switch to discover view
+  navigateRoute(null, "discover");
+
+  // Populate discovery form inputs
+  const discTech = document.getElementById("disc-tech-select");
+  const discCountry = document.getElementById("disc-country-input");
+  if (discTech) discTech.value = tech;
+  if (discCountry) discCountry.value = geo;
+
+  // Execute discovery automatically
+  executeDiscovery(new Event("submit"));
+}
+
+// Inline Re-verify Lead
+async function reverifyLeadInline(leadId, btn) {
+  if (!btn) return;
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin text-[#ef4d23]"></i>`;
+  if (window.lucide) lucide.createIcons();
+
+  try {
+    const res = await fetch(`/api/v1/leads/${leadId}/refresh`, { method: "POST" });
+    if (!res.ok) throw new Error("Re-verification failed");
+    btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-500"></i>`;
+    if (window.lucide) lucide.createIcons();
+    setTimeout(() => {
+      loadDashboardAnalytics();
+      loadLeadsTable();
+    }, 500);
+  } catch (err) {
+    btn.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3 text-red-500"></i>`;
+    if (window.lucide) lucide.createIcons();
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+      if (window.lucide) lucide.createIcons();
+    }, 2000);
+  }
+}
+
 
 function refreshDashboardAnalytics() {
   loadDashboardAnalytics();
