@@ -1,0 +1,22 @@
+id: magento
+name: Magento
+category: E-Commerce
+description: Flexible, enterprise open-source e-commerce platform by Adobe.
+website: https://business.adobe.com/products/magento/magento-commerce.html
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'mage/cookies'
+      weight: 0.35
+      evidence: "Magento frontend cookie library"
+    - pattern: 'static/frontend/'
+      weight: 0.40
+      evidence: "Static theme path 'static/frontend/'"
+    - pattern: 'text/x-magento-init'
+      weight: 0.50
+      evidence: "Script type 'text/x-magento-init'"
+  cookies:
+    - pattern: '^frontend'
+      weight: 0.20
+      evidence: "Session cookie 'frontend'"

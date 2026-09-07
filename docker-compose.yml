@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  leadforge:
+    build: .
+    container_name: leadforge-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:///./data/leadforge.db
+      - CRAWLER_TIMEOUT=12.0
+      - CRAWLER_CONCURRENCY=10
+    volumes:
+      - leadforge_data:/app/data
+
+volumes:
+  leadforge_data:

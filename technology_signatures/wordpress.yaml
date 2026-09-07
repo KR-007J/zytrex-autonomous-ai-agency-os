@@ -1,0 +1,25 @@
+id: wordpress
+name: WordPress
+category: CMS
+description: Ubiquitous open-source content management system.
+website: https://wordpress.org
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'wp-content/'
+      weight: 0.45
+      evidence: "WordPress content directory wp-content/"
+    - pattern: 'wp-includes/'
+      weight: 0.40
+      evidence: "WordPress core directory wp-includes/"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)wordpress'
+      weight: 0.50
+      evidence: "Meta generator WordPress"
+  headers:
+    - name: 'X-Pingback'
+      pattern: 'xmlrpc\.php'
+      weight: 0.40
+      evidence: "Header X-Pingback pointing to xmlrpc.php"

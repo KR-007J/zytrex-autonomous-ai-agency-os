@@ -1,78 +1,46 @@
-"""Integration tests for FastAPI REST API endpoints."""
-
-import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
+from src.api.app import app
+from src.database.db import get_db, init_db
+from src.database.repository import LeadRepository
 
-from src.database.models import Base
-from src.database.db import get_db
-from src.api.main import app
-
-# In-memory test engine with StaticPool
-test_engine = create_engine(
-    "sqlite:///:memory:",
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-Base.metadata.create_all(bind=test_engine)
-
-
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
+def setup_module():
+    init_db()
 
 def test_api_health():
-    res = client.get("/api/health")
+    res = client.get("/api/v1/health")
     assert res.status_code == 200
     data = res.json()
     assert data["status"] == "healthy"
+    assert data["zero_cost_mode"] is True
 
+def test_api_technologies():
+    res = client.get("/api/v1/technologies")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) >= 5
+    tech_names = [t["name"] for t in data]
+    assert "OpenCart" in tech_names
+    assert "Shopify" in tech_names
+    assert "WooCommerce" in tech_names
 
-def test_api_lead_crud_and_export():
-    # 1. Create Lead
-    payload = {
-        "company_name": "Anthropic AI",
-        "contact_name": "Dario Amodei",
-        "email": "dario@anthropic.com",
-        "phone": "+1-415-555-0100",
-        "source_url": "https://anthropic.com",
-        "industry_tag": "AI Safety & Research",
-    }
-    create_res = client.post("/api/leads", json=payload)
-    assert create_res.status_code == 201
-    lead_id = create_res.json()["lead"]["id"]
+def test_api_keys_workflow():
+    # 1. Create key
+    res = client.post("/api/v1/api-keys", json={"name": "CI Test Key"})
+    assert res.status_code == 200
+    data = res.json()
+    assert "api_key" in data
+    assert data["api_key"].startswith("lf_")
+    key_id = data["id"]
 
-    # 2. Get Lead by ID
-    get_res = client.get(f"/api/leads/{lead_id}")
-    assert get_res.status_code == 200
-    assert get_res.json()["company_name"] == "Anthropic AI"
+    # 2. List keys
+    res = client.get("/api/v1/api-keys")
+    assert res.status_code == 200
+    keys = res.json()
+    assert any(k["id"] == key_id for k in keys)
 
-    # 3. List Leads
-    list_res = client.get("/api/leads?search=Anthropic")
-    assert list_res.status_code == 200
-    assert len(list_res.json()["items"]) >= 1
-
-    # 4. CSV Export
-    csv_res = client.get("/api/leads/export/csv")
-    assert csv_res.status_code == 200
-    assert "text/csv" in csv_res.headers["content-type"]
-    assert "Anthropic AI" in csv_res.text
-
-
-def test_api_config_endpoints():
-    get_cfg = client.get("/api/config")
-    assert get_cfg.status_code == 200
-    cfg_data = get_cfg.json()
-    assert "scraping" in cfg_data
-    assert "linkedin" in cfg_data
+    # 3. Revoke key
+    res = client.delete(f"/api/v1/api-keys/{key_id}")
+    assert res.status_code == 200
+    assert res.json()["status"] == "REVOKED"

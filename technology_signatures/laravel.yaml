@@ -1,0 +1,20 @@
+id: laravel
+name: Laravel
+category: Web Framework
+description: Expressive, elegant PHP web application framework.
+website: https://laravel.com
+confidence_threshold: 0.70
+
+patterns:
+  cookies:
+    - pattern: 'laravel_session'
+      weight: 0.50
+      evidence: "Session cookie 'laravel_session'"
+    - pattern: 'XSRF-TOKEN'
+      weight: 0.25
+      evidence: "CSRF token cookie 'XSRF-TOKEN'"
+  headers:
+    - name: 'Set-Cookie'
+      pattern: 'laravel_session'
+      weight: 0.45
+      evidence: "Set-Cookie laravel_session header"

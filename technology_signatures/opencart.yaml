@@ -1,0 +1,42 @@
+id: opencart
+name: OpenCart
+category: E-Commerce
+description: Open-source PHP-based online store management system.
+website: https://www.opencart.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'index.php?route='
+      weight: 0.35
+      evidence: "URL route pattern 'index.php?route='"
+    - pattern: 'catalog/view/theme/'
+      weight: 0.40
+      evidence: "Theme asset path 'catalog/view/theme/'"
+    - pattern: 'catalog/view/javascript/'
+      weight: 0.35
+      evidence: "Javascript asset path 'catalog/view/javascript/'"
+    - pattern: 'common/home'
+      weight: 0.20
+      evidence: "OpenCart home route marker"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)opencart'
+      weight: 0.50
+      evidence: "Meta generator tag 'OpenCart'"
+  cookies:
+    - pattern: '^OCSESSID'
+      weight: 0.45
+      evidence: "Session cookie 'OCSESSID'"
+    - pattern: '^currency'
+      weight: 0.15
+      evidence: "Currency selector cookie"
+  headers:
+    - name: 'X-Powered-By'
+      pattern: '(?i)opencart'
+      weight: 0.50
+      evidence: "Header X-Powered-By OpenCart"
+  scripts:
+    - pattern: 'catalog/view/javascript/common\.js'
+      weight: 0.45
+      evidence: "Script reference 'common.js'"

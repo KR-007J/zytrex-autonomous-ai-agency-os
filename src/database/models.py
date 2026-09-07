@@ -1,261 +1,186 @@
-"""SQLAlchemy ORM Models for Lead Generation & Outreach Agent."""
+"""SQLAlchemy database models for LeadForge."""
 
 from __future__ import annotations
-from datetime import datetime, timezone
-from typing import Optional, List, Dict, Any
 import json
-
+from datetime import datetime, timezone
+from typing import Dict, Any, List, Optional
 from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Text,
-    DateTime,
-    ForeignKey,
-    Index,
-    Boolean,
-    Float,
+    Column, Integer, String, Float, Boolean, DateTime, Text, ForeignKey, Index
 )
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 
-def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
-
-
 class Lead(Base):
     __tablename__ = "leads"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    company_name = Column(String(255), nullable=False, index=True)
-    contact_name = Column(String(255), nullable=True)
-    email = Column(String(255), nullable=True, index=True)
-    phone = Column(String(100), nullable=True)
-    source_url = Column(String(1024), nullable=True)
-    source_domain = Column(String(255), nullable=True, index=True)
-    industry_tag = Column(String(100), nullable=True, index=True)
-    location = Column(String(255), nullable=True)
-    linkedin_url = Column(String(1024), nullable=True)
-    lead_score = Column(Integer, default=0)
-    status = Column(String(50), default="new", index=True)  # new, enriched, drafted, contacted, rejected
-    raw_snippet = Column(Text, nullable=True)
-    custom_metadata = Column(Text, nullable=True)  # JSON string
-    created_at = Column(DateTime, default=utc_now, nullable=False)
-    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
+    domain = Column(String(255), unique=True, nullable=False, index=True)
+    canonical_url = Column(String(1024), nullable=False)
+    business_name = Column(String(255), nullable=True, index=True)
+    description = Column(Text, nullable=True)
 
-    # Relationships
-    drafts = relationship("OutreachDraft", back_populates="lead", cascade="all, delete-orphan")
+    country = Column(String(100), nullable=True, index=True)
+    region = Column(String(100), nullable=True)
+    industry = Column(String(100), nullable=True, index=True)
 
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "id": self.id,
-            "company_name": self.company_name,
-            "contact_name": self.contact_name,
-            "email": self.email,
-            "phone": self.phone,
-            "source_url": self.source_url,
-            "source_domain": self.source_domain,
-            "industry_tag": self.industry_tag,
-            "location": self.location,
-            "linkedin_url": self.linkedin_url,
-            "lead_score": self.lead_score,
-            "status": self.status,
-            "raw_snippet": self.raw_snippet,
-            "custom_metadata": json.loads(self.custom_metadata) if self.custom_metadata else {},
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }
+    status = Column(String(50), default="UNKNOWN", index=True)  # LIVE, OFFLINE, STALE
+    http_status = Column(Integer, nullable=True)
+    has_ssl = Column(Boolean, default=False)
+    response_time_ms = Column(Float, default=0.0)
 
+    primary_technology = Column(String(100), nullable=True, index=True)
+    technology_category = Column(String(100), nullable=True)
+    technology_confidence = Column(Float, default=0.0)
 
-class ScrapeJob(Base):
-    __tablename__ = "scrape_jobs"
+    evidence_json = Column(Text, default="[]")
+    technologies_json = Column(Text, default="[]")
+    emails_json = Column(Text, default="[]")
+    primary_email = Column(String(255), nullable=True, index=True)
+    phones_json = Column(Text, default="[]")
+    primary_phone = Column(String(100), nullable=True)
+    socials_json = Column(Text, default="{}")
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    job_name = Column(String(255), nullable=False)
-    target_site = Column(String(255), nullable=False)
-    status = Column(String(50), default="running")  # running, completed, failed
-    leads_found = Column(Integer, default=0)
-    leads_new = Column(Integer, default=0)
-    error_log = Column(Text, nullable=True)
-    started_at = Column(DateTime, default=utc_now, nullable=False)
-    finished_at = Column(DateTime, nullable=True)
+    lead_score = Column(Integer, default=0, index=True)
+    score_label = Column(String(20), default="LOW")
+    score_reasons_json = Column(Text, default="[]")
+
+    source = Column(String(100), default="LIVE_CRAWL")
+    is_demo = Column(Boolean, default=False)
+
+    discovered_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_verified_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_changed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    events = relationship("LeadEvent", back_populates="lead", cascade="all, delete-orphan")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "id": self.id,
-            "job_name": self.job_name,
-            "target_site": self.target_site,
-            "status": self.status,
-            "leads_found": self.leads_found,
-            "leads_new": self.leads_new,
-            "error_log": self.error_log,
-            "started_at": self.started_at.isoformat() if self.started_at else None,
-            "finished_at": self.finished_at.isoformat() if self.finished_at else None,
-        }
-
-
-class OutreachDraft(Base):
-    __tablename__ = "outreach_drafts"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    lead_id = Column(Integer, ForeignKey("leads.id", ondelete="CASCADE"), nullable=False, index=True)
-    template_id = Column(String(100), nullable=False)
-    subject = Column(String(512), nullable=False)
-    personalized_message = Column(Text, nullable=False)
-    status = Column(String(50), default="pending_review", index=True)  # pending_review, approved, sent, rejected
-    created_at = Column(DateTime, default=utc_now, nullable=False)
-    sent_at = Column(DateTime, nullable=True)
-    notes = Column(Text, nullable=True)
-
-    # Relationships
-    lead = relationship("Lead", back_populates="drafts")
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "id": self.id,
-            "lead_id": self.lead_id,
-            "template_id": self.template_id,
-            "subject": self.subject,
-            "personalized_message": self.personalized_message,
-            "status": self.status,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "sent_at": self.sent_at.isoformat() if self.sent_at else None,
-            "notes": self.notes,
-            "lead": self.lead.to_dict() if self.lead else None,
-        }
-
-
-class ContactedMemory(Base):
-    __tablename__ = "contacted_memory"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    identifier = Column(String(255), unique=True, nullable=False, index=True)  # email, domain, or linkedin url
-    lead_id = Column(Integer, nullable=True)
-    channel = Column(String(50), default="linkedin_manual")  # linkedin_manual, linkedin_api, email
-    contacted_at = Column(DateTime, default=utc_now, nullable=False)
-    notes = Column(Text, nullable=True)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "id": self.id,
-            "identifier": self.identifier,
-            "lead_id": self.lead_id,
-            "channel": self.channel,
-            "contacted_at": self.contacted_at.isoformat() if self.contacted_at else None,
-            "notes": self.notes,
-        }
-
-
-# ==============================================================================
-# ENTERPRISE GLOBAL LEAD GEN DATA PLATFORM MODELS
-# ==============================================================================
-
-class GlobalEnterpriseLead(Base):
-    __tablename__ = "global_enterprise_leads"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    domain_hash = Column(String(64), unique=True, nullable=False, index=True)
-    company_name = Column(String(255), nullable=False, index=True)
-    category = Column(String(100), nullable=False, index=True)
-    region = Column(String(100), nullable=False, index=True)
-    country_code = Column(String(10), nullable=False, index=True)
-    live_url = Column(String(1024), nullable=False)
-    source_domain = Column(String(255), nullable=False, index=True)
-    contact_email = Column(String(255), nullable=True, index=True)
-    contact_phone = Column(String(100), nullable=True)
-    platform_cms = Column(String(100), default="Custom", nullable=False, index=True)  # OpenCart, WordPress, Shopify, Next.js, Custom
-    tech_stack = Column(Text, nullable=True)  # JSON array string
-    source = Column(String(100), default="Crawlee Ingestion", nullable=False)
-    confidence_score = Column(Integer, default=95, index=True)
-    compliance_status = Column(String(50), default="VERIFIED_PUBLIC", index=True)  # VERIFIED_PUBLIC, CORPORATE_GENERIC, SUPPRESSED
-    raw_metadata = Column(Text, nullable=True)  # JSON string
-    created_at = Column(DateTime, default=utc_now, nullable=False)
-    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
-
-    __table_args__ = (
-        Index("idx_global_cat_reg_score", "category", "region", "confidence_score"),
-        Index("idx_global_country_cat", "country_code", "category"),
-        Index("idx_global_platform", "platform_cms"),
-    )
-
-    def to_dict(self) -> Dict[str, Any]:
-        techs = []
-        if self.tech_stack:
-            try:
-                techs = json.loads(self.tech_stack)
-            except Exception:
-                techs = [s.strip() for s in self.tech_stack.split(",") if s.strip()]
-
-        return {
-            "id": self.id,
-            "domain_hash": self.domain_hash,
-            "company_name": self.company_name,
-            "category": self.category,
+            "domain": self.domain,
+            "canonical_url": self.canonical_url,
+            "business_name": self.business_name or self.domain,
+            "description": self.description,
+            "country": self.country,
             "region": self.region,
-            "country_code": self.country_code,
-            "live_url": self.live_url,
-            "source_domain": self.source_domain,
-            "contact_email": self.contact_email,
-            "contact_phone": self.contact_phone,
-            "platform_cms": self.platform_cms,
-            "tech_stack": techs,
-            "source": self.source,
-            "confidence_score": self.confidence_score,
-            "compliance_status": self.compliance_status,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }
-
-
-class SuppressionRecord(Base):
-    __tablename__ = "suppression_records"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    domain_or_email = Column(String(255), unique=True, nullable=False, index=True)
-    reason = Column(String(100), default="User Requested Opt-Out / Compliance DNC", nullable=False)
-    scope = Column(String(50), default="GLOBAL", nullable=False)  # GLOBAL, REGION_EU, REGION_US
-    notes = Column(Text, nullable=True)
-    added_at = Column(DateTime, default=utc_now, nullable=False)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "id": self.id,
-            "domain_or_email": self.domain_or_email,
-            "reason": self.reason,
-            "scope": self.scope,
-            "notes": self.notes,
-            "added_at": self.added_at.isoformat() if self.added_at else None,
-        }
-
-
-class IngestionPipelineJob(Base):
-    __tablename__ = "ingestion_pipeline_jobs"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    pipeline_type = Column(String(100), nullable=False)  # crawlee_search_seed, common_crawl_bulk, open_knowledge_api
-    category_filter = Column(String(100), nullable=False)
-    region_filter = Column(String(100), nullable=False)
-    status = Column(String(50), default="RUNNING")  # RUNNING, COMPLETED, FAILED
-    seeds_discovered = Column(Integer, default=0)
-    pages_crawled = Column(Integer, default=0)
-    leads_extracted = Column(Integer, default=0)
-    error_log = Column(Text, nullable=True)
-    started_at = Column(DateTime, default=utc_now, nullable=False)
-    finished_at = Column(DateTime, nullable=True)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "id": self.id,
-            "pipeline_type": self.pipeline_type,
-            "category_filter": self.category_filter,
-            "region_filter": self.region_filter,
+            "industry": self.industry or "General",
             "status": self.status,
-            "seeds_discovered": self.seeds_discovered,
-            "pages_crawled": self.pages_crawled,
-            "leads_extracted": self.leads_extracted,
-            "error_log": self.error_log,
-            "started_at": self.started_at.isoformat() if self.started_at else None,
-            "finished_at": self.finished_at.isoformat() if self.finished_at else None,
+            "http_status": self.http_status,
+            "has_ssl": self.has_ssl,
+            "response_time_ms": self.response_time_ms,
+            "primary_technology": self.primary_technology or "Custom / Unknown",
+            "technology_category": self.technology_category,
+            "technology_confidence": self.technology_confidence,
+            "evidence": json.loads(self.evidence_json or "[]"),
+            "technologies": json.loads(self.technologies_json or "[]"),
+            "emails": json.loads(self.emails_json or "[]"),
+            "primary_email": self.primary_email,
+            "phones": json.loads(self.phones_json or "[]"),
+            "primary_phone": self.primary_phone,
+            "socials": json.loads(self.socials_json or "{}"),
+            "lead_score": self.lead_score,
+            "score_label": self.score_label,
+            "score_reasons": json.loads(self.score_reasons_json or "[]"),
+            "source": self.source,
+            "is_demo": self.is_demo,
+            "discovered_at": self.discovered_at.isoformat() if self.discovered_at else None,
+            "last_verified_at": self.last_verified_at.isoformat() if self.last_verified_at else None,
+        }
+
+
+class LeadEvent(Base):
+    __tablename__ = "lead_events"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    lead_id = Column(Integer, ForeignKey("leads.id"), nullable=False, index=True)
+    event_type = Column(String(100), nullable=False)
+    description = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    lead = relationship("Lead", back_populates="events")
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "lead_id": self.lead_id,
+            "event_type": self.event_type,
+            "description": self.description,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class DiscoveryJob(Base):
+    __tablename__ = "discovery_jobs"
+
+    id = Column(String(64), primary_key=True)
+    technology = Column(String(100), nullable=False)
+    country = Column(String(100), nullable=True)
+    industry = Column(String(100), nullable=True)
+    status = Column(String(50), default="QUEUED")  # QUEUED, RUNNING, COMPLETED, FAILED
+    progress_percent = Column(Integer, default=0)
+    candidates_count = Column(Integer, default=0)
+    verified_count = Column(Integer, default=0)
+    qualified_count = Column(Integer, default=0)
+    error_message = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    completed_at = Column(DateTime, nullable=True)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "technology": self.technology,
+            "country": self.country,
+            "industry": self.industry,
+            "status": self.status,
+            "progress_percent": self.progress_percent,
+            "candidates_count": self.candidates_count,
+            "verified_count": self.verified_count,
+            "qualified_count": self.qualified_count,
+            "error_message": self.error_message,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+        }
+
+
+class ApiKey(Base):
+    __tablename__ = "api_keys"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), nullable=False)
+    key_hash = Column(String(64), nullable=False, unique=True, index=True)
+    prefix = Column(String(12), nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_used_at = Column(DateTime, nullable=True)
+    is_active = Column(Boolean, default=True)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "prefix": self.prefix,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "last_used_at": self.last_used_at.isoformat() if self.last_used_at else None,
+            "is_active": self.is_active,
+        }
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    action = Column(String(100), nullable=False, index=True)
+    resource_type = Column(String(100), nullable=False)
+    resource_id = Column(String(100), nullable=True)
+    details_json = Column(Text, default="{}")
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "action": self.action,
+            "resource_type": self.resource_type,
+            "resource_id": self.resource_id,
+            "details": json.loads(self.details_json or "{}"),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }

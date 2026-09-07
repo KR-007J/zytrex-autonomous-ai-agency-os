@@ -1,0 +1,27 @@
+id: woocommerce
+name: WooCommerce
+category: E-Commerce
+description: Customizable, open-source eCommerce platform built on WordPress.
+website: https://woocommerce.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'woocommerce'
+      weight: 0.30
+      evidence: "WooCommerce DOM CSS classes"
+    - pattern: 'wp-content/plugins/woocommerce/'
+      weight: 0.50
+      evidence: "Plugin directory wp-content/plugins/woocommerce"
+    - pattern: 'wc-cart-fragments'
+      weight: 0.35
+      evidence: "AJAX cart fragments script"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)woocommerce'
+      weight: 0.50
+      evidence: "Meta generator WooCommerce tag"
+  scripts:
+    - pattern: 'woocommerce(\.min)?\.js'
+      weight: 0.40
+      evidence: "WooCommerce core frontend script"

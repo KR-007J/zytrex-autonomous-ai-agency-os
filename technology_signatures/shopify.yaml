@@ -1,0 +1,35 @@
+id: shopify
+name: Shopify
+category: E-Commerce
+description: Leading hosted multi-channel commerce platform.
+website: https://www.shopify.com
+confidence_threshold: 0.75
+
+patterns:
+  html:
+    - pattern: 'cdn.shopify.com'
+      weight: 0.50
+      evidence: "Shopify CDN asset references"
+    - pattern: 'Shopify.theme'
+      weight: 0.45
+      evidence: "Global JS object Shopify.theme"
+    - pattern: 'window.Shopify'
+      weight: 0.45
+      evidence: "Window.Shopify client runtime"
+  headers:
+    - name: 'X-ShopId'
+      pattern: '.*'
+      weight: 0.60
+      evidence: "Header X-ShopId present"
+    - name: 'Server'
+      pattern: '(?i)cloudflare'
+      weight: 0.10
+      evidence: "Cloudflare infrastructure"
+  cookies:
+    - pattern: '^_shopify_s'
+      weight: 0.40
+      evidence: "Cookie '_shopify_s'"
+  scripts:
+    - pattern: 'cdn\.shopify\.com/shopifycloud/'
+      weight: 0.40
+      evidence: "Shopify Cloud JS runtime"
