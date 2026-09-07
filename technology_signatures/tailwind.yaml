@@ -1,0 +1,25 @@
+id: tailwind
+name: Tailwind CSS
+category: CSS Framework
+description: Utility-first CSS framework for rapid UI development.
+website: https://tailwindcss.com
+confidence_threshold: 0.65
+
+patterns:
+  html:
+    - pattern: 'cdn.tailwindcss.com'
+      weight: 0.50
+      evidence: "Tailwind CSS standalone CDN script"
+    - pattern: '@tailwind'
+      weight: 0.45
+      evidence: "Tailwind CSS directive '@tailwind'"
+    - pattern: 'tailwindcss'
+      weight: 0.30
+      evidence: "Tailwind CSS reference marker"
+    - pattern: 'class="[^"]*(?:flex|grid|hidden|relative|absolute)[^"]*(?:px-|py-|text-|bg-)[^"]*"'
+      weight: 0.45
+      evidence: "Tailwind CSS signature utility class combinations"
+  scripts:
+    - pattern: 'cdn\.tailwindcss\.com'
+      weight: 0.50
+      evidence: "Tailwind CSS CDN script tag"

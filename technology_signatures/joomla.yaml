@@ -1,0 +1,27 @@
+id: joomla
+name: Joomla
+category: CMS
+description: Popular open-source content management system for web publishing.
+website: https://www.joomla.org
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: '/media/system/js/'
+      weight: 0.45
+      evidence: "Joomla system asset path '/media/system/js/'"
+    - pattern: 'Joomla.JText'
+      weight: 0.45
+      evidence: "Joomla JavaScript API 'Joomla.JText'"
+    - pattern: '/templates/[^/]+/css/'
+      weight: 0.30
+      evidence: "Joomla template stylesheet path"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)joomla'
+      weight: 0.50
+      evidence: "Meta generator Joomla"
+  scripts:
+    - pattern: 'media/system/js/core\.js'
+      weight: 0.45
+      evidence: "Joomla core JavaScript 'media/system/js/core.js'"

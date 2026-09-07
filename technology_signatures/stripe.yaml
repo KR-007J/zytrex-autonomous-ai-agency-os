@@ -1,0 +1,25 @@
+id: stripe
+name: Stripe
+category: Payment Processor
+description: Economic infrastructure software powering online and mobile payments.
+website: https://stripe.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'js.stripe.com'
+      weight: 0.50
+      evidence: "Stripe JavaScript runtime domain 'js.stripe.com'"
+    - pattern: 'stripe.com/checkout'
+      weight: 0.40
+      evidence: "Stripe hosted checkout URL reference"
+    - pattern: 'data-stripe'
+      weight: 0.40
+      evidence: "Stripe elements attribute 'data-stripe'"
+  scripts:
+    - pattern: 'js\.stripe\.com/v[23]/'
+      weight: 0.55
+      evidence: "Stripe.js SDK script inclusion"
+    - pattern: 'checkout\.stripe\.com'
+      weight: 0.45
+      evidence: "Stripe Checkout script integration"

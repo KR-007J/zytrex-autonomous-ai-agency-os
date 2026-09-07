@@ -1,0 +1,35 @@
+id: google_analytics
+name: Google Analytics & GTM
+category: Analytics
+description: Web measurement and marketing tag management system by Google.
+website: https://analytics.google.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'www.googletagmanager.com/gtm.js'
+      weight: 0.50
+      evidence: "Google Tag Manager script 'gtm.js'"
+    - pattern: 'www.googletagmanager.com/gtag/js'
+      weight: 0.50
+      evidence: "Google Analytics 4 gtag script 'gtag/js'"
+    - pattern: 'google-analytics.com/analytics.js'
+      weight: 0.45
+      evidence: "Universal Analytics legacy script 'analytics.js'"
+  scripts:
+    - pattern: 'googletagmanager\.com/gtm\.js'
+      weight: 0.50
+      evidence: "Google Tag Manager loader script"
+    - pattern: 'googletagmanager\.com/gtag/js'
+      weight: 0.50
+      evidence: "Google Analytics gtag script tag"
+    - pattern: 'google-analytics\.com/(?:ga|analytics)\.js'
+      weight: 0.45
+      evidence: "Google Analytics library script tag"
+  cookies:
+    - pattern: '^_ga'
+      weight: 0.45
+      evidence: "Google Analytics visitor identifier cookie '_ga'"
+    - pattern: '^_gid'
+      weight: 0.35
+      evidence: "Google Analytics 24h session cookie '_gid'"

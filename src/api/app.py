@@ -13,6 +13,10 @@ from src.api.routes_discover import router as discover_router
 from src.api.routes_leads import router as leads_router
 from src.api.routes_exports import router as exports_router
 from src.api.routes_keys import router as keys_router
+from src.api.routes_projects import router as projects_router
+from src.api.routes_webhooks import router as webhooks_router
+from src.api.routes_import import router as import_router
+from src.api.routes_search import router as search_router
 
 init_db()
 
@@ -39,6 +43,10 @@ app.include_router(discover_router, prefix="/api/v1")
 app.include_router(leads_router, prefix="/api/v1")
 app.include_router(exports_router, prefix="/api/v1")
 app.include_router(keys_router, prefix="/api/v1")
+app.include_router(projects_router, prefix="/api/v1")
+app.include_router(webhooks_router, prefix="/api/v1")
+app.include_router(import_router, prefix="/api/v1")
+app.include_router(search_router, prefix="/api/v1")
 
 # Mount web frontend static assets if directory exists
 web_dir = Path(__file__).parent.parent / "web"

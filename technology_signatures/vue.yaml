@@ -1,0 +1,25 @@
+id: vue
+name: Vue.js
+category: JavaScript Framework
+description: The Progressive JavaScript Framework for approachable UI building.
+website: https://vuejs.org
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'data-v-[a-f0-9]{8}'
+      weight: 0.50
+      evidence: "Vue scoped component CSS attribute 'data-v-*'"
+    - pattern: 'v-cloak'
+      weight: 0.45
+      evidence: "Vue raw template hiding directive 'v-cloak'"
+    - pattern: '__vue__'
+      weight: 0.45
+      evidence: "Vue internal instance property '__vue__'"
+    - pattern: 'data-v-'
+      weight: 0.40
+      evidence: "Vue scoped attribute prefix 'data-v-'"
+  scripts:
+    - pattern: 'vue(?:\.runtime)?(?:\.esm)?(?:\.min)?\.js'
+      weight: 0.50
+      evidence: "Vue runtime script bundle"

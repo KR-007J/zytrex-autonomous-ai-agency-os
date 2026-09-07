@@ -1,0 +1,32 @@
+id: bigcommerce
+name: BigCommerce
+category: E-Commerce
+description: Enterprise SaaS ecommerce platform for scaling brands.
+website: https://www.bigcommerce.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'cdn11.bigcommerce.com'
+      weight: 0.50
+      evidence: "BigCommerce CDN asset domain 'cdn11.bigcommerce.com'"
+    - pattern: 'bc-sf-filter'
+      weight: 0.35
+      evidence: "BigCommerce Smart Search & Filter marker"
+    - pattern: 'stencil-utils'
+      weight: 0.35
+      evidence: "BigCommerce Stencil theme framework utility"
+  scripts:
+    - pattern: 'cdn11\.bigcommerce\.com/'
+      weight: 0.45
+      evidence: "BigCommerce CDN script runtime"
+    - pattern: 'bigcommerce\.com/checkout'
+      weight: 0.45
+      evidence: "BigCommerce checkout integration script"
+  cookies:
+    - pattern: '^SHOP_SESSION_TOKEN'
+      weight: 0.45
+      evidence: "BigCommerce session cookie 'SHOP_SESSION_TOKEN'"
+    - pattern: '^bc_'
+      weight: 0.30
+      evidence: "BigCommerce cookie prefix 'bc_'"

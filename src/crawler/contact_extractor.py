@@ -52,6 +52,42 @@ class ContactExtractor:
     """Extracts public business intelligence from web content without guessing."""
 
     @classmethod
+    def sanitize_formula(cls, value: Optional[str], is_phone: bool = False) -> Optional[str]:
+        """Neutralize formula injection (CSV/Excel/Calc injection).
+
+        Prepends a single quote "'" to values starting with '=', '+', '-', '@', '\\t', '\\r'.
+        For legitimate international phone numbers starting with '+', preserves the leading '+'
+        if followed by valid phone digits and punctuation. Any formula command or operator
+        is safely quoted.
+        """
+        if not value or not isinstance(value, str):
+            return value
+
+        if not value:
+            return value
+
+        first_char = value[0]
+        if first_char in ("=", "@", "\t", "\r"):
+            return "'" + value
+
+        if first_char in ("+", "-"):
+            if is_phone and first_char == "+":
+                remainder = value[1:].strip()
+                if re.match(r"^[\d\s().-]{6,25}$", remainder) and sum(c.isdigit() for c in remainder) >= 6:
+                    return value
+            return "'" + value
+
+        val_lstrip = value.lstrip(" \t\r\n")
+        if val_lstrip and val_lstrip[0] in ("=", "@", "+", "-"):
+            if is_phone and val_lstrip[0] == "+":
+                remainder = val_lstrip[1:].strip()
+                if re.match(r"^[\d\s().-]{6,25}$", remainder) and sum(c.isdigit() for c in remainder) >= 6:
+                    return value
+            return "'" + value
+
+        return value
+
+    @classmethod
     def extract_from_html(cls, html: str, source_url: str) -> Dict[str, Any]:
         if not html:
             return {
@@ -60,13 +96,16 @@ class ContactExtractor:
                 "emails": [],
                 "phones": [],
                 "socials": {},
+                "address": None,
+                "location": None,
             }
 
         soup = BeautifulSoup(html[:600000], "html.parser")
 
-        # 1. Business Name & Description
+        # 1. Business Name, Description & Physical Address
         business_name = None
         description = None
+        address = None
 
         # Check JSON-LD
         for script in soup.find_all("script", type="application/ld+json"):
@@ -76,11 +115,23 @@ class ContactExtractor:
                     data = data[0]
                 if isinstance(data, dict):
                     schema_type = str(data.get("@type", "")).lower()
-                    if any(k in schema_type for k in ("organization", "store", "business", "corporation")):
-                        if "name" in data and isinstance(data["name"], str):
+                    if any(k in schema_type for k in ("organization", "store", "business", "corporation", "localbusiness", "place")):
+                        if "name" in data and isinstance(data["name"], str) and not business_name:
                             business_name = data["name"].strip()
-                        if "description" in data and isinstance(data["description"], str):
+                        if "description" in data and isinstance(data["description"], str) and not description:
                             description = data["description"].strip()
+                        if "address" in data and not address:
+                            addr_raw = data["address"]
+                            if isinstance(addr_raw, str):
+                                address = addr_raw.strip()
+                            elif isinstance(addr_raw, dict):
+                                parts = [
+                                    str(addr_raw.get(k, "")).strip()
+                                    for k in ("streetAddress", "addressLocality", "addressRegion", "postalCode", "addressCountry")
+                                    if addr_raw.get(k)
+                                ]
+                                if parts:
+                                    address = ", ".join(parts)
             except Exception:
                 pass
 
@@ -92,7 +143,6 @@ class ContactExtractor:
 
         if not business_name and soup.title and soup.title.string:
             title_text = soup.title.string.strip()
-            # Split common separators like ' | ' or ' - '
             parts = re.split(r"[\s\-_\|•]+", title_text)
             if parts:
                 business_name = parts[0].strip()
@@ -101,6 +151,34 @@ class ContactExtractor:
             meta_desc = soup.find("meta", attrs={"name": "description"}) or soup.find("meta", property="og:description")
             if meta_desc and meta_desc.get("content"):
                 description = meta_desc["content"].strip()
+
+        # HTML Address / Location Extraction fallback
+        if not address:
+            addr_tag = soup.find("address")
+            if addr_tag:
+                cleaned = re.sub(r"\s+", " ", addr_tag.get_text(separator=" ")).strip()
+                if 10 <= len(cleaned) <= 300:
+                    address = cleaned
+
+        if not address:
+            itemprop_addr = soup.find(attrs={"itemprop": "address"})
+            if itemprop_addr:
+                cleaned = re.sub(r"\s+", " ", itemprop_addr.get_text(separator=" ")).strip()
+                if 10 <= len(cleaned) <= 300:
+                    address = cleaned
+
+        if not address:
+            footer = soup.find("footer")
+            if footer:
+                loc_elem = footer.find(
+                    attrs={"class": re.compile(r"address|location|office|street|postal", re.IGNORECASE)}
+                ) or footer.find(
+                    attrs={"id": re.compile(r"address|location|office|street|postal", re.IGNORECASE)}
+                )
+                if loc_elem:
+                    cleaned = re.sub(r"\s+", " ", loc_elem.get_text(separator=" ")).strip()
+                    if 10 <= len(cleaned) <= 300:
+                        address = cleaned
 
         # 2. Extract Emails
         emails: List[Dict[str, Any]] = []
@@ -111,9 +189,10 @@ class ContactExtractor:
             href = a_tag["href"].strip()
             if href.lower().startswith("mailto:"):
                 clean_email = href[7:].split("?")[0].strip().lower()
+                clean_email = cls.sanitize_formula(clean_email)
                 if clean_email and "@" in clean_email and clean_email not in seen_emails:
                     seen_emails.add(clean_email)
-                    prefix = clean_email.split("@")[0]
+                    prefix = clean_email.lstrip("'").split("@")[0]
                     role = "ROLE_BASED" if any(prefix.startswith(r) for r in ROLE_BASED_PREFIXES) else "DIRECT"
                     emails.append(ExtractedContact(clean_email, "email", source_url, role, 0.98).to_dict())
 
@@ -122,11 +201,12 @@ class ContactExtractor:
         for match in EMAIL_REGEX.finditer(text_content):
             cand = match.group(0).lower()
             if not any(cand.endswith(ext) for ext in IGNORED_EMAIL_EXTENSIONS):
-                if cand not in seen_emails and len(cand) < 80:
-                    seen_emails.add(cand)
-                    prefix = cand.split("@")[0]
+                sanitized_cand = cls.sanitize_formula(cand)
+                if sanitized_cand not in seen_emails and len(sanitized_cand) < 80:
+                    seen_emails.add(sanitized_cand)
+                    prefix = sanitized_cand.lstrip("'").split("@")[0]
                     role = "ROLE_BASED" if any(prefix.startswith(r) for r in ROLE_BASED_PREFIXES) else "DIRECT"
-                    emails.append(ExtractedContact(cand, "email", source_url, role, 0.88).to_dict())
+                    emails.append(ExtractedContact(sanitized_cand, "email", source_url, role, 0.88).to_dict())
 
         # 3. Extract Phones
         phones: List[Dict[str, Any]] = []
@@ -136,9 +216,10 @@ class ContactExtractor:
             href = a_tag["href"].strip()
             if href.lower().startswith("tel:"):
                 clean_phone = href[4:].strip()
-                if len(clean_phone) >= 7 and clean_phone not in seen_phones:
-                    seen_phones.add(clean_phone)
-                    phones.append(ExtractedContact(clean_phone, "phone", source_url, "DIRECT", 0.95).to_dict())
+                sanitized_phone = cls.sanitize_formula(clean_phone, is_phone=True)
+                if len(sanitized_phone) >= 7 and sanitized_phone not in seen_phones:
+                    seen_phones.add(sanitized_phone)
+                    phones.append(ExtractedContact(sanitized_phone, "phone", source_url, "DIRECT", 0.95).to_dict())
 
         # 4. Extract Social Links
         socials: Dict[str, str] = {}
@@ -156,10 +237,15 @@ class ContactExtractor:
             elif "instagram.com/" in lower_href and "instagram" not in socials:
                 socials["instagram"] = href
 
+        sanitized_business_name = cls.sanitize_formula(business_name)
+        sanitized_address = cls.sanitize_formula(address)
+
         return {
-            "business_name": business_name,
+            "business_name": sanitized_business_name,
             "description": description,
             "emails": emails,
             "phones": phones,
             "socials": socials,
+            "address": sanitized_address,
+            "location": sanitized_address,
         }

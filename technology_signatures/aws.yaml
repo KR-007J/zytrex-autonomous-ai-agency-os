@@ -1,0 +1,32 @@
+id: aws
+name: Amazon Web Services (AWS)
+category: Cloud Infrastructure
+description: Cloud computing platform including CloudFront CDN and S3 storage.
+website: https://aws.amazon.com
+confidence_threshold: 0.70
+
+patterns:
+  headers:
+    - name: 'x-amz-cf-id'
+      pattern: '.*'
+      weight: 0.55
+      evidence: "AWS CloudFront request ID header 'x-amz-cf-id'"
+    - name: 'x-amz-request-id'
+      pattern: '.*'
+      weight: 0.50
+      evidence: "AWS S3 / API request ID header 'x-amz-request-id'"
+    - name: 'x-amz-cf-pop'
+      pattern: '.*'
+      weight: 0.40
+      evidence: "AWS CloudFront edge location pop 'x-amz-cf-pop'"
+    - name: 'server'
+      pattern: '(?i)amazons3|cloudfront'
+      weight: 0.45
+      evidence: "AWS origin server header 'AmazonS3' / 'CloudFront'"
+  html:
+    - pattern: 'amazonaws.com'
+      weight: 0.35
+      evidence: "Amazon AWS S3 or asset bucket reference"
+    - pattern: 'cloudfront.net'
+      weight: 0.35
+      evidence: "AWS CloudFront CDN distribution domain"

@@ -5,6 +5,9 @@ from typing import List, Optional, AsyncGenerator, Dict, Any
 from src.discovery.base import DiscoveryProvider, CandidateDomain
 from src.discovery.live_web import LiveWebProvider
 from src.discovery.cert_transparency import CertificateTransparencyProvider
+from src.discovery.common_crawl import CommonCrawlProvider
+from src.discovery.dns_discovery import DNSDiscoveryProvider
+from src.discovery.sitemap import SitemapProvider
 
 
 class DiscoveryOrchestrator:
@@ -14,6 +17,9 @@ class DiscoveryOrchestrator:
         self.providers: List[DiscoveryProvider] = [
             LiveWebProvider(),
             CertificateTransparencyProvider(),
+            CommonCrawlProvider(),
+            DNSDiscoveryProvider(),
+            SitemapProvider(),
         ]
 
     async def stream_candidates(

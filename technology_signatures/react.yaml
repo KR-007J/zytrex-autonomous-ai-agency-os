@@ -1,0 +1,28 @@
+id: react
+name: React
+category: JavaScript Library
+description: The library for web and native user interfaces by Meta.
+website: https://react.dev
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'data-reactroot'
+      weight: 0.50
+      evidence: "React DOM hydration attribute 'data-reactroot'"
+    - pattern: '_reactFiber'
+      weight: 0.50
+      evidence: "React fiber node property '_reactFiber'"
+    - pattern: 'data-reactid'
+      weight: 0.45
+      evidence: "React legacy DOM attribute 'data-reactid'"
+    - pattern: '__REACT_DEVTOOLS_GLOBAL_HOOK__'
+      weight: 0.40
+      evidence: "React DevTools hook hook marker"
+  scripts:
+    - pattern: 'react(?:\.production|\.development)?(?:\.min)?\.js'
+      weight: 0.50
+      evidence: "React library script bundle"
+    - pattern: 'react-dom(?:\.production|\.development)?(?:\.min)?\.js'
+      weight: 0.50
+      evidence: "ReactDOM library script bundle"

@@ -24,8 +24,11 @@ SessionLocal = sessionmaker(
 
 
 def init_db() -> None:
-    """Initialize database schema tables."""
+    """Initialize database schema tables and seed default organization and admin."""
     Base.metadata.create_all(bind=engine)
+    from src.security.auth import seed_default_data
+    with get_db() as session:
+        seed_default_data(session)
 
 
 @contextmanager

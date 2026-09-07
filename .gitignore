@@ -15,3 +15,10 @@ build/
 *.egg-info/
 .DS_Store
 *.log
+data/exports/
+data/*.csv
+data/*.xlsx
+data/*.json
+data/*.parquet
+data/*.pdf
+data/*.md

@@ -1,0 +1,34 @@
+id: prestashop
+name: PrestaShop
+category: E-Commerce
+description: Open-source e-commerce platform powering online stores worldwide.
+website: https://www.prestashop.com
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'prestashop.theme'
+      weight: 0.45
+      evidence: "PrestaShop theme JavaScript object 'prestashop.theme'"
+    - pattern: 'var prestashop ='
+      weight: 0.45
+      evidence: "Global PrestaShop configuration object 'var prestashop ='"
+    - pattern: '/modules/prestashop'
+      weight: 0.35
+      evidence: "PrestaShop modules directory '/modules/prestashop'"
+    - pattern: '/themes/[^/]+/assets/css/'
+      weight: 0.30
+      evidence: "PrestaShop theme asset styling path"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)prestashop'
+      weight: 0.50
+      evidence: "Meta generator PrestaShop"
+  cookies:
+    - pattern: '^PrestaShop-'
+      weight: 0.45
+      evidence: "PrestaShop session cookie 'PrestaShop-'"
+  scripts:
+    - pattern: 'themes/[^/]+/assets/js/theme\.js'
+      weight: 0.40
+      evidence: "PrestaShop theme JavaScript file"

@@ -1,0 +1,42 @@
+id: drupal
+name: Drupal
+category: CMS
+description: Modular, open-source content management system and framework.
+website: https://www.drupal.org
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'Drupal.settings'
+      weight: 0.50
+      evidence: "Global JavaScript object 'Drupal.settings'"
+    - pattern: 'sites/all/modules/'
+      weight: 0.40
+      evidence: "Drupal module path 'sites/all/modules/'"
+    - pattern: 'sites/default/files/'
+      weight: 0.35
+      evidence: "Drupal files path 'sites/default/files/'"
+    - pattern: 'drupal.js'
+      weight: 0.35
+      evidence: "Drupal core JavaScript 'drupal.js'"
+  meta:
+    - name: 'generator'
+      pattern: '(?i)drupal'
+      weight: 0.50
+      evidence: "Meta generator Drupal"
+  headers:
+    - name: 'X-Generator'
+      pattern: '(?i)drupal'
+      weight: 0.50
+      evidence: "Header X-Generator Drupal"
+    - name: 'X-Drupal-Cache'
+      pattern: '.*'
+      weight: 0.45
+      evidence: "Header X-Drupal-Cache present"
+  scripts:
+    - pattern: 'sites/all/(?:modules|themes)/'
+      weight: 0.40
+      evidence: "Drupal modules or themes script source"
+    - pattern: 'core/assets/vendor/drupal'
+      weight: 0.40
+      evidence: "Drupal 8+ core script source"

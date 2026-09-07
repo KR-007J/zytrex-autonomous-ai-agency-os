@@ -1,0 +1,32 @@
+id: cloudflare
+name: Cloudflare
+category: CDN & Security
+description: Global content delivery network, DNS, and DDoS mitigation platform.
+website: https://www.cloudflare.com
+confidence_threshold: 0.70
+
+patterns:
+  headers:
+    - name: 'cf-ray'
+      pattern: '.*'
+      weight: 0.55
+      evidence: "Cloudflare Ray ID header 'cf-ray'"
+    - name: 'server'
+      pattern: '(?i)cloudflare'
+      weight: 0.45
+      evidence: "Server header identifies 'cloudflare'"
+    - name: 'cf-cache-status'
+      pattern: '.*'
+      weight: 0.35
+      evidence: "Cloudflare cache status header 'cf-cache-status'"
+  cookies:
+    - pattern: '^__cf_bm'
+      weight: 0.50
+      evidence: "Cloudflare bot management cookie '__cf_bm'"
+    - pattern: '^__cfduid'
+      weight: 0.45
+      evidence: "Legacy Cloudflare user ID cookie '__cfduid'"
+  html:
+    - pattern: 'cdnjs.cloudflare.com'
+      weight: 0.25
+      evidence: "Cloudflare cdnjs CDN asset reference"

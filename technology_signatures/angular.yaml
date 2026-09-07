@@ -1,0 +1,28 @@
+id: angular
+name: Angular
+category: JavaScript Framework
+description: Web application framework developed by Google and community.
+website: https://angular.dev
+confidence_threshold: 0.70
+
+patterns:
+  html:
+    - pattern: 'ng-version='
+      weight: 0.55
+      evidence: "Angular runtime version attribute 'ng-version'"
+    - pattern: 'ng-app='
+      weight: 0.50
+      evidence: "AngularJS application bootstrap attribute 'ng-app'"
+    - pattern: '<app-root'
+      weight: 0.40
+      evidence: "Angular standard root component selector '<app-root>'"
+    - pattern: 'ng-binding'
+      weight: 0.35
+      evidence: "AngularJS dynamic binding class 'ng-binding'"
+  scripts:
+    - pattern: 'angular(?:\.min)?\.js'
+      weight: 0.50
+      evidence: "Angular / AngularJS core script"
+    - pattern: 'main\.[0-9a-f]{16,}\.js'
+      weight: 0.25
+      evidence: "Angular production CLI bundle pattern"
