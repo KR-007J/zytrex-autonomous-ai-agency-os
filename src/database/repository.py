@@ -35,7 +35,12 @@ class OrganizationRepository:
 
     @classmethod
     def create_organization(cls, session: Session, name: str, slug: Optional[str] = None) -> Organization:
-        clean_slug = slug or name.lower().replace(" ", "-").replace("_", "-")
+        base_slug = slug or name.lower().replace(" ", "-").replace("_", "-")
+        clean_slug = base_slug
+        count = 1
+        while session.query(Organization).filter(Organization.slug == clean_slug).first():
+            clean_slug = f"{base_slug}-{count}"
+            count += 1
         org = Organization(name=name, slug=clean_slug)
         session.add(org)
         session.flush()
@@ -708,6 +713,8 @@ class AuditLogRepository:
         return session.query(AuditLog).filter(
             AuditLog.organization_id == organization_id
         ).order_by(desc(AuditLog.created_at)).limit(limit).all()
+
+    create_log = log_action
 
 
 class WebhookRepository:
