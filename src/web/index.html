@@ -196,7 +196,7 @@
               <form id="hero-search-form" onsubmit="handleHeroSearch(event)" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Technology</label>
+                    <label for="hero-tech-select" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Technology</label>
                     <div class="relative">
                       <select id="hero-tech-select" aria-label="Target technology" class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
                         <option value="opencart" selected>OpenCart</option>
@@ -220,7 +220,7 @@
                   </div>
 
                   <div>
-                    <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Geography / Country</label>
+                    <label for="hero-country-select" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Geography / Country</label>
                     <div class="relative">
                       <select id="hero-country-select" aria-label="Target country for lead discovery" class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
                         <option value="United States" selected>United States (USA)</option>
@@ -394,7 +394,7 @@
           <form id="discovery-run-form" onsubmit="handleDiscoverySubmit(event)" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Technology</label>
+                <label for="disc-tech-select" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Technology</label>
                 <select id="disc-tech-select" aria-label="Select target technology" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm font-medium">
                   <option value="opencart" selected>OpenCart</option>
                   <option value="shopify">Shopify</option>
@@ -417,7 +417,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Country</label>
+                <label for="disc-country-select" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Country</label>
                 <div class="relative">
                   <select id="disc-country-select" aria-label="Target country for lead discovery" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
                     <option value="United States" selected>United States (USA)</option>
@@ -444,12 +444,12 @@
               </div>
 
               <div>
-                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Industry Vertical</label>
+                <label for="disc-industry-input" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Industry Vertical</label>
                 <input id="disc-industry-input" aria-label="Target industry vertical" type="text" value="E-commerce" placeholder="e.g. E-commerce, Retail" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" />
               </div>
 
               <div>
-                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Domain Limit</label>
+                <label for="disc-limit-select" class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Domain Limit</label>
                 <select id="disc-limit-select" aria-label="Candidate domain limit" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm font-medium">
                   <option value="20">20 Candidates</option>
                   <option value="50">50 Candidates</option>
@@ -579,11 +579,13 @@
         <div class="glass-surface p-5 rounded-2xl space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-5 relative">
+              <label for="leads-search-input" class="sr-only">Search leads</label>
               <input id="leads-search-input" aria-label="Search leads by business name, domain, or description" oninput="debounceLeadsSearch()" type="text" placeholder="Search by business name, domain, description..." class="glass-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm" />
               <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-neutral-400"></i>
             </div>
 
             <div class="md:col-span-3">
+              <label for="leads-tech-filter" class="sr-only">Filter by technology</label>
               <select id="leads-tech-filter" aria-label="Filter leads by technology" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
                 <option value="">All Technologies</option>
                 <option value="opencart">OpenCart</option>
@@ -598,6 +600,7 @@
             </div>
 
             <div class="md:col-span-2">
+              <label for="leads-country-filter" class="sr-only">Filter by country</label>
               <select id="leads-country-filter" aria-label="Filter leads by country" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm font-medium">
                 <option value="">All Countries</option>
                 <option value="United States">United States (USA)</option>
@@ -621,6 +624,7 @@
             </div>
 
             <div class="md:col-span-2">
+              <label for="leads-score-filter" class="sr-only">Filter by opportunity score</label>
               <select id="leads-score-filter" aria-label="Filter leads by opportunity score" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
                 <option value="">All Scores</option>
                 <option value="HOT">HOT (≥90)</option>
@@ -704,14 +708,14 @@
                 Universal tabular format with sanitized formula injection prevention. Compatible with Excel, Google Sheets, Salesforce, HubSpot.
               </p>
             </div>
-            <a href="/api/v1/exports/csv" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+            <button onclick="handleExportDownload(event, 'csv')" class="chamfer text-center w-full" style="min-width: 100%; height: 42px;">
               <span class="chamfer__glass" aria-hidden="true"></span>
               <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
                 <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
               </svg>
               <span class="chamfer__label text-xs uppercase font-bold text-emerald-400">Download CSV</span>
               <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
-            </a>
+            </button>
           </div>
 
           <!-- Excel XLSX -->
@@ -723,14 +727,14 @@
                 Professionally styled spreadsheet with dark header banner, auto-fit column widths, conditional color fills for HOT/LIVE leads.
               </p>
             </div>
-            <a href="/api/v1/exports/xlsx" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+            <button onclick="handleExportDownload(event, 'xlsx')" class="chamfer text-center w-full" style="min-width: 100%; height: 42px;">
               <span class="chamfer__glass" aria-hidden="true"></span>
               <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
                 <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
               </svg>
               <span class="chamfer__label text-xs uppercase font-bold text-blue-400">Download Excel</span>
               <i data-lucide="download" class="w-4 h-4 text-blue-400"></i>
-            </a>
+            </button>
           </div>
 
           <!-- JSON -->
@@ -742,14 +746,14 @@
                 Full-fidelity nested object representations with forensic evidence arrays, contact hashes, and scoring factor trees.
               </p>
             </div>
-            <a href="/api/v1/exports/json" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+            <button onclick="handleExportDownload(event, 'json')" class="chamfer text-center w-full" style="min-width: 100%; height: 42px;">
               <span class="chamfer__glass" aria-hidden="true"></span>
               <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
                 <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
               </svg>
               <span class="chamfer__label text-xs uppercase font-bold text-amber-400">Download JSON</span>
               <i data-lucide="download" class="w-4 h-4 text-amber-400"></i>
-            </a>
+            </button>
           </div>
 
           <!-- PDF Report -->
@@ -917,6 +921,6 @@
 
   <!-- Scripts -->
   <script src="/static/glass-card.js"></script>
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=2.2.0"></script>
 </body>
 </html>
