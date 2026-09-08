@@ -25,7 +25,7 @@ def list_leads(
     has_email: Optional[bool] = None,
     min_score: Optional[int] = None,
     query: Optional[str] = None,
-    limit: int = Query(25, ge=1, le=500),
+    limit: int = Query(25, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     sort_by: str = Query("score", pattern="^(score|recent|domain)$"),
 ):

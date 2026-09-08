@@ -453,8 +453,9 @@
                 <select id="disc-limit-select" aria-label="Candidate domain limit" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm font-medium">
                   <option value="20">20 Candidates</option>
                   <option value="50">50 Candidates</option>
-                  <option value="100" selected>100 Candidates (Full Batch)</option>
+                  <option value="100" selected>100 Candidates (Standard Batch)</option>
                   <option value="150">150 Candidates</option>
+                  <option value="200">200 Candidates (Max Batch)</option>
                 </select>
               </div>
             </div>
@@ -555,12 +556,12 @@
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-3">
-            <button onclick="triggerAutoRefreshBatch(100)" class="chamfer text-sm" style="min-width: 250px; height: 42px;">
+            <button onclick="triggerAutoRefreshBatch(100)" class="chamfer text-sm" style="min-width: 260px; height: 42px;">
               <span class="chamfer__glass" style="background: rgba(239, 77, 35, 0.9); border-color: #ef4d23;" aria-hidden="true"></span>
               <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
                 <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
               </svg>
-              <span class="chamfer__label text-xs uppercase font-bold text-white">Auto-Refresh 100 New Leads</span>
+              <span class="chamfer__label text-xs uppercase font-bold text-white">Auto-Refresh 100-200 Fresh Leads</span>
               <i data-lucide="refresh-cw" class="w-4 h-4 text-white"></i>
             </button>
 
@@ -644,8 +645,19 @@
               <button onclick="setLeadsPreset('live')" class="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30">Live Only</button>
             </div>
 
-            <div class="text-neutral-400 font-mono" id="leads-pagination-info">
-              Showing -- leads
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5">
+                <label for="leads-limit-select" class="text-neutral-400 font-mono text-xs">Show:</label>
+                <select id="leads-limit-select" onchange="changePageSize()" aria-label="Leads per page" class="glass-input px-2.5 py-1 rounded-lg text-xs font-mono text-neutral-200">
+                  <option value="25">25 / page</option>
+                  <option value="50">50 / page</option>
+                  <option value="100" selected>100 / page (Standard)</option>
+                  <option value="200">200 / page (Max Batch)</option>
+                </select>
+              </div>
+              <div class="text-neutral-400 font-mono" id="leads-pagination-info">
+                Showing -- leads
+              </div>
             </div>
           </div>
         </div>
@@ -921,6 +933,6 @@
 
   <!-- Scripts -->
   <script src="/static/glass-card.js"></script>
-  <script src="/static/app.js?v=2.2.0"></script>
+  <script src="/static/app.js?v=2.3.0"></script>
 </body>
 </html>

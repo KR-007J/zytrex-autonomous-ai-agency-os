@@ -13,7 +13,7 @@ const state = {
   leads: [],         // Currently filtered & paginated page of leads
   pagination: {
     page: 1,
-    limit: 15,
+    limit: 100, // 100 leads per batch by default
     total: 0,
     totalPages: 1
   },
@@ -157,7 +157,7 @@ async function ensureLeadsLoaded() {
   }
 
   // 1. Try fetching from live FastAPI backend if available
-  const apiData = await safeJsonFetch('/api/v1/leads?limit=500');
+  const apiData = await safeJsonFetch('/api/v1/leads?limit=1000');
   if (apiData && Array.isArray(apiData.leads) && apiData.leads.length > 0) {
     state.allLeads = apiData.leads;
     state.isStaticMode = false;
@@ -362,11 +362,15 @@ function handleHeroSearch(e) {
   if (discEmail) discEmail.checked = reqEmail;
 
   navigateRoute(null, 'discover');
-  startDiscoveryJob(tech, country, 'E-commerce', 20, reqEmail);
+  startDiscoveryJob(tech, country, 'E-commerce', 100, reqEmail);
 }
 
-// Trigger auto refresh batch of 100 new leads and purge old ones
+// Trigger auto refresh batch of 100-200 new leads and purge old ones
 async function triggerAutoRefreshBatch(limit = 100) {
+  const leadsLimitSelect = document.getElementById('leads-limit-select');
+  if (leadsLimitSelect) {
+    limit = parseInt(leadsLimitSelect.value, 10) || limit;
+  }
   const tech = document.getElementById('leads-tech-filter')?.value || 'opencart';
   const country = document.getElementById('leads-country-filter')?.value || 'United States';
 
@@ -395,7 +399,7 @@ function handleDiscoverySubmit(e) {
   const tech = document.getElementById('disc-tech-select').value;
   const country = document.getElementById('disc-country-select').value;
   const industry = document.getElementById('disc-industry-input').value;
-  const limit = parseInt(document.getElementById('disc-limit-select').value, 10) || 20;
+  const limit = parseInt(document.getElementById('disc-limit-select').value, 10) || 100;
   const requireEmail = document.getElementById('disc-require-email')?.checked || false;
   const replaceExisting = document.getElementById('disc-replace-existing')?.checked || false;
 
@@ -514,10 +518,11 @@ async function startDiscoveryJob(tech, country, industry, limit, requireEmail, r
 
   document.getElementById('disc-count-candidates').textContent = candidateCount.toString();
 
-  // Step-by-step physical scanner simulation
+  // Step-by-step physical scanner simulation with adaptive timing for high-volume batches (100-200 leads)
+  const stepDelay = candidateCount > 100 ? 30 : (candidateCount > 50 ? 55 : 180);
   let processed = 0;
   for (const lead of selectedCandidates) {
-    await new Promise(r => setTimeout(r, 260));
+    await new Promise(r => setTimeout(r, stepDelay));
     processed++;
     const pct = Math.round((processed / candidateCount) * 100);
 
@@ -530,7 +535,9 @@ async function startDiscoveryJob(tech, country, industry, limit, requireEmail, r
 
     appendDiscoveryLog(`[VERIFY] ${lead.domain} — Status: ${lead.status} (${lead.http_status}), Score: ${lead.lead_score} (${lead.score_label})`);
     renderStreamingLeadCard(lead);
-    playHapticSound('click');
+    if (processed % 4 === 0 || processed === candidateCount) {
+      playHapticSound('click');
+    }
   }
 
   // Completed State
@@ -804,6 +811,15 @@ async function loadLeadsTable() {
   }
 
   if (window.lucide) lucide.createIcons();
+}
+
+function changePageSize() {
+  const select = document.getElementById('leads-limit-select');
+  if (select) {
+    state.pagination.limit = parseInt(select.value, 10) || 100;
+  }
+  state.pagination.page = 1;
+  loadLeadsTable();
 }
 
 function changeLeadsPage(delta) {

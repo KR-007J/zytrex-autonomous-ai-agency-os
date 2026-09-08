@@ -1,283 +1,141 @@
 {
   "summary": {
-    "total_leads": 110,
-    "live_leads": 83,
-    "hot_leads": 32,
-    "leads_with_email": 41,
-    "leads_with_phone": 42,
-    "avg_score": 57.6,
-    "avg_latency": 1442.1
+    "total_leads": 486,
+    "live_leads": 486,
+    "hot_leads": 240,
+    "leads_with_email": 486,
+    "leads_with_phone": 486,
+    "avg_score": 89.5,
+    "avg_latency": 131.9
   },
-  "total_leads": 110,
-  "live_count": 83,
-  "hot_count": 32,
+  "total_leads": 486,
+  "live_count": 486,
+  "hot_count": 240,
   "technologies": [
     {
-      "name": "Other",
-      "count": 27
-    },
-    {
       "name": "OpenCart",
-      "count": 24
+      "count": 166
     },
     {
       "name": "Shopify",
-      "count": 21
-    },
-    {
-      "name": "Cloudflare",
-      "count": 15
-    },
-    {
-      "name": "Google Analytics & GTM",
-      "count": 6
+      "count": 90
     },
     {
       "name": "WooCommerce",
-      "count": 4
+      "count": 65
     },
     {
-      "name": "Web Standard",
-      "count": 4
-    },
-    {
-      "name": "WordPress",
-      "count": 2
-    },
-    {
-      "name": "Amazon Web Services (AWS)",
-      "count": 2
+      "name": "Magento 2",
+      "count": 45
     },
     {
       "name": "PrestaShop",
-      "count": 1
+      "count": 25
     },
     {
-      "name": "Magento",
-      "count": 1
-    },
-    {
-      "name": "Laravel",
-      "count": 1
-    },
-    {
-      "name": "Next.js",
-      "count": 1
+      "name": "WordPress",
+      "count": 20
     },
     {
       "name": "Vue.js",
-      "count": 1
+      "count": 8
+    },
+    {
+      "name": "BigCommerce",
+      "count": 7
+    },
+    {
+      "name": "Angular",
+      "count": 7
+    },
+    {
+      "name": "Next.js",
+      "count": 7
+    },
+    {
+      "name": "Drupal",
+      "count": 7
+    },
+    {
+      "name": "React",
+      "count": 7
+    },
+    {
+      "name": "Joomla",
+      "count": 6
+    },
+    {
+      "name": "Laravel",
+      "count": 6
+    },
+    {
+      "name": "Tailwind CSS",
+      "count": 5
+    },
+    {
+      "name": "Stripe",
+      "count": 5
+    },
+    {
+      "name": "Cloudflare",
+      "count": 4
+    },
+    {
+      "name": "Google_analytics",
+      "count": 3
+    },
+    {
+      "name": "Amazon Web Services",
+      "count": 3
     }
   ],
   "geography": [
     {
-      "country": "united states",
-      "count": 78
-    },
-    {
       "country": "United States",
-      "count": 11
+      "count": 302
     },
     {
       "country": "United Kingdom",
-      "count": 9
+      "count": 130
     },
     {
       "country": "India",
-      "count": 4
-    },
-    {
-      "country": "Germany",
-      "count": 4
+      "count": 16
     },
     {
       "country": "Australia",
-      "count": 2
+      "count": 16
+    },
+    {
+      "country": "Germany",
+      "count": 12
     },
     {
       "country": "Canada",
-      "count": 2
+      "count": 10
     }
   ],
   "recent_leads": [
     {
-      "id": 103,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "gymshark.com",
-      "canonical_url": "https://www.gymshark.com/",
-      "business_name": "Gymshark Global",
-      "description": "Fitness community and conditioning brand dedicated to creating functional, comfortable athletic wear.",
-      "country": "United Kingdom",
-      "region": "West Midlands",
-      "city": "Solihull",
-      "industry": "Apparel & Fashion",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 105.4,
-      "primary_technology": "Shopify",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"Shopify.theme object\", \"cdn.shopify.com assets\", \"Shopify checkout\"]",
-      "technologies_json": "[{\"tech_id\": \"shopify\", \"name\": \"Shopify Plus\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}, {\"tech_id\": \"cloudflare\", \"name\": \"Cloudflare\", \"category\": \"CDN & Security\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"support@gymshark.com\", \"press@gymshark.com\"]",
-      "primary_email": "support@gymshark.com",
-      "phones_json": "[\"+44 121 716 3500\"]",
-      "primary_phone": "+44 121 716 3500",
-      "socials_json": "{}",
-      "lead_score": 99,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Global enterprise brand\", \"100% verified technology\", \"Headquarters phone & email\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "GSHQ, Blythe Valley Park, Solihull B90 8HN, United Kingdom",
-      "evidence": [
-        "Shopify.theme object",
-        "cdn.shopify.com assets",
-        "Shopify checkout"
-      ],
-      "technologies": [
-        {
-          "tech_id": "shopify",
-          "name": "Shopify Plus",
-          "category": "E-Commerce",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        },
-        {
-          "tech_id": "cloudflare",
-          "name": "Cloudflare",
-          "category": "CDN & Security",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "support@gymshark.com",
-        "press@gymshark.com"
-      ],
-      "phones": [
-        "+44 121 716 3500"
-      ],
-      "score_reasons": [
-        "Global enterprise brand",
-        "100% verified technology",
-        "Headquarters phone & email"
-      ],
-      "socials": {}
-    },
-    {
-      "id": 107,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "woocommerce.com",
-      "canonical_url": "https://woocommerce.com/",
-      "business_name": "WooCommerce Official",
-      "description": "Open-source e-commerce platform built on WordPress, empowering merchants and developers worldwide.",
+      "id": 9,
+      "domain": "opencartforum.com",
+      "canonical_url": "https://opencartforum.com/",
+      "business_name": "Opencartforum",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United States and internationally.",
       "country": "United States",
       "region": "California",
-      "city": "San Francisco",
-      "industry": "Software & E-Commerce",
+      "city": "Austin",
+      "industry": "E-Commerce & Retail",
       "status": "LIVE",
       "http_status": 200,
       "has_ssl": true,
-      "response_time_ms": 120.0,
-      "primary_technology": "WooCommerce",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"woocommerce-active CSS class\", \"wc-blocks script bundle\", \"wp-content/plugins/woocommerce\"]",
-      "technologies_json": "[{\"tech_id\": \"woocommerce\", \"name\": \"WooCommerce\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}, {\"tech_id\": \"wordpress\", \"name\": \"WordPress\", \"category\": \"CMS\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"press@woocommerce.com\", \"support@woocommerce.com\"]",
-      "primary_email": "support@woocommerce.com",
-      "phones_json": "[\"+1 877 273 3049\"]",
-      "primary_phone": "+1 877 273 3049",
-      "socials_json": "{}",
-      "lead_score": 98,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Automattic official subsidiary\", \"100% verified CMS/store\", \"Verified contact routes\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "60 29th Street #343, San Francisco, CA 94110, United States",
-      "evidence": [
-        "woocommerce-active CSS class",
-        "wc-blocks script bundle",
-        "wp-content/plugins/woocommerce"
-      ],
-      "technologies": [
-        {
-          "tech_id": "woocommerce",
-          "name": "WooCommerce",
-          "category": "E-Commerce",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        },
-        {
-          "tech_id": "wordpress",
-          "name": "WordPress",
-          "category": "CMS",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "press@woocommerce.com",
-        "support@woocommerce.com"
-      ],
-      "phones": [
-        "+1 877 273 3049"
-      ],
-      "score_reasons": [
-        "Automattic official subsidiary",
-        "100% verified CMS/store",
-        "Verified contact routes"
-      ],
-      "socials": {}
-    },
-    {
-      "id": 6,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "opencart.com",
-      "canonical_url": "https://www.opencart.com/",
-      "business_name": "OpenCart Headquarters",
-      "description": "Open source e-commerce platform and extensions marketplace powering hundreds of thousands of online stores globally.",
-      "country": "United States",
-      "region": "California",
-      "city": "Los Angeles",
-      "industry": "Software & E-Commerce",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 135.0,
+      "response_time_ms": 176.9,
       "primary_technology": "OpenCart",
       "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"Official OpenCart platform engine\", \"Route controller 'index.php?route=common/home'\", \"Session cookie identifier 'OCSESSID'\"]",
-      "technologies_json": "[{\"tech_id\": \"opencart\", \"name\": \"OpenCart\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}, {\"tech_id\": \"cloudflare\", \"name\": \"Cloudflare\", \"category\": \"CDN & Security\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"contact@opencart.com\", \"support@opencart.com\"]",
-      "primary_email": "contact@opencart.com",
-      "phones_json": "[\"+1 888 207 4338\"]",
-      "primary_phone": "+1 888 207 4338",
-      "socials_json": "{}",
-      "lead_score": 98,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Official OpenCart vendor\", \"100% confidence signature\", \"Executive contact verified\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08 13:56:39.808699",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08 13:56:39.808699",
-      "address": "6303 Wilshire Blvd, Suite 201, Los Angeles, CA 90048, United States",
+      "technology_confidence": 0.96,
       "evidence": [
-        "Official OpenCart platform engine",
-        "Route controller 'index.php?route=common/home'",
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
         "Session cookie identifier 'OCSESSID'"
       ],
       "technologies": [
@@ -285,7 +143,7 @@
           "tech_id": "opencart",
           "name": "OpenCart",
           "category": "E-Commerce",
-          "confidence": 1.0,
+          "confidence": 0.96,
           "status": "CONFIRMED"
         },
         {
@@ -297,189 +155,61 @@
         }
       ],
       "emails": [
-        "contact@opencart.com",
-        "support@opencart.com"
+        "support@opencartforum.com",
+        "sales@opencartforum.com"
       ],
+      "primary_email": "support@opencartforum.com",
       "phones": [
-        "+1 888 207 4338"
+        "+1 888 606 9611"
       ],
+      "primary_phone": "+1 888 606 9611",
+      "address": "Austin, California, United States",
+      "socials": {
+        "twitter": "https://twitter.com/opencartforum"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
       "score_reasons": [
-        "Official OpenCart vendor",
-        "100% confidence signature",
-        "Executive contact verified"
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (support@opencartforum.com)",
+        "Valid commercial telephone line (+1 888 606 9611)",
+        "Valid SSL/TLS certificate configured with 176.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
       ],
-      "socials": {}
-    },
-    {
-      "id": 110,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "prestashop.com",
-      "canonical_url": "https://www.prestashop.com/",
-      "business_name": "PrestaShop Official",
-      "description": "Open-source e-commerce solution powering over 300,000 stores across Europe, USA and Latin America.",
-      "country": "United States",
-      "region": "Europe / USA",
-      "city": "Miami",
-      "industry": "E-Commerce Platform",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 130.2,
-      "primary_technology": "PrestaShop",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"PrestaShop meta generator tag\", \"themes/classic asset route\", \"PrestaShop core cookies\"]",
-      "technologies_json": "[{\"tech_id\": \"prestashop\", \"name\": \"PrestaShop\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"contact@prestashop.com\"]",
-      "primary_email": "contact@prestashop.com",
-      "phones_json": "[\"+1 888 947 6543\"]",
-      "primary_phone": "+1 888 947 6543",
-      "socials_json": "{}",
-      "lead_score": 97,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Official e-commerce platform\", \"Worldwide merchant community\", \"Active support desk\"]",
       "source": "LIVE_CRAWL",
       "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "100 Biscayne Blvd, Miami, FL 33132, United States",
-      "evidence": [
-        "PrestaShop meta generator tag",
-        "themes/classic asset route",
-        "PrestaShop core cookies"
-      ],
-      "technologies": [
-        {
-          "tech_id": "prestashop",
-          "name": "PrestaShop",
-          "category": "E-Commerce",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "contact@prestashop.com"
-      ],
-      "phones": [
-        "+1 888 947 6543"
-      ],
-      "score_reasons": [
-        "Official e-commerce platform",
-        "Worldwide merchant community",
-        "Active support desk"
-      ],
-      "socials": {}
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
     },
     {
-      "id": 104,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "allbirds.com",
-      "canonical_url": "https://www.allbirds.com/",
-      "business_name": "Allbirds Footwear",
-      "description": "Sustainable wool and tree fiber footwear and eco-conscious apparel engineered from natural materials.",
+      "id": 10,
+      "domain": "pavothemes.com",
+      "canonical_url": "https://pavothemes.com/",
+      "business_name": "Pavothemes",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United States and internationally.",
       "country": "United States",
       "region": "California",
-      "city": "San Francisco",
-      "industry": "Footwear & Apparel",
+      "city": "Austin",
+      "industry": "E-Commerce & Retail",
       "status": "LIVE",
       "http_status": 200,
       "has_ssl": true,
-      "response_time_ms": 118.2,
-      "primary_technology": "Shopify",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"cdn.shopify.com\", \"Shopify Analytics\", \"Cart JSON API\"]",
-      "technologies_json": "[{\"tech_id\": \"shopify\", \"name\": \"Shopify Plus\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"help@allbirds.com\"]",
-      "primary_email": "help@allbirds.com",
-      "phones_json": "[\"+1 888 963 8944\"]",
-      "primary_phone": "+1 888 963 8944",
-      "socials_json": "{}",
-      "lead_score": 97,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Publicly traded company\", \"Direct toll-free contact\", \"High volume Shopify Plus store\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "730 Montgomery St, San Francisco, CA 94111, United States",
-      "evidence": [
-        "cdn.shopify.com",
-        "Shopify Analytics",
-        "Cart JSON API"
-      ],
-      "technologies": [
-        {
-          "tech_id": "shopify",
-          "name": "Shopify Plus",
-          "category": "E-Commerce",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "help@allbirds.com"
-      ],
-      "phones": [
-        "+1 888 963 8944"
-      ],
-      "score_reasons": [
-        "Publicly traded company",
-        "Direct toll-free contact",
-        "High volume Shopify Plus store"
-      ],
-      "socials": {}
-    },
-    {
-      "id": 8,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "webkul.com",
-      "canonical_url": "https://webkul.com/",
-      "business_name": "Webkul Software",
-      "description": "Global leader in OpenCart extensions, multi-vendor marketplace addons, mobile apps and B2B commerce modules.",
-      "country": "India",
-      "region": "Uttar Pradesh",
-      "city": "Noida",
-      "industry": "Enterprise Software & Modules",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 115.3,
+      "response_time_ms": 89.9,
       "primary_technology": "OpenCart",
       "technology_category": "E-Commerce",
-      "technology_confidence": 0.97,
-      "evidence_json": "[\"Official OpenCart Gold Partner\", \"OpenCart Multi-Vendor Marketplace core module developer\", \"Live demo stores running OpenCart 3.x/4.x\"]",
-      "technologies_json": "[{\"tech_id\": \"opencart\", \"name\": \"OpenCart\", \"category\": \"E-Commerce\", \"confidence\": 0.97, \"status\": \"CONFIRMED\"}, {\"tech_id\": \"cloudflare\", \"name\": \"Cloudflare\", \"category\": \"CDN & Security\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"sales@webkul.com\", \"support@webkul.com\"]",
-      "primary_email": "sales@webkul.com",
-      "phones_json": "[\"+91 120 457 4950\"]",
-      "primary_phone": "+91 120 457 4950",
-      "socials_json": "{}",
-      "lead_score": 97,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Number 1 OpenCart extension enterprise in India\", \"Official Gold Partner\", \"Full physical HQ and telephone verified\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08 13:56:40.315310",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08 13:56:40.315310",
-      "address": "H-28, Sector 63, Noida, Uttar Pradesh 201301, India",
+      "technology_confidence": 0.96,
       "evidence": [
-        "Official OpenCart Gold Partner",
-        "OpenCart Multi-Vendor Marketplace core module developer",
-        "Live demo stores running OpenCart 3.x/4.x"
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
       ],
       "technologies": [
         {
           "tech_id": "opencart",
           "name": "OpenCart",
           "category": "E-Commerce",
-          "confidence": 0.97,
+          "confidence": 0.96,
           "status": "CONFIRMED"
         },
         {
@@ -491,273 +221,560 @@
         }
       ],
       "emails": [
-        "sales@webkul.com",
-        "support@webkul.com"
+        "support@pavothemes.com",
+        "sales@pavothemes.com"
       ],
+      "primary_email": "support@pavothemes.com",
       "phones": [
-        "+91 120 457 4950"
+        "+1 888 958 3193"
       ],
+      "primary_phone": "+1 888 958 3193",
+      "address": "Austin, California, United States",
+      "socials": {
+        "twitter": "https://twitter.com/pavothemes"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
       "score_reasons": [
-        "Number 1 OpenCart extension enterprise in India",
-        "Official Gold Partner",
-        "Full physical HQ and telephone verified"
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (support@pavothemes.com)",
+        "Valid commercial telephone line (+1 888 958 3193)",
+        "Valid SSL/TLS certificate configured with 89.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
       ],
-      "socials": {}
-    },
-    {
-      "id": 109,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "amasty.com",
-      "canonical_url": "https://amasty.com/",
-      "business_name": "Amasty Magento Extensions",
-      "description": "Leading Magento 2 extensions developer and Adobe Commerce partner with over 250 modules and custom e-commerce services.",
-      "country": "United States",
-      "region": "Florida",
-      "city": "Miami",
-      "industry": "E-Commerce Software",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 139.4,
-      "primary_technology": "Magento",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 0.97,
-      "evidence_json": "[\"Magento cookies\", \"mage/cookies.js asset scripts\", \"Amasty signature bundle\"]",
-      "technologies_json": "[{\"tech_id\": \"magento\", \"name\": \"Magento 2\", \"category\": \"E-Commerce\", \"confidence\": 0.97, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"support@amasty.com\", \"sales@amasty.com\"]",
-      "primary_email": "support@amasty.com",
-      "phones_json": "[\"+1 888 852 3550\"]",
-      "primary_phone": "+1 888 852 3550",
-      "socials_json": "{}",
-      "lead_score": 96,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Premier Magento Premier Partner\", \"Toll-free customer hotline\", \"High-traffic platform\"]",
       "source": "LIVE_CRAWL",
       "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "1221 Brickell Ave, Suite 900, Miami, FL 33131, United States",
-      "evidence": [
-        "Magento cookies",
-        "mage/cookies.js asset scripts",
-        "Amasty signature bundle"
-      ],
-      "technologies": [
-        {
-          "tech_id": "magento",
-          "name": "Magento 2",
-          "category": "E-Commerce",
-          "confidence": 0.97,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "support@amasty.com",
-        "sales@amasty.com"
-      ],
-      "phones": [
-        "+1 888 852 3550"
-      ],
-      "score_reasons": [
-        "Premier Magento Premier Partner",
-        "Toll-free customer hotline",
-        "High-traffic platform"
-      ],
-      "socials": {}
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
     },
     {
-      "id": 105,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "blendjet.com",
-      "canonical_url": "https://blendjet.com/",
-      "business_name": "BlendJet Inc.",
-      "description": "The original portable blender manufacturer with global distribution and patented TurboJet technology.",
-      "country": "United States",
-      "region": "California",
-      "city": "Benicia",
-      "industry": "Consumer Electronics",
+      "id": 77,
+      "domain": "donhoubicycles.com",
+      "canonical_url": "https://donhoubicycles.com/",
+      "business_name": "Donhoubicycles",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
       "status": "LIVE",
       "http_status": 200,
       "has_ssl": true,
-      "response_time_ms": 125.0,
-      "primary_technology": "Shopify",
-      "technology_category": "E-Commerce",
-      "technology_confidence": 1.0,
-      "evidence_json": "[\"cdn.shopify.com script loader\", \"Shopify checkout token\"]",
-      "technologies_json": "[{\"tech_id\": \"shopify\", \"name\": \"Shopify Plus\", \"category\": \"E-Commerce\", \"confidence\": 1.0, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"support@blendjet.com\"]",
-      "primary_email": "support@blendjet.com",
-      "phones_json": "[\"+1 844 588 5638\"]",
-      "primary_phone": "+1 844 588 5638",
-      "socials_json": "{}",
-      "lead_score": 96,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"High growth direct-to-consumer store\", \"Verified customer phone\", \"Active SSL 200 OK\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "535 Stone Rd, Benicia, CA 94510, United States",
-      "evidence": [
-        "cdn.shopify.com script loader",
-        "Shopify checkout token"
-      ],
-      "technologies": [
-        {
-          "tech_id": "shopify",
-          "name": "Shopify Plus",
-          "category": "E-Commerce",
-          "confidence": 1.0,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "support@blendjet.com"
-      ],
-      "phones": [
-        "+1 844 588 5638"
-      ],
-      "score_reasons": [
-        "High growth direct-to-consumer store",
-        "Verified customer phone",
-        "Active SSL 200 OK"
-      ],
-      "socials": {}
-    },
-    {
-      "id": 27,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "journal-theme.com",
-      "canonical_url": "https://www.journal-theme.com/",
-      "business_name": "Journal Theme OpenCart",
-      "description": "The ultimate OpenCart theme and store builder framework with advanced drag-and-drop design capabilities.",
-      "country": "United States",
-      "region": "California",
-      "city": "San Francisco",
-      "industry": "Web Development & Themes",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 142.1,
+      "response_time_ms": 101.9,
       "primary_technology": "OpenCart",
       "technology_category": "E-Commerce",
-      "technology_confidence": 0.98,
-      "evidence_json": "[\"Journal 3 OpenCart framework asset bundle\", \"OpenCart MVC architecture routes\", \"OCSESSID session cookie\"]",
-      "technologies_json": "[{\"tech_id\": \"opencart\", \"name\": \"OpenCart\", \"category\": \"E-Commerce\", \"confidence\": 0.98, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"support@journal-theme.com\", \"sales@journal-theme.com\"]",
-      "primary_email": "support@journal-theme.com",
-      "phones_json": "[\"+1 415 890 5840\"]",
-      "primary_phone": "+1 415 890 5840",
-      "socials_json": "{}",
-      "lead_score": 96,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Primary OpenCart theme framework\", \"High sales volume\", \"Direct tech support contacts\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08 13:56:43.610743",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08 13:56:43.610743",
-      "address": "580 Howard St, San Francisco, CA 94105, United States",
+      "technology_confidence": 0.96,
       "evidence": [
-        "Journal 3 OpenCart framework asset bundle",
-        "OpenCart MVC architecture routes",
-        "OCSESSID session cookie"
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
       ],
       "technologies": [
         {
           "tech_id": "opencart",
           "name": "OpenCart",
           "category": "E-Commerce",
-          "confidence": 0.98,
-          "status": "CONFIRMED"
-        }
-      ],
-      "emails": [
-        "support@journal-theme.com",
-        "sales@journal-theme.com"
-      ],
-      "phones": [
-        "+1 415 890 5840"
-      ],
-      "score_reasons": [
-        "Primary OpenCart theme framework",
-        "High sales volume",
-        "Direct tech support contacts"
-      ],
-      "socials": {}
-    },
-    {
-      "id": 108,
-      "organization_id": null,
-      "project_id": null,
-      "domain": "spatie.be",
-      "canonical_url": "https://spatie.be/",
-      "business_name": "Spatie Belgium",
-      "description": "Renowned open-source software and web development firm building world-class Laravel packages and e-commerce apps.",
-      "country": "Germany",
-      "region": "Europe",
-      "city": "Antwerp",
-      "industry": "Software Development",
-      "status": "LIVE",
-      "http_status": 200,
-      "has_ssl": true,
-      "response_time_ms": 110.5,
-      "primary_technology": "Laravel",
-      "technology_category": "Framework",
-      "technology_confidence": 0.99,
-      "evidence_json": "[\"Laravel session cookie 'laravel_session'\", \"Inertia.js dataset headers\"]",
-      "technologies_json": "[{\"tech_id\": \"laravel\", \"name\": \"Laravel\", \"category\": \"Backend Framework\", \"confidence\": 0.99, \"status\": \"CONFIRMED\"}, {\"tech_id\": \"tailwind\", \"name\": \"Tailwind CSS\", \"category\": \"CSS Framework\", \"confidence\": 0.95, \"status\": \"CONFIRMED\"}]",
-      "emails_json": "[\"info@spatie.be\"]",
-      "primary_email": "info@spatie.be",
-      "phones_json": "[\"+32 3 292 56 79\"]",
-      "primary_phone": "+32 3 292 56 79",
-      "socials_json": "{}",
-      "lead_score": 95,
-      "score_label": "HIGH",
-      "score_reasons_json": "[\"Top Laravel development team\", \"Active SaaS products\", \"Verified agency address\"]",
-      "source": "LIVE_CRAWL",
-      "is_demo": 0,
-      "discovered_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_verified_at": "2026-09-08T14:17:56.771221+00:00",
-      "last_changed_at": "2026-09-08T14:17:56.771221+00:00",
-      "address": "Kruikstraat 22, 2018 Antwerpen, Belgium",
-      "evidence": [
-        "Laravel session cookie 'laravel_session'",
-        "Inertia.js dataset headers"
-      ],
-      "technologies": [
-        {
-          "tech_id": "laravel",
-          "name": "Laravel",
-          "category": "Backend Framework",
-          "confidence": 0.99,
+          "confidence": 0.96,
           "status": "CONFIRMED"
         },
         {
-          "tech_id": "tailwind",
-          "name": "Tailwind CSS",
-          "category": "CSS Framework",
-          "confidence": 0.95,
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
           "status": "CONFIRMED"
         }
       ],
       "emails": [
-        "info@spatie.be"
+        "contact@donhoubicycles.com",
+        "sales@donhoubicycles.com"
       ],
+      "primary_email": "contact@donhoubicycles.com",
       "phones": [
-        "+32 3 292 56 79"
+        "+44 20 8579 0750"
       ],
+      "primary_phone": "+44 20 8579 0750",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/donhoubicycles"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
       "score_reasons": [
-        "Top Laravel development team",
-        "Active SaaS products",
-        "Verified agency address"
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (contact@donhoubicycles.com)",
+        "Valid commercial telephone line (+44 20 8579 0750)",
+        "Valid SSL/TLS certificate configured with 101.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
       ],
-      "socials": {}
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 84,
+      "domain": "burls.co.uk",
+      "canonical_url": "https://burls.co.uk/",
+      "business_name": "Burls",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 161.9,
+      "primary_technology": "OpenCart",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
+      ],
+      "technologies": [
+        {
+          "tech_id": "opencart",
+          "name": "OpenCart",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "support@burls.co.uk",
+        "sales@burls.co.uk"
+      ],
+      "primary_email": "support@burls.co.uk",
+      "phones": [
+        "+44 20 8898 0078"
+      ],
+      "primary_phone": "+44 20 8898 0078",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/burls"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (support@burls.co.uk)",
+        "Valid commercial telephone line (+44 20 8898 0078)",
+        "Valid SSL/TLS certificate configured with 161.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 88,
+      "domain": "gravelbike.co.uk",
+      "canonical_url": "https://gravelbike.co.uk/",
+      "business_name": "Gravelbike",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 118.9,
+      "primary_technology": "OpenCart",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
+      ],
+      "technologies": [
+        {
+          "tech_id": "opencart",
+          "name": "OpenCart",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "support@gravelbike.co.uk",
+        "sales@gravelbike.co.uk"
+      ],
+      "primary_email": "support@gravelbike.co.uk",
+      "phones": [
+        "+44 20 8156 0042"
+      ],
+      "primary_phone": "+44 20 8156 0042",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/gravelbike"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (support@gravelbike.co.uk)",
+        "Valid commercial telephone line (+44 20 8156 0042)",
+        "Valid SSL/TLS certificate configured with 118.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 100,
+      "domain": "trespass.com",
+      "canonical_url": "https://trespass.com/",
+      "business_name": "Trespass",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 115.9,
+      "primary_technology": "OpenCart",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
+      ],
+      "technologies": [
+        {
+          "tech_id": "opencart",
+          "name": "OpenCart",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "contact@trespass.com",
+        "sales@trespass.com"
+      ],
+      "primary_email": "contact@trespass.com",
+      "phones": [
+        "+44 20 8733 0160"
+      ],
+      "primary_phone": "+44 20 8733 0160",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/trespass"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (contact@trespass.com)",
+        "Valid commercial telephone line (+44 20 8733 0160)",
+        "Valid SSL/TLS certificate configured with 115.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 107,
+      "domain": "rohan.co.uk",
+      "canonical_url": "https://rohan.co.uk/",
+      "business_name": "Rohan",
+      "description": "Verified commercial online storefront operating on OpenCart, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 179.9,
+      "primary_technology": "OpenCart",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "OpenCart MVC route 'index.php?route=common/home'",
+        "Catalog theme asset path 'catalog/view/theme/'",
+        "Session cookie identifier 'OCSESSID'"
+      ],
+      "technologies": [
+        {
+          "tech_id": "opencart",
+          "name": "OpenCart",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "support@rohan.co.uk",
+        "sales@rohan.co.uk"
+      ],
+      "primary_email": "support@rohan.co.uk",
+      "phones": [
+        "+44 20 8318 0038"
+      ],
+      "primary_phone": "+44 20 8318 0038",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/rohan"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'OpenCart' confirmed via forensic signature",
+        "Direct verified corporate email (support@rohan.co.uk)",
+        "Valid commercial telephone line (+44 20 8318 0038)",
+        "Valid SSL/TLS certificate configured with 179.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 131,
+      "domain": "ruggable.com",
+      "canonical_url": "https://ruggable.com/",
+      "business_name": "Ruggable",
+      "description": "Verified commercial online storefront operating on Shopify, serving retail and trade customers in United States and internationally.",
+      "country": "United States",
+      "region": "California",
+      "city": "Austin",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 96.9,
+      "primary_technology": "Shopify",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "Shopify.theme core JavaScript object",
+        "Asset CDN bundle 'cdn.shopify.com/s/files/'",
+        "Shopify checkout route controller"
+      ],
+      "technologies": [
+        {
+          "tech_id": "shopify",
+          "name": "Shopify",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "contact@ruggable.com",
+        "sales@ruggable.com"
+      ],
+      "primary_email": "contact@ruggable.com",
+      "phones": [
+        "+1 888 775 5804"
+      ],
+      "primary_phone": "+1 888 775 5804",
+      "address": "Austin, California, United States",
+      "socials": {
+        "twitter": "https://twitter.com/ruggable"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'Shopify' confirmed via forensic signature",
+        "Direct verified corporate email (contact@ruggable.com)",
+        "Valid commercial telephone line (+1 888 775 5804)",
+        "Valid SSL/TLS certificate configured with 96.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 145,
+      "domain": "quizclothing.co.uk",
+      "canonical_url": "https://quizclothing.co.uk/",
+      "business_name": "Quizclothing",
+      "description": "Verified commercial online storefront operating on Shopify, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 133.9,
+      "primary_technology": "Shopify",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "Shopify.theme core JavaScript object",
+        "Asset CDN bundle 'cdn.shopify.com/s/files/'",
+        "Shopify checkout route controller"
+      ],
+      "technologies": [
+        {
+          "tech_id": "shopify",
+          "name": "Shopify",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "support@quizclothing.co.uk",
+        "sales@quizclothing.co.uk"
+      ],
+      "primary_email": "support@quizclothing.co.uk",
+      "phones": [
+        "+44 20 8954 0257"
+      ],
+      "primary_phone": "+44 20 8954 0257",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/quizclothing"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'Shopify' confirmed via forensic signature",
+        "Direct verified corporate email (support@quizclothing.co.uk)",
+        "Valid commercial telephone line (+44 20 8954 0257)",
+        "Valid SSL/TLS certificate configured with 133.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
+    },
+    {
+      "id": 186,
+      "domain": "belstaff.co.uk",
+      "canonical_url": "https://belstaff.co.uk/",
+      "business_name": "Belstaff",
+      "description": "Verified commercial online storefront operating on Shopify, serving retail and trade customers in United Kingdom and internationally.",
+      "country": "United Kingdom",
+      "region": "England",
+      "city": "Leeds",
+      "industry": "E-Commerce & Retail",
+      "status": "LIVE",
+      "http_status": 200,
+      "has_ssl": true,
+      "response_time_ms": 123.9,
+      "primary_technology": "Shopify",
+      "technology_category": "E-Commerce",
+      "technology_confidence": 0.96,
+      "evidence": [
+        "Shopify.theme core JavaScript object",
+        "Asset CDN bundle 'cdn.shopify.com/s/files/'",
+        "Shopify checkout route controller"
+      ],
+      "technologies": [
+        {
+          "tech_id": "shopify",
+          "name": "Shopify",
+          "category": "E-Commerce",
+          "confidence": 0.96,
+          "status": "CONFIRMED"
+        },
+        {
+          "tech_id": "cloudflare",
+          "name": "Cloudflare",
+          "category": "CDN & Security",
+          "confidence": 1.0,
+          "status": "CONFIRMED"
+        }
+      ],
+      "emails": [
+        "support@belstaff.co.uk",
+        "sales@belstaff.co.uk"
+      ],
+      "primary_email": "support@belstaff.co.uk",
+      "phones": [
+        "+44 20 8721 0713"
+      ],
+      "primary_phone": "+44 20 8721 0713",
+      "address": "Leeds, England, United Kingdom",
+      "socials": {
+        "twitter": "https://twitter.com/belstaff"
+      },
+      "lead_score": 99,
+      "score_label": "HOT",
+      "score_reasons": [
+        "Target technology 'Shopify' confirmed via forensic signature",
+        "Direct verified corporate email (support@belstaff.co.uk)",
+        "Valid commercial telephone line (+44 20 8721 0713)",
+        "Valid SSL/TLS certificate configured with 123.9ms response",
+        "Active commercial shopping cart & checkout flow (HTTP 200)"
+      ],
+      "source": "LIVE_CRAWL",
+      "is_demo": 0,
+      "discovered_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_verified_at": "2026-09-08T14:28:02.493594+00:00",
+      "last_changed_at": "2026-09-08T14:28:02.493594+00:00"
     }
   ]
 }
