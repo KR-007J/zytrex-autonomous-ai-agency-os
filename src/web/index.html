@@ -222,8 +222,27 @@
                   <div>
                     <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Geography / Country</label>
                     <div class="relative">
-                      <input id="hero-country-input" aria-label="Target country for lead discovery" type="text" placeholder="e.g. United Kingdom, Germany, US" value="United Kingdom" class="glass-input w-full px-4 py-3 rounded-xl text-sm" />
-                      <i data-lucide="globe" class="w-4 h-4 absolute right-3.5 top-3.5 text-neutral-400 pointer-events-none"></i>
+                      <select id="hero-country-select" aria-label="Target country for lead discovery" class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
+                        <option value="United States" selected>United States (USA)</option>
+                        <option value="United Kingdom">United Kingdom (UK)</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="India">India</option>
+                        <option disabled>──────────</option>
+                        <option value="Global">All Countries / Global</option>
+                        <option value="France">France</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="Turkey">Turkey</option>
+                        <option value="Indonesia">Indonesia</option>
+                        <option value="Japan">Japan</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                      </select>
+                      <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3.5 top-3.5 text-neutral-400 pointer-events-none"></i>
                     </div>
                   </div>
                 </div>
@@ -399,7 +418,29 @@
 
               <div>
                 <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Country</label>
-                <input id="disc-country-input" aria-label="Target country for lead discovery" type="text" value="United Kingdom" placeholder="e.g. United Kingdom, Germany" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" />
+                <div class="relative">
+                  <select id="disc-country-select" aria-label="Target country for lead discovery" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
+                    <option value="United States" selected>United States (USA)</option>
+                    <option value="United Kingdom">United Kingdom (UK)</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="India">India</option>
+                    <option disabled>──────────</option>
+                    <option value="Global">All Countries / Global</option>
+                    <option value="France">France</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3.5 top-3.5 text-neutral-400 pointer-events-none"></i>
+                </div>
               </div>
 
               <div>
@@ -557,12 +598,25 @@
             </div>
 
             <div class="md:col-span-2">
-              <select id="leads-country-filter" aria-label="Filter leads by country" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
+              <select id="leads-country-filter" aria-label="Filter leads by country" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm font-medium">
                 <option value="">All Countries</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
+                <option value="United States">United States (USA)</option>
+                <option value="United Kingdom">United Kingdom (UK)</option>
+                <option value="Canada">Canada</option>
+                <option value="Australia">Australia</option>
                 <option value="Germany">Germany</option>
+                <option value="India">India</option>
+                <option disabled>──────────</option>
                 <option value="France">France</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Italy">Italy</option>
+                <option value="Spain">Spain</option>
+                <option value="Brazil">Brazil</option>
+                <option value="Turkey">Turkey</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Japan">Japan</option>
+                <option value="Singapore">Singapore</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
               </select>
             </div>
 

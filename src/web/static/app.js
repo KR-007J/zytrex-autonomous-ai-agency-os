@@ -260,20 +260,20 @@ async function loadDashboardAnalytics() {
 // =========================================================================
 function setHeroPreset(tech, country) {
   const techSelect = document.getElementById('hero-tech-select');
-  const countryInput = document.getElementById('hero-country-input');
+  const countrySelect = document.getElementById('hero-country-select');
   if (techSelect) techSelect.value = tech;
-  if (countryInput) countryInput.value = country;
+  if (countrySelect) countrySelect.value = country;
 }
 
 function handleHeroSearch(e) {
   e.preventDefault();
   const tech = document.getElementById('hero-tech-select').value;
-  const country = document.getElementById('hero-country-input').value;
+  const country = document.getElementById('hero-country-select').value;
   const reqEmail = document.getElementById('hero-require-email').checked;
 
   // Sync to discover form
   const discTech = document.getElementById('disc-tech-select');
-  const discCountry = document.getElementById('disc-country-input');
+  const discCountry = document.getElementById('disc-country-select');
   const discEmail = document.getElementById('disc-require-email');
 
   if (discTech) discTech.value = tech;
@@ -287,14 +287,14 @@ function handleHeroSearch(e) {
 // Trigger auto refresh batch of 100 new leads and purge old ones
 async function triggerAutoRefreshBatch(limit = 100) {
   const tech = document.getElementById('leads-tech-filter')?.value || 'opencart';
-  const country = document.getElementById('leads-country-filter')?.value || 'United Kingdom';
+  const country = document.getElementById('leads-country-filter')?.value || 'United States';
 
   showToast(`Auto-refreshing: Purging previous batch and live-verifying ${limit} fresh leads...`, 'info');
 
   navigateRoute(null, 'discover');
 
   const discTech = document.getElementById('disc-tech-select');
-  const discCountry = document.getElementById('disc-country-input');
+  const discCountry = document.getElementById('disc-country-select');
   const discLimit = document.getElementById('disc-limit-select');
   const discReplace = document.getElementById('disc-replace-existing');
 
@@ -312,7 +312,7 @@ async function triggerAutoRefreshBatch(limit = 100) {
 function handleDiscoverySubmit(e) {
   e.preventDefault();
   const tech = document.getElementById('disc-tech-select').value;
-  const country = document.getElementById('disc-country-input').value;
+  const country = document.getElementById('disc-country-select').value;
   const industry = document.getElementById('disc-industry-input').value;
   const limit = parseInt(document.getElementById('disc-limit-select').value, 10) || 20;
   const requireEmail = document.getElementById('disc-require-email')?.checked || false;
