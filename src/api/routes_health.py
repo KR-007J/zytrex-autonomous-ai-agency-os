@@ -10,6 +10,7 @@ router = APIRouter(tags=["System"])
 
 
 @router.get("/health")
+@router.head("/health")
 def get_health():
     return {
         "status": "healthy",

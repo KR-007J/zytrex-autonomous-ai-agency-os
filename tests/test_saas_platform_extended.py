@@ -126,7 +126,8 @@ def test_dashboard_analytics():
     assert "score_distribution" in data
     assert "activity_stream" in data
     assert "providers" in data
-    assert len(data["providers"]) == 5
+    assert len(data["providers"]) >= 6
+    assert any(p["type"] == "LiveWebProvider" for p in data["providers"])
 
 
 def test_spa_catch_all_route():

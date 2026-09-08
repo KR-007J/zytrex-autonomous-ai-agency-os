@@ -18,6 +18,7 @@ class DiscoverRequest(BaseModel):
     industry: Optional[str] = None
     require_email: bool = False
     limit: int = 20
+    replace_existing: bool = False
 
 
 @router.post("")
@@ -28,6 +29,7 @@ async def start_discovery(req: DiscoverRequest):
         industry=req.industry,
         require_email=req.require_email,
         limit=req.limit,
+        replace_existing=req.replace_existing,
     )
     return {
         "job_id": job_id,

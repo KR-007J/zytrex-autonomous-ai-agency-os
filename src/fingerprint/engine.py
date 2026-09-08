@@ -55,7 +55,7 @@ class FingerprintEngine:
         cookies = cookies or {}
         results: List[DetectionResult] = []
 
-        signatures = [registry.get(target_tech_id)] if target_tech_id and registry.get(target_tech_id) else registry.all()
+        signatures = registry.all()
 
         soup = None
         if html and ("<html" in html.lower() or "<meta" in html.lower() or "<script" in html.lower()):
@@ -143,5 +143,15 @@ class FingerprintEngine:
                     )
                 )
 
-        results.sort(key=lambda x: x.confidence, reverse=True)
+        if target_tech_id:
+            target_clean = target_tech_id.lower()
+            results.sort(
+                key=lambda x: (
+                    1 if (x.tech_id.lower() == target_clean or target_clean in x.name.lower()) else 0,
+                    x.confidence,
+                ),
+                reverse=True,
+            )
+        else:
+            results.sort(key=lambda x: x.confidence, reverse=True)
         return results

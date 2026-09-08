@@ -1,1447 +1,868 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LeadForge — Enterprise Lead Intelligence &amp; Technology Discovery SaaS</title>
+  <title>LeadForge — Find businesses by the technology they use.</title>
   
-  <!-- Tailwind CSS & Plugins -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  
-  <!-- Typography: Inter & Instrument Serif -->
+  <!-- Preconnect & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/0e6de1ec911a2e267ff136bbdd384a44?family=Helvetica+Neue+Light" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
           colors: {
             brand: {
-              50: '#fff5f2',
-              100: '#ffe8e1',
-              500: '#ef4d23',
-              600: '#dc380e',
-              700: '#b82b08',
-            },
-            obsidian: {
-              800: '#131b2e',
-              900: '#0b0f1a',
-              950: '#060911',
+              orange: '#ef4d23',
+              'orange-dark': '#d43a12',
+              'orange-light': '#ff6940'
             }
+          },
+          fontFamily: {
+            sans: ['"Helvetica Neue Light"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
           }
         }
       }
     };
   </script>
 
-  <style>
-    /* Custom Apple-tier Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.7); }
-    .dark ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.5); }
-    .dark ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.8); }
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    .serif-accent {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-style: italic;
-    }
-
-    /* Glassmorphism */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-    }
-    .dark .glass-card {
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid rgba(31, 41, 55, 0.8);
-    }
-
-    /* Pulse animation */
-    @keyframes subtle-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(1.02); }
-    }
-    .animate-subtle { animation: subtle-pulse 3s infinite ease-in-out; }
-  </style>
+  <!-- Terranova Liquid Glass Theme -->
+  <link rel="stylesheet" href="/static/glass-theme.css" />
 </head>
-<body class="h-full bg-[#f8fafc] dark:bg-[#090d16] text-neutral-900 dark:text-neutral-100 font-sans antialiased selection:bg-orange-500 selection:text-white transition-colors duration-200">
+<body class="bg-[#f5f4f0] dark:bg-[#060911] text-neutral-900 dark:text-[#f5f5f5] min-h-screen overflow-x-hidden selection:bg-[#ef4d23] selection:text-white">
 
-  <!-- ==================== COMMAND PALETTE (CMD+K) MODAL ==================== -->
-  <div id="cmd-k-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
-    <div class="bg-white dark:bg-neutral-900 w-full max-w-xl rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden transform transition-all">
-      <div class="flex items-center px-4 border-b border-neutral-200 dark:border-neutral-800">
-        <i data-lucide="search" class="w-5 h-5 text-neutral-400"></i>
-        <input
-          id="cmd-k-input"
-          type="text"
-          placeholder="Type a command or jump to page (e.g. leads, discover, export, webhooks)..."
-          class="w-full bg-transparent border-0 py-3.5 px-3 text-sm focus:ring-0 text-neutral-900 dark:text-white placeholder:text-neutral-400"
-          oninput="handleCmdKFilter(this.value)"
-          onkeydown="handleCmdKKeydown(event)"
-        />
-        <kbd class="text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-500 px-2 py-0.5 rounded border border-neutral-200 dark:border-neutral-700">ESC</kbd>
-      </div>
-      <div id="cmd-k-results" class="max-h-80 overflow-y-auto p-2 space-y-1 text-xs">
-        <!-- Dynamic items -->
-      </div>
-      <div class="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between text-[11px] text-neutral-500">
-        <span>Navigation &amp; Actions</span>
-        <div class="flex items-center gap-2">
-          <span><kbd class="font-mono bg-neutral-200 dark:bg-neutral-800 px-1 rounded">↑↓</kbd> Navigate</span>
-          <span><kbd class="font-mono bg-neutral-200 dark:bg-neutral-800 px-1 rounded">↵</kbd> Select</span>
-        </div>
-      </div>
-    </div>
+  <!-- Background Looping Video -->
+  <video id="bg-video" class="bg-video" aria-hidden="true"
+         autoplay muted loop playsinline preload="auto"
+         src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260816_125506_3a597378-ec85-4ebd-bd22-03b45508ac62.mp4"></video>
+
+  <!-- SVG Filter Definition for Liquid Glass Chromatic Refraction -->
+  <svg class="glass-defs w-0 h-0 absolute overflow-hidden pointer-events-none" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="liquid-glass-refraction"
+              x="-30%" y="-30%" width="160%" height="160%"
+              color-interpolation-filters="sRGB">
+
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.015" numOctaves="3" result="noise" />
+
+        <feColorMatrix in="SourceAlpha" type="matrix" result="boosted_alpha"
+          values="0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 100 0" />
+
+        <feGaussianBlur in="boosted_alpha" stdDeviation="45" result="blurred_alpha" />
+
+        <feComponentTransfer in="blurred_alpha" result="edge_mask">
+          <feFuncA type="linear" slope="-1.3" intercept="1" />
+        </feComponentTransfer>
+
+        <feComposite in="noise" in2="edge_mask" operator="arithmetic"
+                     k1="1" k2="0" k3="0" k4="0" result="masked_noise" />
+
+        <!-- Chromatic dispersion: Red channel -->
+        <feDisplacementMap in="SourceGraphic" in2="masked_noise" scale="65"
+                           xChannelSelector="R" yChannelSelector="G" result="red_displaced" />
+        <feColorMatrix in="red_displaced" type="matrix" result="red"
+          values="1 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 1 0" />
+
+        <!-- Chromatic dispersion: Green channel -->
+        <feDisplacementMap in="SourceGraphic" in2="masked_noise" scale="56"
+                           xChannelSelector="R" yChannelSelector="G" result="green_displaced" />
+        <feColorMatrix in="green_displaced" type="matrix" result="green"
+          values="0 0 0 0 0
+                  0 1 0 0 0
+                  0 0 0 0 0
+                  0 0 0 1 0" />
+
+        <!-- Chromatic dispersion: Blue channel -->
+        <feDisplacementMap in="SourceGraphic" in2="masked_noise" scale="47"
+                           xChannelSelector="R" yChannelSelector="G" result="blue_displaced" />
+        <feColorMatrix in="blue_displaced" type="matrix" result="blue"
+          values="0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 1 0 0
+                  0 0 0 1 0" />
+
+        <feBlend in="red" in2="green" mode="screen" result="rg" />
+        <feBlend in="rg" in2="blue" mode="screen" result="chromatic_dispersion" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Architectural Vertical Guide Rules -->
+  <div class="rule rule--left" aria-hidden="true">
+    <span class="rule__seg rule__seg--end"></span>
+    <span class="rule__plus">+</span>
+    <span class="rule__seg rule__seg--mid"></span>
+    <span class="rule__plus">+</span>
+    <span class="rule__seg rule__seg--end"></span>
+  </div>
+  <div class="rule rule--right" aria-hidden="true">
+    <span class="rule__seg rule__seg--end"></span>
+    <span class="rule__plus">+</span>
+    <span class="rule__seg rule__seg--mid"></span>
+    <span class="rule__plus">+</span>
+    <span class="rule__seg rule__seg--end"></span>
   </div>
 
-  <!-- ==================== NOTIFICATIONS DRAWER ==================== -->
-  <div id="notifications-drawer" class="fixed top-14 right-4 z-40 hidden w-80 bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 p-4 transition-all">
-    <div class="flex items-center justify-between pb-2 border-b border-neutral-100 dark:border-neutral-800 mb-3">
-      <div class="flex items-center gap-2">
-        <i data-lucide="bell" class="w-4 h-4 text-[#ef4d23]"></i>
-        <span class="text-xs font-bold text-neutral-900 dark:text-white">Activity Feed</span>
-      </div>
-      <button onclick="toggleNotifications()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 text-xs">Close</button>
-    </div>
-    <div id="notifications-list" class="space-y-2 max-h-72 overflow-y-auto text-xs">
-      <div class="text-neutral-400 text-center py-4">No recent notifications</div>
-    </div>
-  </div>
+  <!-- App Shell -->
+  <div class="app-shell">
 
-  <!-- ==================== APPLICATION SHELL LAYOUT ==================== -->
-  <div class="flex h-full w-full overflow-hidden">
-    
-    <!-- LEFT SIDEBAR -->
-    <aside id="app-sidebar" class="w-64 shrink-0 bg-white dark:bg-[#0b0f1a] border-r border-neutral-200 dark:border-neutral-800/80 flex flex-col justify-between transition-all duration-200 z-30">
-      
-      <!-- Top Brand & Org Cluster -->
-      <div>
-        <div class="h-14 px-4 flex items-center justify-between border-b border-neutral-200/80 dark:border-neutral-800/80">
-          <a href="/dashboard" onclick="navigateRoute(event, 'dashboard')" class="flex items-center gap-2.5 group">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#dc380e] to-[#ef4d23] flex items-center justify-center text-white shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-              <i data-lucide="radar" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <div class="font-bold text-sm tracking-tight text-neutral-900 dark:text-white flex items-center gap-1.5">
-                <span>LeadForge</span>
-                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-orange-100 dark:bg-orange-950/80 text-[#ef4d23] border border-orange-200 dark:border-orange-800/40">v2.0</span>
-              </div>
-              <div class="text-[10px] text-neutral-400 dark:text-neutral-500 truncate max-w-[130px]" id="sidebar-org-name">Default Organization</div>
-            </div>
-          </a>
-          <button onclick="toggleSidebarCollapse()" class="p-1 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition md:inline-flex hidden" title="Toggle Sidebar">
-            <i data-lucide="panel-left-close" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Quick Search / Command Palette Trigger -->
-        <div class="p-3">
-          <button onclick="openCmdK()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-900/90 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200/70 dark:hover:bg-neutral-800/80 text-xs transition border border-neutral-200/60 dark:border-neutral-800/60 shadow-xs">
-            <div class="flex items-center gap-2">
-              <i data-lucide="search" class="w-3.5 h-3.5"></i>
-              <span>Quick jump...</span>
-            </div>
-            <kbd class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 shadow-2xs">⌘K</kbd>
-          </button>
-        </div>
-
-        <!-- Navigation Menus -->
-        <nav class="px-2 space-y-5 overflow-y-auto max-h-[calc(100vh-250px)] text-xs font-medium">
-          <!-- Primary Navigation -->
-          <div>
-            <div class="px-2.5 mb-1.5 text-[10px] font-bold tracking-wider text-neutral-400 uppercase">Core</div>
-            <div class="space-y-1">
-              <button onclick="navigateRoute(event, 'dashboard')" id="nav-dashboard" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="layout-dashboard" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span class="font-semibold">Dashboard</span>
-                </div>
-              </button>
-
-              <button onclick="navigateRoute(event, 'discover')" id="nav-discover" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="sparkles" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span class="font-semibold">Discover</span>
-                </div>
-                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">Live</span>
-              </button>
-
-              <button onclick="navigateRoute(event, 'leads')" id="nav-leads" class="nav-link w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="users" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span class="font-semibold">Leads Directory</span>
-                </div>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold" id="sidebar-leads-count">0</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Secondary Navigation -->
-          <div>
-            <div class="px-2.5 mb-1.5 text-[10px] font-bold tracking-wider text-neutral-400 uppercase">Management</div>
-            <div class="space-y-1">
-              <button onclick="navigateRoute(event, 'lists')" id="nav-lists" class="nav-link w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="list-checks" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span>Saved Lists</span>
-                </div>
-              </button>
-
-              <button onclick="navigateRoute(event, 'exports')" id="nav-exports" class="nav-link w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="download" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span>Export Center</span>
-                </div>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 font-mono">CSV/XLSX</span>
-              </button>
-
-              <button onclick="navigateRoute(event, 'settings')" id="nav-settings" class="nav-link w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 hover:text-neutral-900 dark:hover:text-white transition group">
-                <div class="flex items-center gap-2.5">
-                  <i data-lucide="settings" class="w-4 h-4 text-neutral-400 group-hover:text-[#ef4d23] transition-colors"></i>
-                  <span>Settings</span>
-                </div>
-              </button>
-            </div>
-          </div>
-        </nav>
+    <!-- Top Navigation Bar -->
+    <header class="nav-bar">
+      <div class="flex items-center gap-4">
+        <button id="menu-open" class="flex items-center gap-2 text-sm font-medium tracking-wide hover:text-[#ef4d23] transition-colors" aria-label="Open main menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+          <span class="font-semibold tracking-tight text-base">LeadForge</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-[#ef4d23]/20 text-[#ef4d23] font-mono font-medium">LIVE</span>
+        </button>
       </div>
 
-      <!-- Bottom User Profile & Theme Toggle -->
-      <div class="p-3 border-t border-neutral-200/80 dark:border-neutral-800/80">
-        <div class="flex items-center justify-between p-2 rounded-xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800/60">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-neutral-800 to-neutral-700 text-white flex items-center justify-center text-xs font-bold shrink-0">
-              <span id="user-avatar-initials">AD</span>
-            </div>
-            <div class="min-w-0">
-              <div class="text-xs font-bold truncate text-neutral-900 dark:text-white" id="user-display-email">admin@leadforge.io</div>
-              <div class="flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span class="text-[10px] text-neutral-400 capitalize" id="user-display-role">Admin</span>
-              </div>
-            </div>
-          </div>
+      <nav class="hidden md:flex items-center gap-1.5 font-medium text-sm">
+        <button onclick="navigateRoute(event, 'dashboard')" id="nav-dashboard" class="nav-link-btn active">
+          <i data-lucide="compass" class="w-4 h-4"></i> Dashboard
+        </button>
+        <button onclick="navigateRoute(event, 'discover')" id="nav-discover" class="nav-link-btn">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> Discover
+        </button>
+        <button onclick="navigateRoute(event, 'leads')" id="nav-leads" class="nav-link-btn">
+          <i data-lucide="database" class="w-4 h-4"></i> Leads
+        </button>
+        <button onclick="navigateRoute(event, 'exports')" id="nav-exports" class="nav-link-btn">
+          <i data-lucide="download" class="w-4 h-4"></i> Exports
+        </button>
+      </nav>
 
-          <div class="flex items-center gap-1">
-            <button onclick="toggleTheme()" class="p-1.5 rounded-lg text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition" title="Toggle Light/Dark Theme">
-              <i data-lucide="sun-moon" class="w-4 h-4"></i>
-            </button>
-            <button onclick="openAuthModal()" class="p-1.5 rounded-lg text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition" title="Switch Account / Login">
-              <i data-lucide="log-in" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 text-neutral-300 hover:text-white transition" title="Toggle Theme" aria-label="Toggle dark/light mode">
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+          <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+        </button>
+        <button onclick="navigateRoute(event, 'discover')" class="chamfer" style="min-width: 160px; height: 40px; padding: 0 1rem;">
+          <span class="chamfer__glass" aria-hidden="true"></span>
+          <svg class="chamfer__outline" viewBox="0 0 220 40" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="12,0 220,0 220,28 208,40 0,40 0,12" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          </svg>
+          <span class="chamfer__label text-xs font-semibold uppercase tracking-wider text-[#ef4d23]">Find Leads</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-[#ef4d23]"></i>
+        </button>
       </div>
-    </aside>
+    </header>
 
+    <!-- Main Content Views Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-20">
 
-    <!-- RIGHT MAIN CONTENT WRAPPER -->
-    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-[#f8fafc] dark:bg-[#090d16]">
-      
-      <!-- TOP NAVIGATION BAR -->
-      <header class="h-14 shrink-0 bg-white/80 dark:bg-[#0b0f1a]/80 backdrop-blur-md border-b border-neutral-200/80 dark:border-neutral-800/80 px-4 flex items-center justify-between z-20">
-        
-        <!-- Left: Mobile Menu Toggle + Breadcrumbs -->
-        <div class="flex items-center gap-3">
-          <button onclick="toggleMobileSidebar()" class="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 md:hidden">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-          </button>
-
-          <!-- Breadcrumbs -->
-          <div class="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-            <span class="font-medium text-neutral-800 dark:text-neutral-200" id="breadcrumb-section">Dashboard</span>
-            <span class="text-neutral-300 dark:text-neutral-700">/</span>
-            <span class="text-neutral-500" id="breadcrumb-page">Executive Intelligence</span>
-          </div>
-        </div>
-
-        <!-- Center: Clean Status Indicator -->
-        <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800/80 border border-neutral-200 dark:border-neutral-700/80 text-[11px] font-medium text-neutral-600 dark:text-neutral-300">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Zero Paid APIs • Live HTTP/DNS Engine</span>
-        </div>
-
-        <!-- Right: Action Buttons -->
-        <div class="flex items-center gap-2">
-          <!-- Quick Discovery Probe -->
-          <button onclick="navigateRoute(event, 'discover')" class="inline-flex items-center gap-1.5 bg-[#ef4d23] hover:bg-[#dc380e] text-white text-xs font-semibold px-3.5 py-1.5 rounded-full transition shadow-sm shadow-orange-500/20">
-            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-            <span>Find Leads</span>
-          </button>
-        </div>
-      </header>
-
-
-      <!-- MAIN SCROLLABLE VIEW CONTAINER -->
-      <main id="view-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-        
-        <!-- ==================== VIEW: DASHBOARD ==================== -->
-        <section id="view-dashboard" class="space-y-6">
+      <!-- ========================================================================= -->
+      <!-- VIEW 1: DASHBOARD (Hero + Search + Refractive Glass Card + Recent Leads)  -->
+      <!-- ========================================================================= -->
+      <section id="view-dashboard" class="space-y-12">
+        <!-- Hero Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4 pb-8">
           
-          <!-- HERO LEAD SEARCH EXPERIENCE (Apple/Linear Minimalist) -->
-          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#111726] to-[#070a12] text-white p-6 sm:p-10 border border-neutral-800/80 shadow-2xl">
-            <!-- Ambient Glow Effect -->
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-[#ef4d23]/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="relative z-10 max-w-3xl">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-emerald-400 mb-4 backdrop-blur-sm">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Live Technology Lead Discovery</span>
-              </div>
-              
-              <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
-                Find businesses by the technology they use.
-              </h1>
-              <p class="text-sm text-neutral-400 mb-8 max-w-2xl leading-relaxed">
-                Discover live commercial businesses by technology stack, verified instantly via live HTTP, DNS &amp; SSL probes with public business emails.
-              </p>
-
-              <!-- HERO SEARCH FORM -->
-              <div class="p-2 sm:p-2.5 rounded-2xl bg-white/10 dark:bg-black/50 backdrop-blur-md border border-white/15 shadow-2xl">
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                  <!-- Technology Select -->
-                  <div class="sm:col-span-5 relative">
-                    <label class="block text-[10px] uppercase font-bold text-neutral-400 px-3 pt-1">Target Technology</label>
-                    <select id="hero-tech-select" class="w-full bg-transparent border-0 px-3 py-1.5 text-sm font-semibold text-white focus:ring-0 cursor-pointer">
-                      <option value="OpenCart" class="bg-neutral-900 text-white" selected>OpenCart (E-Commerce)</option>
-                      <option value="Shopify" class="bg-neutral-900 text-white">Shopify (Storefront)</option>
-                      <option value="WooCommerce" class="bg-neutral-900 text-white">WooCommerce (WordPress)</option>
-                      <option value="Magento" class="bg-neutral-900 text-white">Magento / Adobe Commerce</option>
-                      <option value="PrestaShop" class="bg-neutral-900 text-white">PrestaShop (Open Source)</option>
-                      <option value="BigCommerce" class="bg-neutral-900 text-white">BigCommerce (SaaS)</option>
-                      <option value="WordPress" class="bg-neutral-900 text-white">WordPress (CMS)</option>
-                      <option value="Webflow" class="bg-neutral-900 text-white">Webflow</option>
-                      <option value="Stripe" class="bg-neutral-900 text-white">Stripe (Payment Infrastructure)</option>
-                    </select>
-                  </div>
-
-                  <!-- Geography Input -->
-                  <div class="sm:col-span-4 relative border-t sm:border-t-0 sm:border-l border-white/10">
-                    <label class="block text-[10px] uppercase font-bold text-neutral-400 px-3 pt-1">Target Geography</label>
-                    <input
-                      id="hero-geo-input"
-                      type="text"
-                      placeholder="e.g. United Kingdom"
-                      value="United Kingdom"
-                      class="w-full bg-transparent border-0 px-3 py-1.5 text-sm font-semibold text-white placeholder:text-neutral-500 focus:ring-0"
-                    />
-                  </div>
-
-                  <!-- Find Leads Button -->
-                  <div class="sm:col-span-3 flex items-center">
-                    <button
-                      onclick="executeHeroSearch()"
-                      class="w-full h-full min-h-[46px] bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-neutral-950 font-bold px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 cursor-pointer"
-                    >
-                      <i data-lucide="sparkles" class="w-4 h-4"></i>
-                      <span>Find Leads</span>
-                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Quick Shortcut Pills -->
-              <div class="flex items-center gap-2 mt-4 flex-wrap text-xs">
-                <span class="text-neutral-400 text-[11px]">Popular Presets:</span>
-                <button onclick="setHeroSearch('OpenCart', 'United Kingdom')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 transition text-[11px]">
-                  OpenCart in UK
-                </button>
-                <button onclick="setHeroSearch('Shopify', 'United States')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 transition text-[11px]">
-                  Shopify in US
-                </button>
-                <button onclick="setHeroSearch('WooCommerce', 'United Kingdom')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 transition text-[11px]">
-                  WooCommerce in UK
-                </button>
-                <button onclick="setHeroSearch('Magento', 'Global')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 transition text-[11px]">
-                  Magento Global
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 3 HONEST REAL DATABASE COUNTERS (Zero synthetic data / Zero fake health) -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <!-- Card 1: Verified Leads -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex items-center justify-between">
-              <div>
-                <span class="text-xs font-medium text-neutral-500 dark:text-neutral-400 block">Total Verified Leads</span>
-                <div class="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white mt-1" id="dash-stat-total">0</div>
-                <span class="text-[11px] text-neutral-400 block mt-1">Real commercial domains</span>
-              </div>
-              <div class="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-[#ef4d23]">
-                <i data-lucide="database" class="w-6 h-6"></i>
-              </div>
+          <!-- Left Hero Pitch & Quick Search -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 dark:bg-neutral-900/60 border border-white/15 backdrop-blur-md text-xs font-mono text-neutral-300">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Zero Paid APIs • Live HTTP/DNS Fingerprinting
             </div>
 
-            <!-- Card 2: Leads with Email -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex items-center justify-between">
-              <div>
-                <span class="text-xs font-medium text-neutral-500 dark:text-neutral-400 block">Leads with Public Email</span>
-                <div class="text-3xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400 mt-1" id="dash-stat-email">0</div>
-                <span class="text-[11px] text-neutral-400 block mt-1">Direct business inboxes</span>
-              </div>
-              <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                <i data-lucide="mail" class="w-6 h-6"></i>
-              </div>
-            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight leading-[1.1] text-neutral-900 dark:text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+              Find businesses by the <br />
+              <span class="italic font-serif text-[#ef4d23] drop-shadow-[0_2px_14px_rgba(239,77,35,0.6)]">technology</span> they use.
+            </h1>
 
-            <!-- Card 3: Live Websites -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex items-center justify-between">
-              <div>
-                <span class="text-xs font-medium text-neutral-500 dark:text-neutral-400 block">Live Verified Websites</span>
-                <div class="text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 mt-1" id="dash-stat-live">0</div>
-                <span class="text-[11px] text-neutral-400 block mt-1">HTTP 200 &amp; SSL validated</span>
-              </div>
-              <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
-              </div>
-            </div>
-          </div>
+            <p class="text-base sm:text-lg text-neutral-700 dark:text-neutral-200 font-light max-w-xl leading-relaxed">
+              Target active commercial entities using specific e-commerce platforms, CMSs, and frameworks. Verified live with direct emails and opportunity scoring.
+            </p>
 
-          <!-- RECENT GENUINE VERIFIED LEADS TABLE -->
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs overflow-hidden">
-            <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-              <div>
-                <h2 class="font-bold text-sm text-neutral-900 dark:text-white">Recent Genuine Verified Leads</h2>
-                <p class="text-xs text-neutral-400 mt-0.5">Live records currently stored in your database</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="refreshDashboardAnalytics()" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">
-                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-neutral-400" id="dash-refresh-icon"></i>
-                  <span>Refresh</span>
-                </button>
-                <button onclick="navigateRoute(event, 'leads')" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-90 transition">
-                  <span>View All Leads</span>
-                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                <thead class="bg-neutral-50 dark:bg-neutral-800/50 text-neutral-700 dark:text-neutral-200 border-b border-neutral-200/80 dark:border-neutral-800 font-semibold">
-                  <tr>
-                    <th class="py-3 px-4">Business / Domain</th>
-                    <th class="py-3 px-3">Technology</th>
-                    <th class="py-3 px-3">Verification Signals</th>
-                    <th class="py-3 px-3">Contact Email</th>
-                    <th class="py-3 px-3">Location</th>
-                    <th class="py-3 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="dash-recent-leads-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                  <tr>
-                    <td colspan="6" class="text-center py-12 text-neutral-400">Loading verified leads...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </section>
-
-
-
-        <!-- ==================== VIEW: DISCOVER ==================== -->
-        <section id="view-discover" class="hidden space-y-6">
-            
-            <div class="flex items-center justify-between">
-              <div>
-                <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Target Technology Discovery</h1>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                  Query candidate businesses using natural language or structured technology fingerprints.
-                </p>
-              </div>
-              <span class="text-xs font-mono text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 px-3 py-1 rounded-xl border border-neutral-200 dark:border-neutral-700 flex items-center gap-1.5">
-                <i data-lucide="cpu" class="w-3.5 h-3.5 text-[#ef4d23]"></i>
-                <span>19 Native Signatures</span>
-              </span>
-            </div>
-
-            <!-- Natural Language Search Bar -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-4 sm:p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-              <label class="block text-xs font-bold text-neutral-800 dark:text-neutral-200">
-                Natural Language Query (Zero LLM / Deterministic Parser)
-              </label>
-              <div class="flex items-center gap-2">
-                <div class="relative flex-1">
-                  <i data-lucide="sparkles" class="w-4 h-4 text-[#ef4d23] absolute left-3 top-3"></i>
-                  <input
-                    id="nl-query-input"
-                    type="text"
-                    placeholder="e.g. Find UK e-commerce stores using OpenCart with public email and high score"
-                    class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-medium focus:ring-2 focus:ring-[#ef4d23] focus:border-transparent"
-                    oninput="handleNLInput(this.value)"
-                  />
-                </div>
-                <button onclick="applyNLQuery()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-neutral-900 font-bold px-4 py-2.5 rounded-xl text-xs transition hover:opacity-90 shrink-0">
-                  Parse Query
-                </button>
-              </div>
-
-              <!-- NL Parser Extracted Pill Tags -->
-              <div id="nl-parsed-tags" class="flex flex-wrap gap-2 pt-1 hidden">
-                <span class="text-[11px] text-neutral-400 font-medium self-center">Parsed filters:</span>
-                <div id="nl-tags-container" class="flex flex-wrap gap-1.5"></div>
-              </div>
-            </div>
-
-            <!-- Structured Configuration Form -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs">
-              <form id="discovery-form" onsubmit="executeDiscovery(event)" class="space-y-4">
-                
+            <!-- Hero Interactive Search Card -->
+            <div class="glass-surface p-6 rounded-3xl space-y-4">
+              <form id="hero-search-form" onsubmit="handleHeroSearch(event)" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">Target Technology Signature *</label>
-                    <select id="disc-tech-select" class="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2.5 px-3 text-xs font-semibold text-neutral-800 dark:text-white focus:ring-[#ef4d23]">
-                      <optgroup label="E-Commerce &amp; Storefronts">
-                        <option value="OpenCart" selected>OpenCart (E-Commerce)</option>
-                        <option value="Shopify">Shopify (Hosted E-Commerce)</option>
-                        <option value="WooCommerce">WooCommerce (WordPress Plugin)</option>
-                        <option value="PrestaShop">PrestaShop (Open Source)</option>
-                        <option value="Magento">Magento / Adobe Commerce</option>
-                        <option value="BigCommerce">BigCommerce (SaaS)</option>
-                      </optgroup>
-                      <optgroup label="CMS &amp; Web Platforms">
-                        <option value="WordPress">WordPress (Core CMS)</option>
-                        <option value="Drupal">Drupal (Enterprise CMS)</option>
-                        <option value="Joomla">Joomla (CMS)</option>
-                        <option value="Laravel">Laravel (PHP Framework)</option>
-                      </optgroup>
-                      <optgroup label="Frontend Frameworks">
-                        <option value="React">React (Frontend Library)</option>
-                        <option value="Next.js">Next.js (Fullstack React)</option>
-                        <option value="Vue.js">Vue.js (Frontend Framework)</option>
-                        <option value="Angular">Angular (Frontend Framework)</option>
-                        <option value="Tailwind CSS">Tailwind CSS (Utility Styling)</option>
-                      </optgroup>
-                      <optgroup label="Cloud &amp; Infrastructure">
-                        <option value="Cloudflare">Cloudflare (CDN &amp; Edge)</option>
-                        <option value="AWS">Amazon Web Services (CloudFront/S3)</option>
-                        <option value="Stripe">Stripe (Payment Infrastructure)</option>
-                        <option value="Google Analytics">Google Analytics / GTM</option>
-                      </optgroup>
-                    </select>
+                    <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Technology</label>
+                    <div class="relative">
+                      <select id="hero-tech-select" aria-label="Target technology" class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none pr-10 cursor-pointer font-medium">
+                        <option value="opencart" selected>OpenCart</option>
+                        <option value="shopify">Shopify</option>
+                        <option value="woocommerce">WooCommerce</option>
+                        <option value="magento">Magento</option>
+                        <option value="prestashop">PrestaShop</option>
+                        <option value="bigcommerce">BigCommerce</option>
+                        <option value="wordpress">WordPress</option>
+                        <option value="laravel">Laravel</option>
+                        <option value="react">React</option>
+                        <option value="nextjs">Next.js</option>
+                        <option value="vue">Vue.js</option>
+                        <option value="angular">Angular</option>
+                        <option value="stripe">Stripe</option>
+                        <option value="tailwind">Tailwind CSS</option>
+                        <option value="cloudflare">Cloudflare</option>
+                      </select>
+                      <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3.5 top-3.5 text-neutral-400 pointer-events-none"></i>
+                    </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">Geographic Region / Country</label>
-                    <input
-                      type="text"
-                      id="disc-country-input"
-                      value="United Kingdom"
-                      placeholder="e.g. United Kingdom, United States, Germany, India"
-                      class="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 text-xs focus:ring-[#ef4d23]"
-                    />
+                    <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Geography / Country</label>
+                    <div class="relative">
+                      <input id="hero-country-input" aria-label="Target country for lead discovery" type="text" placeholder="e.g. United Kingdom, Germany, US" value="United Kingdom" class="glass-input w-full px-4 py-3 rounded-xl text-sm" />
+                      <i data-lucide="globe" class="w-4 h-4 absolute right-3.5 top-3.5 text-neutral-400 pointer-events-none"></i>
+                    </div>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">Industry Vertical</label>
-                    <input
-                      type="text"
-                      id="disc-industry-input"
-                      value="E-commerce"
-                      placeholder="e.g. E-commerce, Retail, SaaS"
-                      class="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 text-xs focus:ring-[#ef4d23]"
-                    />
-                  </div>
-
-                  <div>
-                    <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">Candidate Limit</label>
-                    <select id="disc-limit-select" class="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 text-xs font-semibold focus:ring-[#ef4d23]">
-                      <option value="20" selected>20 candidates</option>
-                      <option value="50">50 candidates</option>
-                      <option value="100">100 candidates</option>
-                    </select>
-                  </div>
-
-                  <div class="flex items-center gap-2 pt-6">
-                    <input type="checkbox" id="disc-email-toggle" class="rounded text-[#ef4d23] focus:ring-[#ef4d23] w-4 h-4" />
-                    <label for="disc-email-toggle" class="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
-                      Require Public Email
-                    </label>
-                  </div>
+                <!-- Presets / Quick Filters -->
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                  <span class="text-neutral-400 font-mono">Popular:</span>
+                  <button type="button" onclick="setHeroPreset('opencart', 'United Kingdom')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 transition">OpenCart UK</button>
+                  <button type="button" onclick="setHeroPreset('shopify', 'United States')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 transition">Shopify US</button>
+                  <button type="button" onclick="setHeroPreset('woocommerce', 'Germany')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 transition">WooCommerce DE</button>
+                  <button type="button" onclick="setHeroPreset('magento', 'United Kingdom')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 transition">Magento UK</button>
                 </div>
 
-                <div class="pt-2">
-                  <button type="submit" id="btn-start-probe" class="w-full bg-gradient-to-r from-[#ef4d23] to-[#dc380e] hover:from-[#dc380e] hover:to-[#b82b08] text-white font-bold py-3 rounded-xl text-sm transition shadow-md shadow-orange-500/20 flex items-center justify-center gap-2">
-                    <i data-lucide="zap" class="w-4 h-4"></i>
-                    <span>Launch Live Verification Probe</span>
+                <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" id="hero-require-email" aria-label="Require verified public email" checked class="w-4 h-4 rounded text-[#ef4d23] focus:ring-[#ef4d23] accent-[#ef4d23]" />
+                    <label for="hero-require-email" class="text-xs text-neutral-300 font-medium">Require public email contact</label>
+                  </div>
+
+                  <button type="submit" class="chamfer text-white" style="min-width: 180px; height: 44px; padding: 0 1.25rem;">
+                    <span class="chamfer__glass" style="background: rgba(239, 77, 35, 0.85); border-color: rgba(239, 77, 35, 0.9);" aria-hidden="true"></span>
+                    <svg class="chamfer__outline" viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true">
+                      <polygon points="12,0 200,0 200,32 188,44 0,44 0,12" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+                    </svg>
+                    <span class="chamfer__label text-xs font-bold uppercase tracking-wider">Launch Discovery</span>
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
                   </button>
                 </div>
               </form>
             </div>
 
-            <!-- Real-Time Probe Execution Console -->
-            <div id="probe-execution-card" class="hidden bg-neutral-950 text-neutral-100 rounded-2xl p-5 border border-neutral-800 shadow-xl space-y-4">
-              <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 gap-4 pt-2">
+              <div class="glass-surface p-4 rounded-2xl text-center">
+                <div class="text-2xl font-light font-mono" id="stat-total-leads">--</div>
+                <div class="text-xs font-mono uppercase tracking-wider text-neutral-400 mt-1">Verified Leads</div>
+              </div>
+              <div class="glass-surface p-4 rounded-2xl text-center">
+                <div class="text-2xl font-light font-mono text-emerald-400" id="stat-live-rate">--%</div>
+                <div class="text-xs font-mono uppercase tracking-wider text-neutral-400 mt-1">Live Online</div>
+              </div>
+              <div class="glass-surface p-4 rounded-2xl text-center">
+                <div class="text-2xl font-light font-mono text-[#ef4d23]" id="stat-hot-leads">--</div>
+                <div class="text-xs font-mono uppercase tracking-wider text-neutral-400 mt-1">Hot Opportunities</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: The Refractive Liquid Glass Card (Terranova Engine) -->
+          <div class="lg:col-span-5 flex justify-center lg:justify-end">
+            <aside class="card group" data-glass-card>
+              <!-- Optical window canvas duplicate -->
+              <div id="dup-video-container"><canvas id="dup-image"></canvas></div>
+              <div class="card__frost" aria-hidden="true"></div>
+
+              <div class="card__head">
+                <h2 class="card__title flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Live Lead Signals
+                </h2>
+                <span class="card__index">//01</span>
+              </div>
+
+              <!-- Real Dynamic Findings populated by app.js -->
+              <div class="card__body" id="glass-card-findings">
+                <div class="finding">
+                  <div class="finding__title">
+                    <span>Awaiting Signals</span>
+                    <span class="badge-status badge-live text-[9px]">ACTIVE</span>
+                  </div>
+                  <p class="finding__text">Initializing live technology detection probes across UK & European e-commerce domains.</p>
+                </div>
+                <div class="finding">
+                  <div class="finding__title">
+                    <span>Fingerprint Engine</span>
+                    <span class="badge-status badge-score-hot text-[9px]">READY</span>
+                  </div>
+                  <p class="finding__text">19 technology signature profiles loaded with deterministic heuristic DOM inspection.</p>
+                </div>
+              </div>
+
+              <!-- Optical harmonic wave line -->
+              <svg class="card__wave" viewBox="0 0 220 50" fill="none" aria-hidden="true">
+                <path d="M0 30 C10 30 12 45 18 45 C24 45 26 10 34 10 C42 10 44 40 52 40 C60 40 62 5 70 5 C78 5 80 42 88 42 C96 42 98 15 106 15 C114 15 116 38 124 38 C132 38 134 20 142 20 C150 20 152 35 160 35 C168 35 170 22 178 22 C186 22 188 32 196 32 C204 32 210 28 220 28"
+                      stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" class="text-neutral-700 dark:text-neutral-300" />
+              </svg>
+            </aside>
+          </div>
+
+        </div>
+
+        <!-- Recent Verified Leads Preview -->
+        <div class="glass-surface p-6 rounded-3xl space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div>
+              <h2 class="text-lg font-medium tracking-tight">Recent Verified Leads</h2>
+              <p class="text-xs text-neutral-400">Live storefronts with verified technology match and contact intelligence</p>
+            </div>
+            <button onclick="navigateRoute(event, 'leads')" class="text-xs font-semibold text-[#ef4d23] hover:underline flex items-center gap-1">
+              View All Leads Directory &rarr;
+            </button>
+          </div>
+
+          <div class="glass-table-container">
+            <table class="glass-table">
+              <thead>
+                <tr>
+                  <th>Business / Domain</th>
+                  <th>Primary Technology</th>
+                  <th>Status</th>
+                  <th>Location</th>
+                  <th>Contact Information</th>
+                  <th>Opportunity Score</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-recent-leads-body">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-neutral-400 font-mono text-xs">
+                    Loading verified leads...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 2: DISCOVER (Live SSE Discovery Pipeline Runner & Stream Feed)       -->
+      <!-- ========================================================================= -->
+      <section id="view-discover" class="hidden space-y-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-light tracking-tight">Live Discovery Engine</h1>
+            <p class="text-sm text-neutral-400 font-light mt-1">
+              Orchestrates 6 zero-cost discovery providers, live HTTP probes, technology fingerprinting, and contact extraction.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 font-mono text-xs text-neutral-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Real-Time SSE Pipeline
+          </div>
+        </div>
+
+        <!-- Discovery Controls Form -->
+        <div class="glass-surface p-6 rounded-3xl">
+          <form id="discovery-run-form" onsubmit="handleDiscoverySubmit(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Technology</label>
+                <select id="disc-tech-select" aria-label="Select target technology" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm font-medium">
+                  <option value="opencart" selected>OpenCart</option>
+                  <option value="shopify">Shopify</option>
+                  <option value="woocommerce">WooCommerce</option>
+                  <option value="magento">Magento</option>
+                  <option value="prestashop">PrestaShop</option>
+                  <option value="bigcommerce">BigCommerce</option>
+                  <option value="wordpress">WordPress</option>
+                  <option value="drupal">Drupal</option>
+                  <option value="joomla">Joomla</option>
+                  <option value="laravel">Laravel</option>
+                  <option value="react">React</option>
+                  <option value="nextjs">Next.js</option>
+                  <option value="vue">Vue.js</option>
+                  <option value="angular">Angular</option>
+                  <option value="stripe">Stripe</option>
+                  <option value="tailwind">Tailwind CSS</option>
+                  <option value="cloudflare">Cloudflare</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Target Country</label>
+                <input id="disc-country-input" aria-label="Target country for lead discovery" type="text" value="United Kingdom" placeholder="e.g. United Kingdom, Germany" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Industry Vertical</label>
+                <input id="disc-industry-input" aria-label="Target industry vertical" type="text" value="E-commerce" placeholder="e.g. E-commerce, Retail" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">Domain Limit</label>
+                <select id="disc-limit-select" aria-label="Candidate domain limit" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm font-medium">
+                  <option value="20">20 Candidates</option>
+                  <option value="50">50 Candidates</option>
+                  <option value="100" selected>100 Candidates (Full Batch)</option>
+                  <option value="150">150 Candidates</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div class="flex items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span class="font-mono text-xs font-bold text-neutral-200">LIVE PROBE EXECUTION CONSOLE</span>
+                  <input type="checkbox" id="disc-require-email" aria-label="Only persist leads with public email" class="w-4 h-4 rounded text-[#ef4d23] accent-[#ef4d23]" />
+                  <label for="disc-require-email" class="text-xs text-neutral-300 font-medium">Only persist leads with public email</label>
                 </div>
-                <div class="flex items-center gap-3 text-xs font-mono text-neutral-400">
-                  <span id="probe-job-id">Job: --</span>
-                  <span id="probe-status-badge" class="px-2 py-0.5 rounded bg-orange-950 text-[#ef4d23] font-bold">RUNNING</span>
-                </div>
-              </div>
-
-              <!-- Progress Bar -->
-              <div>
-                <div class="flex justify-between text-xs font-mono text-neutral-400 mb-1">
-                  <span id="probe-step-label">Initializing providers...</span>
-                  <span id="probe-pct-label">0%</span>
-                </div>
-                <div class="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
-                  <div id="probe-progress-bar" class="bg-gradient-to-r from-orange-500 to-emerald-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="disc-replace-existing" aria-label="Replace previous leads with fresh batch" class="w-4 h-4 rounded text-[#ef4d23] accent-[#ef4d23]" checked />
+                  <label for="disc-replace-existing" class="text-xs text-[#ef4d23] font-medium font-mono">Replace previous leads with fresh batch</label>
                 </div>
               </div>
 
-              <!-- Live Stream Log Container -->
-              <div id="probe-stream-logs" class="space-y-1 font-mono text-xs text-neutral-300 max-h-48 overflow-y-auto pr-2 bg-neutral-900/60 p-3 rounded-xl border border-neutral-800/80">
-                <div class="text-neutral-500">[System] Connecting to SSE broadcast channel...</div>
-              </div>
-
-              <div class="flex items-center justify-between pt-2 border-t border-neutral-800 text-xs">
-                <div class="flex items-center gap-4 font-mono">
-                  <span>Candidates: <strong id="probe-candidates-count" class="text-white">0</strong></span>
-                  <span>Verified: <strong id="probe-verified-count" class="text-emerald-400">0</strong></span>
-                  <span>Qualified: <strong id="probe-qualified-count" class="text-[#ef4d23]">0</strong></span>
-                </div>
-                <button onclick="navigateRoute(event, 'leads')" class="bg-white text-black hover:bg-neutral-200 font-bold px-3 py-1.5 rounded-lg transition text-xs flex items-center gap-1">
-                  <span>View Leads</span> &rarr;
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: LEADS DIRECTORY ==================== -->
-        <section id="view-leads" class="hidden space-y-6">
-          
-          <!-- Header & Presets -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Verified Leads Directory</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Deterministic business records with extracted public contacts, SSL verification, and evidence provenance.
-              </p>
-            </div>
-            
-            <div class="flex items-center gap-2">
-              <button onclick="quickExportLeads('csv')" class="bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
-                <i data-lucide="file-text" class="w-3.5 h-3.5 text-blue-500"></i>
-                <span>Export CSV</span>
-              </button>
-
-              <button onclick="quickExportLeads('xlsx')" class="bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-500"></i>
-                <span>Export XLSX</span>
+              <button type="submit" id="btn-start-discovery" class="chamfer text-white" style="min-width: 220px; height: 46px;">
+                <span class="chamfer__glass" style="background: rgba(239, 77, 35, 0.9); border-color: #ef4d23;" aria-hidden="true"></span>
+                <svg class="chamfer__outline" viewBox="0 0 240 46" preserveAspectRatio="none" aria-hidden="true">
+                  <polygon points="12,0 240,0 240,34 228,46 0,46 0,12" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+                </svg>
+                <span class="chamfer__label text-xs font-bold uppercase tracking-wider">Start Live Discovery</span>
+                <i data-lucide="play" class="w-4 h-4"></i>
               </button>
             </div>
-          </div>
+          </form>
+        </div>
 
-          <!-- Filter & Search Toolbar -->
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl p-4 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-            
-            <!-- Preset Tabs -->
-            <div class="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3 flex-wrap">
-              <button onclick="filterLeadsByPreset('all')" id="preset-all" class="px-3 py-1 rounded-full text-xs font-bold transition bg-[#0b0f1a] text-white dark:bg-white dark:text-black">
-                All Leads
-              </button>
-              <button onclick="filterLeadsByPreset('hot')" id="preset-hot" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800">
-                🔥 Hot Qualified (&ge;80)
-              </button>
-              <button onclick="filterLeadsByPreset('email')" id="preset-email" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800">
-                ✉️ Has Email
-              </button>
-              <button onclick="filterLeadsByPreset('live')" id="preset-live" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800">
-                ✅ Live Verified
-              </button>
-            </div>
-
-            <!-- Deep Filters -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-              <!-- Search Query -->
-              <div class="relative lg:col-span-2">
-                <i data-lucide="search" class="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-3"></i>
-                <input
-                  id="leads-filter-search"
-                  type="text"
-                  placeholder="Search domain or company..."
-                  class="w-full pl-8 pr-3 py-1.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs focus:ring-[#ef4d23]"
-                  oninput="handleLeadsSearch(this.value)"
-                />
-              </div>
-
-              <!-- Technology Filter -->
-              <div>
-                <select id="leads-filter-tech" onchange="triggerLeadsFilterUpdate()" class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-1.5 px-2.5 text-xs font-semibold focus:ring-[#ef4d23]">
-                  <option value="">All Technologies</option>
-                  <option value="OpenCart">OpenCart</option>
-                  <option value="Shopify">Shopify</option>
-                  <option value="WooCommerce">WooCommerce</option>
-                  <option value="PrestaShop">PrestaShop</option>
-                  <option value="Magento">Magento</option>
-                  <option value="WordPress">WordPress</option>
-                  <option value="Drupal">Drupal</option>
-                  <option value="BigCommerce">BigCommerce</option>
-                  <option value="Next.js">Next.js</option>
-                  <option value="React">React</option>
-                  <option value="Cloudflare">Cloudflare</option>
-                  <option value="Stripe">Stripe</option>
-                </select>
-              </div>
-
-              <!-- Country Filter -->
-              <div>
-                <select id="leads-filter-country" onchange="triggerLeadsFilterUpdate()" class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-1.5 px-2.5 text-xs font-semibold focus:ring-[#ef4d23]">
-                  <option value="">All Regions</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="United States">United States</option>
-                  <option value="Germany">Germany</option>
-                  <option value="Canada">Canada</option>
-                  <option value="Global">Global / Other</option>
-                </select>
-              </div>
-
-              <!-- Sort Order -->
-              <div>
-                <select id="leads-filter-sort" onchange="triggerLeadsFilterUpdate()" class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-1.5 px-2.5 text-xs font-semibold focus:ring-[#ef4d23]">
-                  <option value="score">Sort by: Score (High &rarr; Low)</option>
-                  <option value="recent">Sort by: Recently Verified</option>
-                  <option value="domain">Sort by: Domain (A &rarr; Z)</option>
-                </select>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Enterprise Leads Table -->
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                <thead class="bg-neutral-50 dark:bg-neutral-800/50 text-neutral-700 dark:text-neutral-200 border-b border-neutral-200/80 dark:border-neutral-800 font-semibold">
-                  <tr>
-                    <th class="py-3 px-4 w-10">
-                      <input type="checkbox" id="select-all-leads" class="rounded text-[#ef4d23] focus:ring-[#ef4d23] w-3.5 h-3.5" onclick="toggleSelectAllLeads(this.checked)" />
-                    </th>
-                    <th class="py-3 px-4">Business / Domain</th>
-                    <th class="py-3 px-3">Technology Fingerprint</th>
-                    <th class="py-3 px-3">Status</th>
-                    <th class="py-3 px-3">Country</th>
-                    <th class="py-3 px-3">Public Contacts</th>
-                    <th class="py-3 px-3 text-center">Score</th>
-                    <th class="py-3 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="leads-table-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                  <tr>
-                    <td colspan="8" class="text-center py-12 text-neutral-400">Loading verified leads directory...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Pagination Bar -->
-            <div class="px-4 py-3 bg-neutral-50 dark:bg-neutral-800/40 border-t border-neutral-200/80 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500">
-              <span id="leads-pagination-info">Showing 0 of 0 leads</span>
-              <div class="flex items-center gap-1.5">
-                <button onclick="changeLeadsPage(-1)" id="btn-prev-page" class="p-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-40 transition">
-                  <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                </button>
-                <span id="leads-page-number" class="font-mono font-bold px-2">Page 1</span>
-                <button onclick="changeLeadsPage(1)" id="btn-next-page" class="p-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 disabled:opacity-40 transition">
-                  <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </section>
-
-
-        <!-- ==================== VIEW: TECHNOLOGIES CATALOG ==================== -->
-        <section id="view-technologies" class="hidden space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Technology Signatures Catalog</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                19 verified open-source YAML fingerprints inspecting DOM, headers, scripts, and cookies.
-              </p>
-            </div>
-            <button onclick="navigateRoute(event, 'discover')" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
-              <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-              <span>Launch Custom Probe</span>
-            </button>
-          </div>
-
-          <!-- Category Filter Bar -->
-          <div class="flex items-center gap-2 flex-wrap" id="tech-category-pills">
-            <button onclick="filterTechCategory('all')" class="px-3 py-1 rounded-full text-xs font-bold transition bg-[#0b0f1a] text-white dark:bg-white dark:text-black">All (19)</button>
-            <button onclick="filterTechCategory('ecommerce')" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800">E-Commerce</button>
-            <button onclick="filterTechCategory('cms')" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800">CMS</button>
-            <button onclick="filterTechCategory('framework')" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800">Frontend</button>
-            <button onclick="filterTechCategory('infra')" class="px-3 py-1 rounded-full text-xs font-bold transition text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800">Cloud &amp; Payments</button>
-          </div>
-
-          <!-- Tech Cards Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tech-cards-grid">
-            <div class="col-span-3 text-center py-12 text-neutral-400 text-xs">Loading technology fingerprints...</div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: PROJECTS ==================== -->
-        <section id="view-projects" class="hidden space-y-6">
+        <!-- Live Progress Status Card -->
+        <div id="discovery-status-card" class="hidden glass-surface p-6 rounded-3xl space-y-6">
           <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Workspace Projects</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Organize client outreach campaigns and targeted lead pipelines.</p>
-            </div>
-            <button onclick="openNewProjectModal()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-black font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5">
-              <i data-lucide="folder-plus" class="w-3.5 h-3.5"></i>
-              <span>Create Project</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="projects-grid">
-            <div class="col-span-3 text-center py-12 text-neutral-400 text-xs">Loading projects...</div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: LISTS ==================== -->
-        <section id="view-lists" class="hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Segmented Lead Lists</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Curated lists for specialized outreach cadences.</p>
-            </div>
-            <button onclick="openNewListModal()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-black font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              <span>New Lead List</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="lists-grid">
-            <div class="col-span-3 text-center py-12 text-neutral-400 text-xs">Loading lead lists...</div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: JOBS CENTER ==================== -->
-        <section id="view-jobs" class="hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Background Jobs &amp; Ingestion Workers</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Unified monitoring of autonomous discovery tasks, domain batches, and async export builds.</p>
-            </div>
-            <button onclick="loadUnifiedJobs()" class="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-neutral-500"></i>
-              <span>Refresh Jobs</span>
-            </button>
-          </div>
-
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                <thead class="bg-neutral-50 dark:bg-neutral-800/50 text-neutral-700 dark:text-neutral-200 border-b border-neutral-200/80 dark:border-neutral-800 font-semibold">
-                  <tr>
-                    <th class="py-3 px-4">Job ID</th>
-                    <th class="py-3 px-3">Type</th>
-                    <th class="py-3 px-3">Description</th>
-                    <th class="py-3 px-3">Status</th>
-                    <th class="py-3 px-3">Progress / Records</th>
-                    <th class="py-3 px-4 text-right">Created At</th>
-                  </tr>
-                </thead>
-                <tbody id="jobs-table-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                  <tr>
-                    <td colspan="6" class="text-center py-12 text-neutral-400">Loading active and past jobs...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: DOMAIN INGESTION (IMPORTS) ==================== -->
-        <section id="view-imports" class="hidden space-y-6">
-          <div class="max-w-3xl mx-auto space-y-6">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Batch Domain Ingestion</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Ingest high-volume lists of company domains or URLs. Automated RFC sanitization, deduplication, and verification queueing.
-              </p>
-            </div>
-
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4">
+            <div class="flex items-center gap-3">
+              <div id="discovery-spinner" class="w-3 h-3 rounded-full bg-[#ef4d23] animate-ping"></div>
               <div>
-                <label class="block text-xs font-bold text-neutral-800 dark:text-neutral-200 mb-1">
-                  Paste Target Domains or Store URLs (One per line)
-                </label>
-                <textarea
-                  id="import-domains-textarea"
-                  rows="8"
-                  placeholder="acme-store.co.uk&#10;https://urbanfurnishings.de&#10;organicthreads.com&#10;shop.trendydesigns.fr"
-                  class="w-full font-mono text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 p-3 focus:ring-[#ef4d23]"
-                ></textarea>
-                <span class="text-[11px] text-neutral-400 block mt-1">Supported formats: Raw domains, full URLs, or CSV lines. Schemes and paths are automatically normalized.</span>
-              </div>
-
-              <div class="flex items-center justify-between pt-2">
-                <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
-                  <input type="checkbox" id="import-auto-verify" checked class="rounded text-[#ef4d23] focus:ring-[#ef4d23] w-4 h-4" />
-                  <span>Enqueue immediate live verification probe for new domains</span>
-                </label>
-
-                <button onclick="executeBatchImport()" id="btn-batch-import" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
-                  <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                  <span>Ingest &amp; Deduplicate</span>
-                </button>
-              </div>
-
-              <!-- Import Results Summary -->
-              <div id="import-result-summary" class="hidden p-4 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 space-y-2 text-xs">
-                <h4 class="font-bold text-neutral-900 dark:text-white flex items-center gap-1.5">
-                  <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
-                  <span>Ingestion Complete</span>
-                </h4>
-                <div class="grid grid-cols-3 gap-2 text-center pt-2">
-                  <div class="bg-white dark:bg-neutral-900 p-2 rounded-lg border border-neutral-200 dark:border-neutral-800">
-                    <span class="text-[10px] text-neutral-400 block">New Unique Leads</span>
-                    <strong class="text-base text-emerald-600 font-mono" id="import-new-count">0</strong>
-                  </div>
-                  <div class="bg-white dark:bg-neutral-900 p-2 rounded-lg border border-neutral-200 dark:border-neutral-800">
-                    <span class="text-[10px] text-neutral-400 block">Duplicates Filtered</span>
-                    <strong class="text-base text-neutral-500 font-mono" id="import-dup-count">0</strong>
-                  </div>
-                  <div class="bg-white dark:bg-neutral-900 p-2 rounded-lg border border-neutral-200 dark:border-neutral-800">
-                    <span class="text-[10px] text-neutral-400 block">Invalid Blocked</span>
-                    <strong class="text-base text-amber-500 font-mono" id="import-inv-count">0</strong>
-                  </div>
-                </div>
+                <h3 class="text-base font-medium" id="discovery-job-title">Executing Discovery Job</h3>
+                <p class="text-xs text-neutral-400 font-mono" id="discovery-job-meta">Job ID: --</p>
               </div>
             </div>
+            <span id="discovery-status-badge" class="badge-status badge-live">RUNNING</span>
           </div>
-        </section>
 
-
-        <!-- ==================== VIEW: EXPORT CENTER ==================== -->
-        <section id="view-exports" class="hidden space-y-6">
-          <div class="max-w-4xl mx-auto space-y-6">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Multi-Format Export Center</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Enterprise exports with spreadsheet formula injection protection (=, +, -, @ prefix sanitization).
-              </p>
+          <!-- Progress Bar -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-mono text-neutral-400">
+              <span id="discovery-progress-text">Processing candidate domains...</span>
+              <span id="discovery-progress-pct" class="font-bold text-white">0%</span>
             </div>
-
-            <!-- Export Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- Card 1: Excel -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
-                    <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Microsoft Excel (.xlsx)</h3>
-                  <p class="text-xs text-neutral-500 mt-1">Multi-tab formatted workbook with technology tags, verified contacts, and status indicators.</p>
-                </div>
-                <button onclick="triggerDirectExport('xlsx')" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .XLSX</span>
-                </button>
-              </div>
-
-              <!-- Card 2: CSV -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
-                    <i data-lucide="file-text" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Comma-Separated (.csv)</h3>
-                  <p class="text-xs text-neutral-500 mt-1">Clean CSV format ready for CRM imports (Salesforce, HubSpot, Apollo) with formula injection safeguards.</p>
-                </div>
-                <button onclick="triggerDirectExport('csv')" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .CSV</span>
-                </button>
-              </div>
-
-              <!-- Card 3: PDF Dossier -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center mb-3">
-                    <i data-lucide="file-check-2" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">PDF Executive Dossier</h3>
-                  <p class="text-xs text-neutral-500 mt-1">Formatted intelligence report with technology evidence breakdowns and contact provenance.</p>
-                </div>
-                <button onclick="triggerDirectExport('pdf')" class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .PDF</span>
-                </button>
-              </div>
-
-              <!-- Card 4: JSON -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
-                    <i data-lucide="file-json" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">JSON / REST Array</h3>
-                  <p class="text-xs text-neutral-500 mt-1">Structured JSON payload with complete evidence arrays, headers, and contact roles.</p>
-                </div>
-                <button onclick="triggerDirectExport('json')" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .JSON</span>
-                </button>
-              </div>
-
-              <!-- Card 5: Markdown -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center mb-3">
-                    <i data-lucide="file-code" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Markdown Table (.md)</h3>
-                  <p class="text-xs text-neutral-500 mt-1">GitHub Flavored Markdown table for documentation, Notion, or internal research notes.</p>
-                </div>
-                <button onclick="triggerDirectExport('markdown')" class="mt-4 w-full bg-neutral-800 hover:bg-black text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .MD</span>
-                </button>
-              </div>
-
-              <!-- Card 6: Apache Parquet -->
-              <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
-                    <i data-lucide="database" class="w-5 h-5"></i>
-                  </div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Apache Parquet (.parquet)</h3>
-                  <p class="text-xs text-neutral-500 mt-1">Columnar binary format optimized for high-speed OLAP queries in Snowflake, BigQuery, or DuckDB.</p>
-                </div>
-                <button onclick="triggerDirectExport('parquet')" class="mt-4 w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1.5">
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Download .PARQUET</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Async Large Job Creation -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-              <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Start Background Async Export (Up to 50,000 records)</h3>
-              <p class="text-xs text-neutral-500">Generates downloadable files in the background while logging job status in the database.</p>
-              
-              <div class="flex items-center gap-3">
-                <select id="async-export-format" class="rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-semibold py-2 px-3">
-                  <option value="CSV">CSV Format</option>
-                  <option value="XLSX">Excel (.XLSX)</option>
-                  <option value="JSON">JSON Format</option>
-                  <option value="PDF">PDF Report</option>
-                  <option value="PARQUET">Parquet Binary</option>
-                </select>
-                <button onclick="startAsyncExportJob()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-black font-bold text-xs px-4 py-2 rounded-xl transition">
-                  Dispatch Export Worker
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: WEBHOOKS ==================== -->
-        <section id="view-webhooks" class="hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Outbound Webhooks &amp; HMAC-SHA256</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Dispatches signed events (`lead.created`, `lead.verified`, `technology.changed`) with cryptographic signature in `X-LeadForge-Signature`.
-              </p>
+            <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+              <div id="discovery-progress-bar" class="bg-[#ef4d23] h-2.5 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(239,77,35,0.8)]" style="width: 0%"></div>
             </div>
           </div>
 
-          <!-- Register Form -->
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4">
-            <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Register Webhook Endpoint</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">Payload URL *</label>
-                <input type="url" id="hook-url-input" placeholder="https://api.yourcompany.com/leadforge/webhook" class="w-full text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 focus:ring-[#ef4d23]" />
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-1">HMAC Secret Key (Optional, auto-generated if empty)</label>
-                <input type="text" id="hook-secret-input" placeholder="whsec_custom_secret_key" class="w-full text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 focus:ring-[#ef4d23]" />
-              </div>
+          <!-- Metrics Counters -->
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <div class="text-xl font-mono" id="disc-count-candidates">0</div>
+              <div class="text-[11px] font-mono text-neutral-400 uppercase">Candidates Discovered</div>
             </div>
-
-            <!-- Event Checkboxes -->
-            <div>
-              <label class="block text-xs font-semibold text-neutral-800 dark:text-neutral-200 mb-2">Subscribed Events</label>
-              <div class="flex flex-wrap gap-4 text-xs">
-                <label class="flex items-center gap-1.5"><input type="checkbox" id="hook-evt-created" checked class="rounded text-[#ef4d23]" /> <span>lead.created</span></label>
-                <label class="flex items-center gap-1.5"><input type="checkbox" id="hook-evt-verified" checked class="rounded text-[#ef4d23]" /> <span>lead.verified</span></label>
-                <label class="flex items-center gap-1.5"><input type="checkbox" id="hook-evt-tech" checked class="rounded text-[#ef4d23]" /> <span>technology.changed</span></label>
-                <label class="flex items-center gap-1.5"><input type="checkbox" id="hook-evt-export" class="rounded text-[#ef4d23]" /> <span>export.completed</span></label>
-              </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <div class="text-xl font-mono text-emerald-400" id="disc-count-verified">0</div>
+              <div class="text-[11px] font-mono text-neutral-400 uppercase">Live Websites Probed</div>
             </div>
-
-            <button onclick="registerNewWebhook()" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white font-bold text-xs px-4 py-2 rounded-xl transition">
-              Register Endpoint
-            </button>
-          </div>
-
-          <!-- Active Webhooks List -->
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-            <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Active Webhooks</h3>
-            <div id="webhooks-list" class="space-y-2">
-              <div class="text-xs text-neutral-400 py-4 text-center">Loading webhooks...</div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <div class="text-xl font-mono text-[#ef4d23]" id="disc-count-qualified">0</div>
+              <div class="text-[11px] font-mono text-neutral-400 uppercase">Qualified Leads</div>
             </div>
           </div>
-        </section>
 
-
-        <!-- ==================== VIEW: API & KEYS ==================== -->
-        <section id="view-api-keys" class="hidden space-y-6">
-          <div class="max-w-4xl mx-auto space-y-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Developer API &amp; Key Governance</h1>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                  Authenticate programmatic requests via `X-API-Key` or `Authorization: Bearer <token>`.
-                </p>
-              </div>
-              <div class="flex items-center gap-2">
-                <a href="/docs" target="_blank" class="bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
-                  <span>Interactive Swagger</span>
-                  <i data-lucide="external-link" class="w-3 h-3 text-neutral-400"></i>
-                </a>
-                <a href="/redoc" target="_blank" class="bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
-                  <span>ReDoc Specs</span>
-                  <i data-lucide="external-link" class="w-3 h-3 text-neutral-400"></i>
-                </a>
-              </div>
+          <!-- Live Terminal Event Stream -->
+          <div class="space-y-2">
+            <div class="text-xs font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Live SSE Stream Log
             </div>
-
-            <!-- Create Key Form -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4">
-              <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Generate Production API Key</h3>
-              <div class="flex items-center gap-3">
-                <input type="text" id="new-api-key-name" placeholder="Key Label (e.g. Outreach Pipeline Worker, Zapier Webhook)" class="flex-1 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 focus:ring-[#ef4d23]" />
-                <button onclick="generateApiKey()" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white font-bold text-xs px-4 py-2 rounded-xl transition shrink-0">
-                  Generate Key
-                </button>
-              </div>
-
-              <!-- Generated Key Secret Banner -->
-              <div id="new-key-secret-box" class="hidden p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 space-y-2 text-xs">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
-                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
-                    <span>Save your API Key now. It will never be displayed again.</span>
-                  </span>
-                  <button onclick="copyToClipboard(document.getElementById('new-key-secret-val').innerText)" class="bg-amber-200 dark:bg-amber-900 hover:opacity-80 px-2 py-0.5 rounded text-[10px] font-bold">
-                    Copy Secret
-                  </button>
-                </div>
-                <code class="block font-mono bg-white dark:bg-neutral-900 p-2.5 rounded-lg border border-amber-300 dark:border-amber-700 text-neutral-900 dark:text-white break-all" id="new-key-secret-val"></code>
-              </div>
-            </div>
-
-            <!-- Active Keys Table -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-              <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Active API Keys</h3>
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                  <thead class="border-b border-neutral-200 dark:border-neutral-800 font-semibold text-neutral-700 dark:text-neutral-200">
-                    <tr>
-                      <th class="py-2.5 px-3">Name</th>
-                      <th class="py-2.5 px-3">Prefix</th>
-                      <th class="py-2.5 px-3">Created</th>
-                      <th class="py-2.5 px-3">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="api-keys-table-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                    <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading API keys...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Interactive cURL Snippet -->
-            <div class="bg-neutral-950 text-neutral-100 rounded-2xl p-5 border border-neutral-800 shadow-md space-y-2">
-              <div class="flex items-center justify-between text-xs font-mono text-neutral-400 border-b border-neutral-800 pb-2">
-                <span>cURL Quickstart Request</span>
-                <button onclick="copyToClipboard(document.getElementById('curl-code-snippet').innerText)" class="hover:text-white flex items-center gap-1">
-                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy
-                </button>
-              </div>
-              <pre class="font-mono text-xs text-emerald-400 overflow-x-auto p-2" id="curl-code-snippet">curl -X GET "http://localhost:8000/api/v1/leads?technology=OpenCart&amp;min_score=80" \
-  -H "X-API-Key: lf_live_YOUR_API_KEY"</pre>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: SETTINGS & TEAM ==================== -->
-        <section id="view-settings" class="hidden space-y-6">
-          <div class="max-w-4xl mx-auto space-y-6">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Organization &amp; Team Management</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Multi-tenant configuration and Role-Based Access Control (RBAC: Owner, Admin, Analyst, Viewer).
-              </p>
-            </div>
-
-            <!-- Organization Card -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-3">
-              <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Organization Details</h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <label class="block text-neutral-400 mb-1">Organization Name</label>
-                  <input type="text" id="settings-org-name-input" class="w-full text-xs font-semibold rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3" />
-                </div>
-                <div>
-                  <label class="block text-neutral-400 mb-1">Slug Identifier</label>
-                  <input type="text" id="settings-org-slug-input" readonly class="w-full text-xs font-mono rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800/50 py-2 px-3 text-neutral-500" />
-                </div>
-              </div>
-              <button onclick="saveOrgSettings()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-black font-bold text-xs px-4 py-2 rounded-xl transition">
-                Save Changes
-              </button>
-            </div>
-
-            <!-- Team Members Table & Invite -->
-            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Team Members</h3>
-                  <p class="text-[11px] text-neutral-400">Users with authenticated access to this organization's workspace</p>
-                </div>
-                <button onclick="openInviteModal()" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white text-xs font-bold px-3.5 py-1.5 rounded-xl transition flex items-center gap-1">
-                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
-                  <span>Invite Member</span>
-                </button>
-              </div>
-
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                  <thead class="border-b border-neutral-200 dark:border-neutral-800 font-semibold text-neutral-700 dark:text-neutral-200">
-                    <tr>
-                      <th class="py-2.5 px-3">Member</th>
-                      <th class="py-2.5 px-3">Role</th>
-                      <th class="py-2.5 px-3">Status</th>
-                      <th class="py-2.5 px-3 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="team-members-table-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                    <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading members...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- ==================== VIEW: AUDIT LOGS ==================== -->
-        <section id="view-audit-logs" class="hidden space-y-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">Security &amp; Operational Audit Trail</h1>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                Immutable compliance event logs recording authenticated operations, logins, exports, and integrations.
-              </p>
-            </div>
-            <button onclick="loadAuditLogs()" class="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-neutral-500"></i>
-              <span>Refresh Logs</span>
-            </button>
-          </div>
-
-          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-xs overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs text-neutral-600 dark:text-neutral-300">
-                <thead class="bg-neutral-50 dark:bg-neutral-800/50 text-neutral-700 dark:text-neutral-200 border-b border-neutral-200/80 dark:border-neutral-800 font-semibold">
-                  <tr>
-                    <th class="py-3 px-4">Timestamp</th>
-                    <th class="py-3 px-3">Action</th>
-                    <th class="py-3 px-3">Resource</th>
-                    <th class="py-3 px-3">User</th>
-                    <th class="py-3 px-4 text-right">Details</th>
-                  </tr>
-                </thead>
-                <tbody id="audit-logs-table-tbody" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                  <tr><td colspan="5" class="text-center py-12 text-neutral-400">Loading immutable audit logs...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-  </div>
-
-
-  <!-- ==================== LEAD DOSSIER MODAL / DRAWER ==================== -->
-  <div id="lead-dossier-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-neutral-900 w-full max-w-3xl rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden flex flex-col max-h-[90vh]">
-      
-      <!-- Dossier Header -->
-      <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/80 text-[#ef4d23] flex items-center justify-center shrink-0">
-            <i data-lucide="building-2" class="w-5 h-5"></i>
-          </div>
-          <div class="min-w-0">
-            <h2 class="text-base font-bold truncate text-neutral-900 dark:text-white" id="dossier-title">Business Dossier</h2>
-            <div class="flex items-center gap-2 text-xs">
-              <a href="#" target="_blank" id="dossier-url" class="text-[#ef4d23] hover:underline font-mono truncate max-w-xs">https://example.com</a>
-              <span class="text-neutral-300 dark:text-neutral-700">•</span>
-              <span id="dossier-ssl-badge" class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400">HTTPS Valid</span>
+            <div id="discovery-event-logs" class="p-4 rounded-xl bg-black/40 font-mono text-xs text-neutral-300 h-44 overflow-y-auto space-y-1.5 border border-white/10">
+              <div class="text-neutral-500">// Connected to backend stream. Awaiting candidate discovery events...</div>
             </div>
           </div>
         </div>
 
-        <button onclick="closeDossierModal()" class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800">
+        <!-- Discovered Leads in Current Job -->
+        <div id="discovery-leads-container" class="hidden space-y-4">
+          <h3 class="text-lg font-medium tracking-tight">Leads Discovered in this Session</h3>
+          <div id="discovery-stream-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Dynamically populated via SSE -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 3: LEADS DIRECTORY (Filterable, Paginated, Full Leads Table)         -->
+      <!-- ========================================================================= -->
+      <section id="view-leads" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-light tracking-tight">Verified Leads Directory</h1>
+            <p class="text-sm text-neutral-400 font-light mt-1">
+              Storefronts verified with active HTTP, SSL, detected technology, and contact information.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="triggerAutoRefreshBatch(100)" class="chamfer text-sm" style="min-width: 250px; height: 42px;">
+              <span class="chamfer__glass" style="background: rgba(239, 77, 35, 0.9); border-color: #ef4d23;" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-white">Auto-Refresh 100 New Leads</span>
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-white"></i>
+            </button>
+
+            <button onclick="navigateRoute(event, 'exports')" class="chamfer text-sm" style="min-width: 170px; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 200 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 200,0 200,32 190,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold">Export Directory</span>
+              <i data-lucide="download" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="glass-surface p-5 rounded-2xl space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div class="md:col-span-5 relative">
+              <input id="leads-search-input" aria-label="Search leads by business name, domain, or description" oninput="debounceLeadsSearch()" type="text" placeholder="Search by business name, domain, description..." class="glass-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm" />
+              <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-neutral-400"></i>
+            </div>
+
+            <div class="md:col-span-3">
+              <select id="leads-tech-filter" aria-label="Filter leads by technology" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
+                <option value="">All Technologies</option>
+                <option value="opencart">OpenCart</option>
+                <option value="shopify">Shopify</option>
+                <option value="woocommerce">WooCommerce</option>
+                <option value="magento">Magento</option>
+                <option value="prestashop">PrestaShop</option>
+                <option value="wordpress">WordPress</option>
+                <option value="laravel">Laravel</option>
+                <option value="react">React</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <select id="leads-country-filter" aria-label="Filter leads by country" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
+                <option value="">All Countries</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="United States">United States</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <select id="leads-score-filter" aria-label="Filter leads by opportunity score" onchange="loadLeadsTable()" class="glass-input w-full px-3 py-2.5 rounded-xl text-sm">
+                <option value="">All Scores</option>
+                <option value="HOT">HOT (≥90)</option>
+                <option value="HIGH">HIGH (75-89)</option>
+                <option value="MEDIUM">MEDIUM (50-74)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick Preset Pills -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="text-neutral-400 font-mono">Presets:</span>
+              <button onclick="setLeadsPreset('all')" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/10">All Leads</button>
+              <button onclick="setLeadsPreset('hot')" class="px-2.5 py-1 rounded-full bg-[#ef4d23]/20 text-[#ef4d23] hover:bg-[#ef4d23]/30 border border-[#ef4d23]/30">HOT Leads</button>
+              <button onclick="setLeadsPreset('email')" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30">With Direct Email</button>
+              <button onclick="setLeadsPreset('live')" class="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30">Live Only</button>
+            </div>
+
+            <div class="text-neutral-400 font-mono" id="leads-pagination-info">
+              Showing -- leads
+            </div>
+          </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="glass-surface rounded-3xl overflow-hidden">
+          <div class="glass-table-container">
+            <table class="glass-table">
+              <thead>
+                <tr>
+                  <th>Business & Domain</th>
+                  <th>Detected Technology</th>
+                  <th>Live Status</th>
+                  <th>Location</th>
+                  <th>Direct Contacts</th>
+                  <th>Lead Score</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leads-table-body">
+                <tr>
+                  <td colspan="7" class="text-center py-12 text-neutral-400 font-mono text-xs">
+                    Loading verified leads...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="p-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-neutral-400">
+            <div id="leads-page-label">Page 1</div>
+            <div class="flex items-center gap-2">
+              <button id="btn-prev-page" onclick="changeLeadsPage(-1)" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed">Previous</button>
+              <button id="btn-next-page" onclick="changeLeadsPage(1)" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed">Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- VIEW 4: EXPORT CENTER (Multi-Format Downloads)                            -->
+      <!-- ========================================================================= -->
+      <section id="view-exports" class="hidden space-y-8">
+        <div>
+          <h1 class="text-3xl font-light tracking-tight">Data Export Center</h1>
+          <p class="text-sm text-neutral-400 font-light mt-1">
+            Download your verified intelligence records in spreadsheet, JSON, PDF, or Big Data formats.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- CSV -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono font-bold text-sm mb-3">CSV</div>
+              <h3 class="text-lg font-medium">Standard CSV</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Universal tabular format with sanitized formula injection prevention. Compatible with Excel, Google Sheets, Salesforce, HubSpot.
+              </p>
+            </div>
+            <a href="/api/v1/exports/csv" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-emerald-400">Download CSV</span>
+              <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+            </a>
+          </div>
+
+          <!-- Excel XLSX -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-mono font-bold text-sm mb-3">XLSX</div>
+              <h3 class="text-lg font-medium">Styled Excel Workbook</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Professionally styled spreadsheet with dark header banner, auto-fit column widths, conditional color fills for HOT/LIVE leads.
+              </p>
+            </div>
+            <a href="/api/v1/exports/xlsx" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-blue-400">Download Excel</span>
+              <i data-lucide="download" class="w-4 h-4 text-blue-400"></i>
+            </a>
+          </div>
+
+          <!-- JSON -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-mono font-bold text-sm mb-3">JSON</div>
+              <h3 class="text-lg font-medium">Structured JSON</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Full-fidelity nested object representations with forensic evidence arrays, contact hashes, and scoring factor trees.
+              </p>
+            </div>
+            <a href="/api/v1/exports/json" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-amber-400">Download JSON</span>
+              <i data-lucide="download" class="w-4 h-4 text-amber-400"></i>
+            </a>
+          </div>
+
+          <!-- PDF Report -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-mono font-bold text-sm mb-3">PDF</div>
+              <h3 class="text-lg font-medium">Intelligence Dossier PDF</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Executive landscape PDF report generated via ReportLab with typography, company summaries, and verified tech scores.
+              </p>
+            </div>
+            <a href="/api/v1/exports/pdf" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-purple-400">Download PDF</span>
+              <i data-lucide="download" class="w-4 h-4 text-purple-400"></i>
+            </a>
+          </div>
+
+          <!-- Markdown -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-neutral-500/20 text-neutral-300 flex items-center justify-center font-mono font-bold text-sm mb-3">MD</div>
+              <h3 class="text-lg font-medium">GitHub Markdown Table</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Clean pipe-delimited Markdown tables ready to paste into GitHub issues, Notion, Obsidian, or project documentation.
+              </p>
+            </div>
+            <a href="/api/v1/exports/markdown" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-neutral-300">Download Markdown</span>
+              <i data-lucide="download" class="w-4 h-4 text-neutral-300"></i>
+            </a>
+          </div>
+
+          <!-- Parquet -->
+          <div class="glass-surface p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center font-mono font-bold text-sm mb-3">PQT</div>
+              <h3 class="text-lg font-medium">Apache Parquet</h3>
+              <p class="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Columnar storage file for Big Data ingestion, DuckDB analytics, Snowflake, and Pandas data pipelines.
+              </p>
+            </div>
+            <a href="/api/v1/exports/parquet" download class="chamfer text-center" style="min-width: 100%; height: 42px;">
+              <span class="chamfer__glass" aria-hidden="true"></span>
+              <svg class="chamfer__outline" viewBox="0 0 280 42" preserveAspectRatio="none" aria-hidden="true">
+                <polygon points="10,0 280,0 280,32 270,42 0,42 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="chamfer__label text-xs uppercase font-bold text-orange-400">Download Parquet</span>
+              <i data-lucide="download" class="w-4 h-4 text-orange-400"></i>
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-white/10 py-6 text-center text-xs font-mono text-neutral-500 relative z-20">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div>LeadForge v2.0 • Signals from the Live Web</div>
+        <div class="flex items-center gap-4">
+          <span>Zero Paid APIs</span>
+          <span>•</span>
+          <span>Deterministic Heuristics</span>
+          <span>•</span>
+          <span>SSRF Protected</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- SLIDE-IN MENU DRAWER (Terranova Architecture)                             -->
+  <!-- ========================================================================= -->
+  <div class="menu" id="menu" aria-hidden="true">
+    <div class="menu__backdrop" id="menu-backdrop"></div>
+    <div class="menu__panel" role="dialog" aria-modal="true" aria-label="Main menu">
+      <button class="menu__close" id="menu-close" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5"></i>
+        <span>Close</span>
+      </button>
+
+      <nav class="menu__nav">
+        <a class="menu__link" onclick="navigateAndCloseMenu('dashboard')">
+          <span class="menu__linkText">Dashboard</span>
+          <i data-lucide="arrow-right" class="menu__arrow w-5 h-5"></i>
+        </a>
+        <a class="menu__link" onclick="navigateAndCloseMenu('discover')">
+          <span class="menu__linkText">Live Discover</span>
+          <i data-lucide="arrow-right" class="menu__arrow w-5 h-5"></i>
+        </a>
+        <a class="menu__link" onclick="navigateAndCloseMenu('leads')">
+          <span class="menu__linkText">Verified Leads</span>
+          <i data-lucide="arrow-right" class="menu__arrow w-5 h-5"></i>
+        </a>
+        <a class="menu__link" onclick="navigateAndCloseMenu('exports')">
+          <span class="menu__linkText">Data Exports</span>
+          <i data-lucide="arrow-right" class="menu__arrow w-5 h-5"></i>
+        </a>
+      </nav>
+
+      <div class="menu__foot space-y-2">
+        <div class="text-xs font-mono uppercase tracking-wider text-neutral-400">Architecture</div>
+        <p class="text-xs text-neutral-400 leading-relaxed">
+          LeadForge discovers, probes, and qualifies real web entities using live HTTP, SSL handshake inspection, and forensic technology detection.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- LEAD DOSSIER MODAL (Full Extracted Intelligence)                          -->
+  <!-- ========================================================================= -->
+  <div id="lead-dossier-modal" class="hidden modal-backdrop" role="dialog" aria-modal="true">
+    <div class="glass-surface max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl relative">
+      
+      <div class="flex items-start justify-between border-b border-white/10 pb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="dossier-status-badge" class="badge-status badge-live">LIVE</span>
+            <span id="dossier-score-badge" class="badge-status badge-score-hot">SCORE 95</span>
+          </div>
+          <h2 id="dossier-business-name" class="text-2xl font-light tracking-tight">Business Name</h2>
+          <a id="dossier-domain-link" href="#" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-[#ef4d23] hover:underline flex items-center gap-1 mt-0.5">
+            domain.com <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+        <button onclick="closeLeadDossier()" class="p-2 rounded-full hover:bg-white/10 text-neutral-400 hover:text-white" aria-label="Close dossier">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Dossier Scrollable Body -->
-      <div class="p-6 overflow-y-auto space-y-5 text-xs">
-        
-        <!-- Score & Status Highlight -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700">
-            <span class="text-[10px] text-neutral-400 block">Fit Score</span>
-            <strong class="text-lg font-bold text-[#ef4d23]" id="dossier-score">85/100</strong>
-          </div>
-          <div class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700">
-            <span class="text-[10px] text-neutral-400 block">Primary Software</span>
-            <strong class="text-xs font-bold text-neutral-900 dark:text-white truncate block mt-1" id="dossier-tech">OpenCart</strong>
-          </div>
-          <div class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700">
-            <span class="text-[10px] text-neutral-400 block">Response Latency</span>
-            <strong class="text-xs font-mono font-bold text-neutral-700 dark:text-neutral-300 mt-1 block" id="dossier-latency">245ms</strong>
-          </div>
-          <div class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700">
-            <span class="text-[10px] text-neutral-400 block">Location / Geo</span>
-            <strong class="text-xs font-bold text-neutral-700 dark:text-neutral-300 mt-1 block" id="dossier-location">United Kingdom</strong>
-          </div>
-        </div>
-
-        <!-- Detected Evidence -->
-        <div class="space-y-2">
-          <h4 class="font-bold text-xs text-neutral-900 dark:text-white flex items-center gap-1.5">
-            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
-            <span>Verified Fingerprint Evidence</span>
-          </h4>
-          <ul id="dossier-evidence-list" class="space-y-1 font-mono text-[11px] p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 max-h-36 overflow-y-auto">
-            <li>Loading evidence...</li>
-          </ul>
-        </div>
-
-        <!-- Public Contacts Found -->
-        <div class="space-y-2">
-          <h4 class="font-bold text-xs text-neutral-900 dark:text-white flex items-center gap-1.5">
-            <i data-lucide="mail" class="w-4 h-4 text-blue-500"></i>
-            <span>Verified Public Business Contacts</span>
-          </h4>
-          <div id="dossier-contacts-list" class="space-y-1.5 p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800">
-            <span class="text-neutral-400">Loading contacts...</span>
-          </div>
-        </div>
-
+      <div id="dossier-content" class="space-y-6 text-sm">
+        <!-- Dynamically injected in app.js -->
       </div>
 
-      <!-- Dossier Footer Actions -->
-      <div class="px-6 py-3 bg-neutral-50 dark:bg-neutral-800/40 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
-        <button id="dossier-btn-reverify" class="bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-[#ef4d23]"></i>
-          <span>Re-verify Store Now</span>
+      <div class="flex items-center justify-between pt-4 border-t border-white/10">
+        <button id="btn-dossier-reverify" onclick="reverifyCurrentLead()" class="chamfer" style="min-width: 170px; height: 40px; padding: 0 1rem;">
+          <span class="chamfer__glass" aria-hidden="true"></span>
+          <svg class="chamfer__outline" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="10,0 200,0 200,30 190,40 0,40 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          </svg>
+          <span class="chamfer__label text-xs uppercase font-semibold">Live Re-Verify</span>
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
         </button>
-        <button onclick="closeDossierModal()" class="bg-[#0b0f1a] dark:bg-white text-white dark:text-black font-bold text-xs px-4 py-1.5 rounded-xl transition">
-          Close Dossier
+
+        <button onclick="closeLeadDossier()" class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium">
+          Close
         </button>
       </div>
-
     </div>
   </div>
 
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
 
-  <!-- ==================== AUTH / LOGIN MODAL ==================== -->
-  <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-neutral-900 w-full max-w-md rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#dc380e] to-[#ef4d23] flex items-center justify-center text-white">
-            <i data-lucide="lock" class="w-4 h-4"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-neutral-900 dark:text-white">Workspace Authentication</h3>
-            <p class="text-[11px] text-neutral-400">LeadForge Multi-Tenancy &amp; RBAC</p>
-          </div>
-        </div>
-        <button onclick="closeAuthModal()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Quick Demo Login Button -->
-      <div class="p-3 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 flex items-center justify-between">
-        <div>
-          <strong class="text-xs text-orange-900 dark:text-orange-200 block">Default Admin Credentials</strong>
-          <span class="text-[10px] text-orange-700/80 dark:text-orange-300/80 font-mono">admin@leadforge.io / leadforge123</span>
-        </div>
-        <button onclick="fillDemoLogin()" class="bg-[#ef4d23] hover:bg-[#dc380e] text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition shadow-2xs">
-          One-Click Login
-        </button>
-      </div>
-
-      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-semibold mb-1 text-neutral-700 dark:text-neutral-300">Email Address</label>
-          <input type="email" id="auth-email" required class="w-full text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 focus:ring-[#ef4d23]" />
-        </div>
-        <div>
-          <label class="block font-semibold mb-1 text-neutral-700 dark:text-neutral-300">Password</label>
-          <input type="password" id="auth-password" required class="w-full text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 py-2 px-3 focus:ring-[#ef4d23]" />
-        </div>
-        <button type="submit" id="auth-submit-btn" class="w-full bg-[#0b0f1a] dark:bg-white text-white dark:text-neutral-900 font-bold py-2.5 rounded-xl transition">
-          Sign In to Workspace
-        </button>
-      </form>
-    </div>
-  </div>
-
-
-  <!-- ==================== FRONTEND CONTROLLER JAVASCRIPT ==================== -->
+  <!-- Scripts -->
+  <script src="/static/glass-card.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

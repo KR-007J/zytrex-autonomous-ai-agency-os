@@ -25,6 +25,8 @@ from src.api.routes_audit import router as audit_router
 from src.api.routes_jobs import router as jobs_router
 from src.api.routes_dashboard import router as dashboard_router
 
+from src.security.middleware import SecurityHeadersMiddleware, RateLimiterMiddleware
+
 init_db()
 
 app = FastAPI(
@@ -35,12 +37,27 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# Enterprise Security Headers Middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Sliding Window Rate Limiter for discovery abuse prevention
+app.add_middleware(RateLimiterMiddleware, max_requests=40, window_seconds=60)
+
+# Hardened CORS policy
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://zytrex-851c2.web.app",
+        "https://zytrex-851c2.firebaseapp.com",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition", "Retry-After"],
 )
 
 # API v1 Router prefix

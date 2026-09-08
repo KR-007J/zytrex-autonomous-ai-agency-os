@@ -13,15 +13,30 @@ class SSRFValidationError(ValueError):
     pass
 
 
-BLOCKED_NETWORKS = [ipaddress.ip_network(cidr) for cidr in settings.blocked_ip_ranges]
+ALLOWED_PORTS = {80, 443, 8080, 8443}
+
+EXTRA_BLOCKED_NETWORKS = [
+    ipaddress.ip_network("169.254.0.0/16"),       # Link-local / Cloud Metadata (AWS, Azure, GCP)
+    ipaddress.ip_network("100.64.0.0/10"),        # Carrier-grade NAT
+    ipaddress.ip_network("100.100.100.0/24"),     # Alibaba Cloud metadata
+    ipaddress.ip_network("fc00::/7"),             # IPv6 Unique Local
+    ipaddress.ip_network("fe80::/10"),            # IPv6 Link-Local
+    ipaddress.ip_network("::1/128"),              # IPv6 Loopback
+]
+
+BLOCKED_NETWORKS = [ipaddress.ip_network(cidr) for cidr in settings.blocked_ip_ranges] + EXTRA_BLOCKED_NETWORKS
 
 
 def is_ip_allowed(ip_str: str) -> bool:
-    """Check if an IP address is public and safe to request."""
+    """Check if an IP address is public, non-metadata, and safe to request."""
     try:
         ip = ipaddress.ip_address(ip_str)
     except ValueError:
         return False
+
+    # Unpack IPv4-mapped IPv6 address (e.g., ::ffff:127.0.0.1)
+    if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
+        return is_ip_allowed(str(ip.ipv4_mapped))
 
     if (
         ip.is_private
@@ -59,10 +74,17 @@ def validate_and_resolve_url(url: str) -> Tuple[str, str, int]:
 
     # Reject localhost & internal names directly
     lower_host = hostname.lower()
-    if lower_host in ("localhost", "local", "internal", "metadata.google.internal") or lower_host.endswith(".local") or lower_host.endswith(".internal"):
+    if (
+        lower_host in ("localhost", "local", "internal", "metadata.google.internal", "metadata", "instance-data")
+        or lower_host.endswith(".local")
+        or lower_host.endswith(".internal")
+        or lower_host.endswith(".localhost")
+    ):
         raise SSRFValidationError(f"Access to internal hostname '{hostname}' is blocked")
 
     port = parsed.port or (443 if parsed.scheme.lower() == "https" else 80)
+    if port not in ALLOWED_PORTS:
+        raise SSRFValidationError(f"Port '{port}' is not permitted. Only standard web ports ({', '.join(str(p) for p in sorted(ALLOWED_PORTS))}) are allowed.")
 
     # Safe DNS resolution
     try:

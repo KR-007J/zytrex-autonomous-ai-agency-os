@@ -22,3 +22,12 @@ data/*.json
 data/*.parquet
 data/*.pdf
 data/*.md
+data/*.db-wal
+data/*.db-shm
+.env
+.env.*
+!.env.example
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

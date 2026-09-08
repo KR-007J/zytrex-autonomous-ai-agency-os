@@ -37,10 +37,17 @@ class EnterpriseExporter:
     def sanitize_spreadsheet_value(cls, val: Any) -> Any:
         """Sanitize tabular outputs to prevent spreadsheet formula injection.
 
-        Prepends a single quote `'` to any string starting with '=', '+', '-', '@'.
+        Neutralizes formula execution in Excel/Calc/Google Sheets by prepending a single quote
+        to values starting with '=', '+', '-', '@', '\\t', '\\r' even after leading whitespace.
+        Preserves genuine phone numbers starting with '+' followed by digits.
         """
-        if isinstance(val, str) and val.startswith(("=", "+", "-", "@")):
-            return f"'{val}"
+        if isinstance(val, str):
+            val_str = str(val)
+            lstripped = val_str.lstrip(" \t\r\n")
+            if lstripped and lstripped[0] in ("=", "+", "-", "@", "\t", "\r"):
+                if lstripped[0] == "+" and sum(c.isdigit() for c in lstripped) >= 6:
+                    return val_str
+                return f"'{val_str}"
         return val
 
     # Direct alias

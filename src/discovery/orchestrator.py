@@ -8,6 +8,7 @@ from src.discovery.cert_transparency import CertificateTransparencyProvider
 from src.discovery.common_crawl import CommonCrawlProvider
 from src.discovery.dns_discovery import DNSDiscoveryProvider
 from src.discovery.sitemap import SitemapProvider
+from src.discovery.duckduckgo_search import DuckDuckGoProvider
 
 
 class DiscoveryOrchestrator:
@@ -20,6 +21,7 @@ class DiscoveryOrchestrator:
             CommonCrawlProvider(),
             DNSDiscoveryProvider(),
             SitemapProvider(),
+            DuckDuckGoProvider(),
         ]
 
     async def stream_candidates(
@@ -28,8 +30,9 @@ class DiscoveryOrchestrator:
         country: Optional[str] = None,
         industry: Optional[str] = None,
         limit: int = 25,
+        exclude_domains: Optional[set] = None,
     ) -> AsyncGenerator[CandidateDomain, None]:
-        seen = set()
+        seen = set(exclude_domains or [])
         count = 0
 
         for provider in self.providers:

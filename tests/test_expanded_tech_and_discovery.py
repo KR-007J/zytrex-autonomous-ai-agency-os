@@ -124,7 +124,7 @@ def test_orchestrator_registered_providers():
     assert "Common Crawl Index" in provider_names
     assert "DNS Infrastructure Discovery" in provider_names
     assert "Sitemap & XML Index Discovery" in provider_names
-    assert len(orchestrator.providers) == 5
+    assert len(orchestrator.providers) == 6
 
 
 @pytest.mark.asyncio
