@@ -136,17 +136,24 @@ function navigateAndCloseMenu(route) {
 }
 
 // =========================================================================
-// 3. Resilient Network & Data Layer
+// 3. Resilient Network & Data Layer (Live Cloud Backend)
 // =========================================================================
+// When running locally, use window.location.origin.
+// When running on Firebase Hosting, connect directly to the live Cloudflare HTTPS tunnel for the Python crawler backend.
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? ''
+  : 'https://implement-dialog-florists-portion.trycloudflare.com';
+
 async function safeJsonFetch(url, options = {}) {
   try {
-    const res = await fetch(url, options);
+    const fullUrl = (url.startsWith('http') || url.startsWith('/data/')) ? url : `${API_BASE}${url}`;
+    const res = await fetch(fullUrl, options);
     const cType = res.headers.get('content-type') || '';
     if (res.ok && cType.includes('application/json')) {
       return await res.json();
     }
   } catch (err) {
-    // Network error or offline
+    console.warn(`[API] Fetch failed for ${url}:`, err);
   }
   return null;
 }
@@ -465,12 +472,13 @@ async function startDiscoveryJob(tech, country, industry, limit, requireEmail, r
   });
 
   if (apiRes && apiRes.job_id) {
-    // Live Server SSE Flow
+    // Live Server SSE Flow (Direct connection to real Python crawler)
     state.activeJobId = apiRes.job_id;
     if (metaEl) metaEl.textContent = `Job ID: ${apiRes.job_id}`;
-    appendDiscoveryLog(`Job started: ${apiRes.job_id}. Listening to live SSE events...`);
+    appendDiscoveryLog(`[DISCOVERY] Real-time crawler job started: ${apiRes.job_id}`);
+    appendDiscoveryLog(`[DISCOVERY] Streaming live events from Python engine (${API_BASE || 'localhost'})...`);
 
-    const streamUrl = `/api/v1/discover/${apiRes.job_id}/stream`;
+    const streamUrl = `${API_BASE}/api/v1/discover/${apiRes.job_id}/stream`;
     state.eventSource = new EventSource(streamUrl);
 
     state.eventSource.onmessage = (event) => {
@@ -482,88 +490,69 @@ async function startDiscoveryJob(tech, country, industry, limit, requireEmail, r
       }
     };
 
-    state.eventSource.onerror = () => {
+    state.eventSource.onerror = (err) => {
+      console.warn('SSE stream closed or interrupted:', err);
       if (state.eventSource) {
         state.eventSource.close();
         state.eventSource = null;
       }
-      if (btnStart) {
-        btnStart.disabled = false;
-        btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
     };
+
+    // Polling fallback to guarantee completion even if proxy closes SSE connection
+    if (state.pollTimer) clearInterval(state.pollTimer);
+    state.pollTimer = setInterval(async () => {
+      const jobData = await safeJsonFetch(`/api/v1/discover/${apiRes.job_id}`);
+      if (jobData) {
+        if (jobData.candidates_count !== undefined) {
+          const c = document.getElementById('disc-count-candidates');
+          if (c) c.textContent = jobData.candidates_count;
+        }
+        if (jobData.verified_count !== undefined) {
+          const v = document.getElementById('disc-count-verified');
+          if (v) v.textContent = jobData.verified_count;
+        }
+        if (jobData.qualified_count !== undefined) {
+          const q = document.getElementById('disc-count-qualified');
+          if (q) q.textContent = jobData.qualified_count;
+        }
+        if (jobData.progress_percent !== undefined && jobData.progress_percent > 0) {
+          const pb = document.getElementById('discovery-progress-bar');
+          const pp = document.getElementById('discovery-progress-pct');
+          if (pb) pb.style.width = `${jobData.progress_percent}%`;
+          if (pp) pp.textContent = `${jobData.progress_percent}%`;
+        }
+        if (jobData.status === 'COMPLETED' || jobData.status === 'FAILED') {
+          clearInterval(state.pollTimer);
+          state.pollTimer = null;
+          handleDiscoverySSEEvent({
+            event: 'JOB_COMPLETED',
+            status: jobData.status,
+            candidates_count: jobData.candidates_count,
+            verified_count: jobData.verified_count,
+            qualified_count: jobData.qualified_count,
+            message: `Live discovery complete. ${jobData.qualified_count || 0} qualified leads verified from ${jobData.candidates_count || 0} candidates.`
+          });
+        }
+      }
+    }, 2000);
+
     return;
   }
 
-  // 2. Client-Side Autonomous Discovery Scanner (Firebase Hosting)
-  appendDiscoveryLog(`[DISCOVERY] Engine initialized in autonomous high-speed mode.`);
-  appendDiscoveryLog(`[DISCOVERY] Querying directory seeds for technology: ${tech.toUpperCase()}, region: ${country || 'Global'}...`);
-
-  const all = await ensureLeadsLoaded();
-  let matches = all.filter(l => {
-    const techMatch = (l.primary_technology || '').toLowerCase().includes(tech.toLowerCase());
-    const geoMatch = normalizeCountryMatch(l.country, country);
-    return techMatch && geoMatch;
-  });
-
-  if (matches.length === 0) {
-    matches = all.filter(l => (l.primary_technology || '').toLowerCase().includes(tech.toLowerCase()));
-  }
-  if (matches.length === 0) {
-    matches = all.slice(0, 10);
-  }
-
-  const selectedCandidates = matches.slice(0, Math.min(limit, matches.length));
-  const candidateCount = selectedCandidates.length;
-
-  document.getElementById('disc-count-candidates').textContent = candidateCount.toString();
-
-  // Step-by-step physical scanner simulation with adaptive timing for high-volume batches (100-200 leads)
-  const stepDelay = candidateCount > 100 ? 30 : (candidateCount > 50 ? 55 : 180);
-  let processed = 0;
-  for (const lead of selectedCandidates) {
-    await new Promise(r => setTimeout(r, stepDelay));
-    processed++;
-    const pct = Math.round((processed / candidateCount) * 100);
-
-    if (progressBar) progressBar.style.width = `${pct}%`;
-    if (progressPct) progressPct.textContent = `${pct}%`;
-    if (progressText) progressText.textContent = `Probing ${lead.domain}...`;
-
-    document.getElementById('disc-count-verified').textContent = processed.toString();
-    document.getElementById('disc-count-qualified').textContent = processed.toString();
-
-    appendDiscoveryLog(`[VERIFY] ${lead.domain} — Status: ${lead.status} (${lead.http_status}), Score: ${lead.lead_score} (${lead.score_label})`);
-    renderStreamingLeadCard(lead);
-    if (processed % 4 === 0 || processed === candidateCount) {
-      playHapticSound('click');
-    }
-  }
-
-  // Completed State
-  if (progressBar) progressBar.style.width = '100%';
-  if (progressPct) progressPct.textContent = '100%';
-  if (progressText) progressText.textContent = 'Discovery pipeline completed.';
-
+  // Pure Honesty: If live backend crawler is unreachable, report immediately without faking or simulating
+  appendDiscoveryLog(`[ERROR] Live discovery crawler backend is unreachable.`);
+  appendDiscoveryLog(`[ERROR] Target endpoint: ${API_BASE || window.location.origin}/api/v1/discover`);
+  appendDiscoveryLog(`[ERROR] Please ensure the Python crawler backend service is active.`);
   if (statusBadge) {
-    statusBadge.className = 'badge-status badge-live bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
-    statusBadge.textContent = 'COMPLETED';
+    statusBadge.className = 'badge-status badge-offline';
+    statusBadge.textContent = 'OFFLINE';
   }
-
-  appendDiscoveryLog(`[SUCCESS] Discovery complete. ${candidateCount} qualified leads verified.`);
-  playHapticSound('success');
-  showToast(`Discovery completed! Verified ${candidateCount} leads.`, 'success');
-
+  if (progressText) progressText.textContent = 'Live crawler service unreachable.';
+  showToast('Cannot connect to live discovery crawler backend.', 'error');
   if (btnStart) {
     btnStart.disabled = false;
     btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
   }
-
-  // Pre-set filters and navigate to leads view
-  const techFilter = document.getElementById('leads-tech-filter');
-  const countryFilter = document.getElementById('leads-country-filter');
-  if (techFilter) techFilter.value = tech;
-  if (countryFilter) countryFilter.value = country;
 }
 
 function handleDiscoverySSEEvent(data) {
@@ -609,6 +598,10 @@ function handleDiscoverySSEEvent(data) {
       state.eventSource.close();
       state.eventSource = null;
     }
+    if (state.pollTimer) {
+      clearInterval(state.pollTimer);
+      state.pollTimer = null;
+    }
 
     const btnStart = document.getElementById('btn-start-discovery');
     if (btnStart) {
@@ -616,6 +609,8 @@ function handleDiscoverySSEEvent(data) {
       btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 
+    state.allLeads = [];
+    loadLeadsTable();
     loadDashboardAnalytics();
   }
 

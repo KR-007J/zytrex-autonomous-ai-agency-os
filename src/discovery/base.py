@@ -62,6 +62,7 @@ class DiscoveryProvider(ABC):
         country: Optional[str] = None,
         industry: Optional[str] = None,
         limit: int = 25,
+        exclude_domains: Optional[set] = None,
     ) -> AsyncGenerator[CandidateDomain, None]:
         """Stream discovered candidate domains asynchronously."""
         pass

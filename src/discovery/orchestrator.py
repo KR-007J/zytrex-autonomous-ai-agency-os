@@ -1,6 +1,7 @@
 """Discovery Orchestrator coordinating all zero-cost Discovery Providers."""
 
 from __future__ import annotations
+import asyncio
 from typing import List, Optional, AsyncGenerator, Dict, Any
 from src.discovery.base import DiscoveryProvider, CandidateDomain
 from src.discovery.live_web import LiveWebProvider
@@ -16,12 +17,12 @@ class DiscoveryOrchestrator:
 
     def __init__(self):
         self.providers: List[DiscoveryProvider] = [
+            DuckDuckGoProvider(),
             LiveWebProvider(),
             CertificateTransparencyProvider(),
             CommonCrawlProvider(),
             DNSDiscoveryProvider(),
             SitemapProvider(),
-            DuckDuckGoProvider(),
         ]
 
     async def stream_candidates(
@@ -36,14 +37,30 @@ class DiscoveryOrchestrator:
         count = 0
 
         for provider in self.providers:
+            if count >= limit:
+                break
             try:
-                async for cand in provider.stream(technology, country, industry, limit=limit - count):
+                needed = limit - count
+                try:
+                    stream_gen = provider.stream(
+                        technology, country, industry, limit=max(needed * 3, 30), exclude_domains=seen
+                    )
+                except TypeError:
+                    stream_gen = provider.stream(technology, country, industry, limit=max(needed * 3, 30))
+
+                while count < limit:
+                    try:
+                        cand = await asyncio.wait_for(stream_gen.__anext__(), timeout=15.0)
+                    except StopAsyncIteration:
+                        break
+                    except asyncio.TimeoutError:
+                        print(f"Provider {provider.name} candidate stream timed out, moving to next provider")
+                        break
+
                     if cand.domain not in seen:
                         seen.add(cand.domain)
                         yield cand
                         count += 1
-                        if count >= limit:
-                            return
             except Exception as e:
                 print(f"Provider {provider.name} stream error: {e}")
 

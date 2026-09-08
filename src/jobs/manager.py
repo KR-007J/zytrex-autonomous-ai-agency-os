@@ -78,17 +78,25 @@ class JobManager:
         processed_count = 0
         old_domains: Set[str] = set()
 
+        old_domains = set()
         if replace_existing:
             with get_db() as session:
-                old_domains = {r[0] for r in session.query(Lead.domain).all()}
                 session.query(Lead).delete()
                 session.commit()
+        else:
+            with get_db() as session:
+                old_domains = {r[0] for r in session.query(Lead.domain).all()}
 
         # Stream candidate domains, excluding previously seen domains
         async for candidate in orchestrator.stream_candidates(
             technology=technology, country=country, industry=industry, limit=limit, exclude_domains=old_domains
         ):
             candidates.append(candidate.domain)
+
+            with get_db() as session:
+                job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
+                if job:
+                    job.candidates_count = len(candidates)
 
             # Update job progress
             await broadcaster.publish(
@@ -210,6 +218,12 @@ class JobManager:
                             source="LIVE_CRAWL",
                         )
                         lead_data = lead.to_dict()
+
+                        job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
+                        if job:
+                            job.progress_percent = progress_pct
+                            job.verified_count = verified_count
+                            job.qualified_count = qualified_count
 
                     # Broadcast SSE lead processed event
                     await broadcaster.publish(

@@ -12,12 +12,18 @@ class SSEBroadcaster:
     def __init__(self):
         self._subscribers: Dict[str, Set[asyncio.Queue]] = {}
         self._global_subscribers: Set[asyncio.Queue] = set()
+        self._history: Dict[str, List[str]] = {}
 
     async def subscribe(self, channel: str) -> AsyncGenerator[str, None]:
         q: asyncio.Queue = asyncio.Queue()
         if channel not in self._subscribers:
             self._subscribers[channel] = set()
         self._subscribers[channel].add(q)
+
+        # Replay past events on this channel to avoid race conditions
+        if channel in self._history:
+            for past_msg in list(self._history[channel]):
+                yield f"data: {past_msg}\n\n"
 
         try:
             while True:
@@ -43,6 +49,14 @@ class SSEBroadcaster:
 
     async def publish(self, channel: str, data: Dict[str, Any]) -> None:
         payload = json.dumps(data)
+        if channel not in self._history:
+            self._history[channel] = []
+        self._history[channel].append(payload)
+
+        # Cap channel history to prevent unbounded memory growth
+        if len(self._history[channel]) > 250:
+            self._history[channel] = self._history[channel][-250:]
+
         # Notify channel subscribers
         if channel in self._subscribers:
             for q in list(self._subscribers[channel]):
