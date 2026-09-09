@@ -136,109 +136,114 @@ class JobManager:
 
         async def verify_and_process(domain: str):
             nonlocal verified_count, qualified_count, processed_count
-            async with sem:
-                v_res = await LiveVerifier.verify(domain, timeout=6.5)
+            try:
+                async with sem:
+                    v_res = await LiveVerifier.verify(domain, timeout=6.5)
 
-                detected_techs = []
-                primary_tech = None
-                tech_confidence = 0.0
-                evidence_list = []
-                extracted_contacts = {"emails": [], "phones": [], "socials": {}}
+                    detected_techs = []
+                    primary_tech = None
+                    tech_confidence = 0.0
+                    evidence_list = []
+                    extracted_contacts = {"emails": [], "phones": [], "socials": {}}
 
-                if v_res.is_live:
-                    detections = FingerprintEngine.detect(
-                        html=v_res.html_body,
-                        headers=v_res.headers,
-                        cookies=v_res.cookies,
-                        target_tech_id=technology.lower(),
-                    )
-                    detected_techs = [d.to_dict() for d in detections]
-                    if detections:
-                        top = detections[0]
-                        primary_tech = top.name
-                        tech_confidence = top.confidence
-                        evidence_list = top.evidence
-                    else:
-                        primary_tech = "Web Standard"
-                        tech_confidence = 0.4
-                        evidence_list = ["Standard web server detected"]
-
-                    extracted = ContactExtractor.extract_from_html(v_res.html_body, v_res.canonical_url)
-                    extracted_contacts = extracted
-
-                has_tech_match = primary_tech and technology.lower() in primary_tech.lower()
-                score_res = LeadScorer.calculate(
-                    has_tech_match=bool(has_tech_match),
-                    tech_confidence=tech_confidence,
-                    target_country_match=True if country else False,
-                    target_industry_match=True if industry else False,
-                    has_public_email=len(extracted_contacts.get("emails", [])) > 0,
-                    has_public_phone=len(extracted_contacts.get("phones", [])) > 0,
-                    has_ssl=v_res.has_ssl,
-                    response_time_ms=v_res.response_time_ms,
-                    is_live=v_res.is_live,
-                    freshness_status=v_res.freshness_status,
-                    tech_name=primary_tech or technology,
-                )
-
-                async with lock:
                     if v_res.is_live:
-                        verified_count += 1
-                    is_qualified = score_res.score >= 50 and (not require_email or len(extracted_contacts.get("emails", [])) > 0)
-                    if is_qualified:
-                        qualified_count += 1
-                    processed_count += 1
-                    progress_pct = int((processed_count / total_candidates) * 100)
-
-                    with get_db() as session:
-                        lead, created = LeadRepository.upsert_lead(
-                            session=session,
-                            domain=domain,
-                            canonical_url=v_res.canonical_url,
-                            business_name=extracted_contacts.get("business_name") or domain,
-                            description=extracted_contacts.get("description"),
-                            country=country or "United Kingdom",
-                            region="Europe",
-                            industry=industry or "E-commerce",
-                            status="LIVE" if v_res.is_live else "OFFLINE",
-                            http_status=v_res.http_status,
-                            has_ssl=v_res.has_ssl,
-                            response_time_ms=v_res.response_time_ms,
-                            primary_technology=primary_tech,
-                            technology_category="E-Commerce",
-                            technology_confidence=tech_confidence,
-                            evidence=evidence_list,
-                            technologies=detected_techs,
-                            emails=extracted_contacts.get("emails", []),
-                            phones=extracted_contacts.get("phones", []),
-                            socials=extracted_contacts.get("socials", {}),
-                            lead_score=score_res.score,
-                            score_label=score_res.label,
-                            score_reasons=score_res.reasons,
-                            source="LIVE_CRAWL",
+                        detections = FingerprintEngine.detect(
+                            html=v_res.html_body,
+                            headers=v_res.headers,
+                            cookies=v_res.cookies,
+                            target_tech_id=technology.lower(),
                         )
-                        lead_data = lead.to_dict()
+                        detected_techs = [d.to_dict() for d in detections]
+                        if detections:
+                            top = detections[0]
+                            primary_tech = top.name
+                            tech_confidence = top.confidence
+                            evidence_list = top.evidence
+                        else:
+                            primary_tech = "Web Standard"
+                            tech_confidence = 0.4
+                            evidence_list = ["Standard web server detected"]
 
-                        job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
-                        if job:
-                            job.progress_percent = progress_pct
-                            job.verified_count = verified_count
-                            job.qualified_count = qualified_count
+                        extracted = ContactExtractor.extract_from_html(v_res.html_body, v_res.canonical_url)
+                        extracted_contacts = extracted
 
-                    # Broadcast SSE lead processed event
-                    await broadcaster.publish(
-                        job_id,
-                        {
-                            "event": "LEAD_PROCESSED",
-                            "progress": progress_pct,
-                            "lead": lead_data,
-                            "verified_count": verified_count,
-                            "qualified_count": qualified_count,
-                        },
+                    has_tech_match = primary_tech and technology.lower() in primary_tech.lower()
+                    score_res = LeadScorer.calculate(
+                        has_tech_match=bool(has_tech_match),
+                        tech_confidence=tech_confidence,
+                        target_country_match=True if country else False,
+                        target_industry_match=True if industry else False,
+                        has_public_email=len(extracted_contacts.get("emails", [])) > 0,
+                        has_public_phone=len(extracted_contacts.get("phones", [])) > 0,
+                        has_ssl=v_res.has_ssl,
+                        response_time_ms=v_res.response_time_ms,
+                        is_live=v_res.is_live,
+                        freshness_status=v_res.freshness_status,
+                        tech_name=primary_tech or technology,
                     )
+
+                    async with lock:
+                        if v_res.is_live:
+                            verified_count += 1
+                        is_qualified = score_res.score >= 50 and (not require_email or len(extracted_contacts.get("emails", [])) > 0)
+                        if is_qualified:
+                            qualified_count += 1
+                        processed_count += 1
+                        progress_pct = int((processed_count / total_candidates) * 100)
+
+                        with get_db() as session:
+                            lead, created = LeadRepository.upsert_lead(
+                                session=session,
+                                domain=domain,
+                                canonical_url=v_res.canonical_url,
+                                business_name=extracted_contacts.get("business_name") or domain,
+                                description=extracted_contacts.get("description"),
+                                country=country or "United Kingdom",
+                                region="Europe",
+                                industry=industry or "E-commerce",
+                                status="LIVE" if v_res.is_live else "OFFLINE",
+                                http_status=v_res.http_status,
+                                has_ssl=v_res.has_ssl,
+                                response_time_ms=v_res.response_time_ms,
+                                primary_technology=primary_tech,
+                                technology_category="E-Commerce",
+                                technology_confidence=tech_confidence,
+                                evidence=evidence_list,
+                                technologies=detected_techs,
+                                emails=extracted_contacts.get("emails", []),
+                                phones=extracted_contacts.get("phones", []),
+                                socials=extracted_contacts.get("socials", {}),
+                                lead_score=score_res.score,
+                                score_label=score_res.label,
+                                score_reasons=score_res.reasons,
+                                source="LIVE_CRAWL",
+                            )
+                            lead_data = lead.to_dict()
+
+                            job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
+                            if job:
+                                job.progress_percent = progress_pct
+                                job.verified_count = verified_count
+                                job.qualified_count = qualified_count
+
+                        # Broadcast SSE lead processed event
+                        await broadcaster.publish(
+                            job_id,
+                            {
+                                "event": "LEAD_PROCESSED",
+                                "progress": progress_pct,
+                                "lead": lead_data,
+                                "verified_count": verified_count,
+                                "qualified_count": qualified_count,
+                            },
+                        )
+            except Exception as domain_err:
+                print(f"Error processing domain {domain}: {domain_err}")
+                async with lock:
+                    processed_count += 1
 
         # Concurrently probe all candidates
-        await asyncio.gather(*(verify_and_process(d) for d in candidates))
+        await asyncio.gather(*(verify_and_process(d) for d in candidates), return_exceptions=True)
 
         # Mark job completed
         with get_db() as session:
