@@ -917,15 +917,15 @@
         <div>
           <label for="cfg-backend-url" class="block font-medium text-neutral-200 mb-1.5">Backend API Endpoint URL</label>
           <div class="relative">
-            <input type="url" id="cfg-backend-url" placeholder="https://your-service.onrender.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/15 text-white font-mono text-xs focus:outline-none focus:border-[#ef4d23]" />
+            <input type="url" id="cfg-backend-url" placeholder="https://zytrex-backend.onrender.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/15 text-white font-mono text-xs focus:outline-none focus:border-[#ef4d23]" />
           </div>
-          <p class="text-[11px] text-neutral-400 mt-1">Leave empty to use default tunnel or current origin.</p>
+          <p class="text-[11px] text-neutral-400 mt-1">Leave empty to use Render production cloud or current origin.</p>
         </div>
 
         <div class="space-y-2">
           <div class="text-[11px] text-neutral-400 uppercase tracking-wider font-mono">Quick Presets:</div>
           <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="setPresetBackendUrl('https://ace-considerations-components-chain.trycloudflare.com')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-neutral-200 text-[11px] font-mono">Cloudflare Tunnel</button>
+            <button type="button" onclick="setPresetBackendUrl('https://zytrex-backend.onrender.com')" class="px-2.5 py-1 rounded-lg bg-[#ef4d23]/20 border border-[#ef4d23]/40 hover:bg-[#ef4d23]/30 text-white text-[11px] font-mono">Render Cloud (Prod)</button>
             <button type="button" onclick="setPresetBackendUrl('http://localhost:8000')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-neutral-200 text-[11px] font-mono">Localhost:8000</button>
           </div>
         </div>

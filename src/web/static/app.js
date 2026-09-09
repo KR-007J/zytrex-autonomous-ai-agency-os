@@ -160,8 +160,8 @@ function resolveInitialApiBase() {
     return '';
   }
 
-  // 4. Default Live Cloudflare Tunnel for Python Crawler
-  return 'https://ace-considerations-components-chain.trycloudflare.com';
+  // 4. Primary Production Cloud Backend (Render)
+  return 'https://zytrex-backend.onrender.com';
 }
 
 let API_BASE = resolveInitialApiBase();
