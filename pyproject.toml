@@ -20,6 +20,7 @@ dependencies = [
     "duckduckgo-search>=8.1.1",
     "scrapling>=0.4.15",
     "curl-cffi>=0.16.3",
+    "psycopg2-binary>=2.9.12",
 ]
 
 [build-system]
