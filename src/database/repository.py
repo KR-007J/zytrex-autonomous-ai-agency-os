@@ -403,8 +403,13 @@ class LeadRepository:
         socials = socials or {}
         score_reasons = score_reasons or []
 
-        primary_email = emails[0]["value"] if emails else None
-        primary_phone = phones[0]["value"] if phones else None
+        def _extract_val(item):
+            if isinstance(item, dict):
+                return item.get("value")
+            return str(item) if item else None
+
+        primary_email = _extract_val(emails[0]) if emails else None
+        primary_phone = _extract_val(phones[0]) if phones else None
 
         if not lead:
             lead = Lead(

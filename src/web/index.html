@@ -150,6 +150,12 @@
       </nav>
 
       <div class="flex items-center gap-3">
+        <!-- Cloud Backend Status Indicator Button -->
+        <button onclick="openBackendConfigModal()" id="backend-connection-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-xs font-mono transition text-neutral-300 hover:text-white" title="Cloud Engine Status">
+          <span id="backend-connection-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="backend-connection-text">Connecting...</span>
+        </button>
+
         <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 text-neutral-300 hover:text-white transition" title="Toggle Theme" aria-label="Toggle dark/light mode">
           <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
           <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
@@ -886,6 +892,66 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- CLOUD BACKEND CONFIGURATION MODAL                                         -->
+  <!-- ========================================================================= -->
+  <div id="backend-config-modal" class="hidden modal-backdrop" role="dialog" aria-modal="true">
+    <div class="glass-surface max-w-lg w-full rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl relative border border-white/15">
+      <div class="flex items-start justify-between border-b border-white/10 pb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="modal-backend-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="modal-backend-status" class="text-xs font-mono uppercase tracking-wider text-neutral-300">Checking Cloud Engine...</span>
+          </div>
+          <h2 class="text-xl font-light tracking-tight text-white">Backend Engine Settings</h2>
+        </div>
+        <button onclick="closeBackendConfigModal()" class="p-2 rounded-full hover:bg-white/10 text-neutral-400 hover:text-white" aria-label="Close modal">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <p class="text-neutral-300 leading-relaxed">
+          LeadForge connects to your Python FastAPI crawler backend for real-time live discovery, technology fingerprinting, and contact extraction.
+        </p>
+
+        <div>
+          <label for="cfg-backend-url" class="block font-medium text-neutral-200 mb-1.5">Backend API Endpoint URL</label>
+          <div class="relative">
+            <input type="url" id="cfg-backend-url" placeholder="https://your-service.onrender.com" class="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/15 text-white font-mono text-xs focus:outline-none focus:border-[#ef4d23]" />
+          </div>
+          <p class="text-[11px] text-neutral-400 mt-1">Leave empty to use default tunnel or current origin.</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-[11px] text-neutral-400 uppercase tracking-wider font-mono">Quick Presets:</div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="setPresetBackendUrl('https://ace-considerations-components-chain.trycloudflare.com')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-neutral-200 text-[11px] font-mono">Cloudflare Tunnel</button>
+            <button type="button" onclick="setPresetBackendUrl('http://localhost:8000')" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-neutral-200 text-[11px] font-mono">Localhost:8000</button>
+          </div>
+        </div>
+
+        <div id="cfg-latency-result" class="p-3 rounded-xl bg-white/5 border border-white/10 font-mono text-[11px] text-neutral-300">
+          Latency: <span id="cfg-latency-val">Ready to test</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-white/10">
+        <button onclick="testAndSaveBackendConfig()" class="chamfer text-white" style="min-width: 140px; height: 38px; padding: 0 1rem;">
+          <span class="chamfer__glass" style="background: rgba(239, 77, 35, 0.85);" aria-hidden="true"></span>
+          <svg class="chamfer__outline" viewBox="0 0 180 38" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="10,0 180,0 180,28 170,38 0,38 0,10" fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" />
+          </svg>
+          <span class="chamfer__label text-xs font-semibold uppercase">Save & Connect</span>
+        </button>
+
+        <button onclick="closeBackendConfigModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-neutral-300">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- LEAD DOSSIER MODAL (Full Extracted Intelligence)                          -->
   <!-- ========================================================================= -->
   <div id="lead-dossier-modal" class="hidden modal-backdrop" role="dialog" aria-modal="true">
@@ -933,6 +999,6 @@
 
   <!-- Scripts -->
   <script src="/static/glass-card.js"></script>
-  <script src="/static/app.js?v=2.7.0"></script>
+  <script src="/static/app.js?v=2.8.0"></script>
 </body>
 </html>

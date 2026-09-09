@@ -136,13 +136,35 @@ function navigateAndCloseMenu(route) {
 }
 
 // =========================================================================
-// 3. Resilient Network & Data Layer (Live Cloud Backend)
+// 3. Resilient Network & Dynamic Cloud Backend Layer
 // =========================================================================
-// When running locally, use window.location.origin.
-// When running on Firebase Hosting, connect directly to the live Cloudflare HTTPS tunnel for the Python crawler backend.
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? ''
-  : 'https://implement-dialog-florists-portion.trycloudflare.com';
+function resolveInitialApiBase() {
+  // 1. Check URL Query Parameter: ?api=https://...
+  try {
+    const urlParam = new URLSearchParams(window.location.search).get('api');
+    if (urlParam) {
+      const clean = urlParam.trim().replace(/\/+$/, '');
+      localStorage.setItem('leadforge_api_base', clean);
+      return clean;
+    }
+  } catch (_) {}
+
+  // 2. Check LocalStorage Override
+  try {
+    const saved = localStorage.getItem('leadforge_api_base');
+    if (saved) return saved.trim().replace(/\/+$/, '');
+  } catch (_) {}
+
+  // 3. Localhost development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return '';
+  }
+
+  // 4. Default Live Cloudflare Tunnel for Python Crawler
+  return 'https://ace-considerations-components-chain.trycloudflare.com';
+}
+
+let API_BASE = resolveInitialApiBase();
 
 async function safeJsonFetch(url, options = {}) {
   try {
@@ -156,6 +178,87 @@ async function safeJsonFetch(url, options = {}) {
     console.warn(`[API] Fetch failed for ${url}:`, err);
   }
   return null;
+}
+
+// Check real-time cloud backend connectivity
+async function checkBackendHealth() {
+  const badge = document.getElementById('backend-connection-badge');
+  const dot = document.getElementById('backend-connection-dot');
+  const text = document.getElementById('backend-connection-text');
+  const modalDot = document.getElementById('modal-backend-dot');
+  const modalStatus = document.getElementById('modal-backend-status');
+  const latencyVal = document.getElementById('cfg-latency-val');
+
+  if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+  if (text) text.textContent = 'Connecting...';
+  if (modalDot) modalDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+  if (modalStatus) modalStatus.textContent = 'Probing Backend...';
+
+  const t0 = performance.now();
+  const res = await safeJsonFetch('/api/v1/health');
+  const latency = Math.round(performance.now() - t0);
+
+  if (res && res.status === 'healthy') {
+    state.isStaticMode = false;
+    if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+    if (text) text.textContent = `Cloud Engine (${latency}ms)`;
+    if (badge) badge.title = `Connected to ${API_BASE || 'localhost'} (19 signatures active, ${latency}ms latency)`;
+    if (modalDot) modalDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse';
+    if (modalStatus) modalStatus.textContent = `Online • ${latency}ms latency • 19 signatures`;
+    if (latencyVal) latencyVal.innerHTML = `<span class="text-emerald-400 font-bold">${latency}ms</span> (HTTP 200 Healthy)`;
+    return true;
+  }
+
+  state.isStaticMode = true;
+  if (dot) dot.className = 'w-2 h-2 rounded-full bg-neutral-500';
+  if (text) text.textContent = 'Local Mode';
+  if (badge) badge.title = 'Click to configure Cloud Backend (Render / Tunnel)';
+  if (modalDot) modalDot.className = 'w-2.5 h-2.5 rounded-full bg-neutral-500';
+  if (modalStatus) modalStatus.textContent = 'Offline / Standby';
+  if (latencyVal) latencyVal.innerHTML = '<span class="text-rose-400">Cannot reach endpoint</span>';
+  return false;
+}
+
+// Modal control functions
+function openBackendConfigModal() {
+  const modal = document.getElementById('backend-config-modal');
+  const input = document.getElementById('cfg-backend-url');
+  if (input) input.value = API_BASE || '';
+  if (modal) modal.classList.remove('hidden');
+  checkBackendHealth();
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeBackendConfigModal() {
+  const modal = document.getElementById('backend-config-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function setPresetBackendUrl(url) {
+  const input = document.getElementById('cfg-backend-url');
+  if (input) input.value = url;
+}
+
+async function testAndSaveBackendConfig() {
+  const input = document.getElementById('cfg-backend-url');
+  const newUrl = (input ? input.value : '').trim().replace(/\/+$/, '');
+  
+  localStorage.setItem('leadforge_api_base', newUrl);
+  API_BASE = newUrl;
+  
+  showToast('Testing backend connectivity...', 'info');
+  const isHealthy = await checkBackendHealth();
+  
+  if (isHealthy) {
+    showToast('Connected to cloud backend successfully!', 'success');
+    state.allLeads = [];
+    await ensureLeadsLoaded();
+    loadLeadsTable();
+    loadDashboardAnalytics();
+    closeBackendConfigModal();
+  } else {
+    showToast('Failed to connect to backend endpoint. Please verify URL.', 'error');
+  }
 }
 
 async function ensureLeadsLoaded() {
@@ -1200,6 +1303,7 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(state.theme);
   renderActiveRoute();
+  checkBackendHealth();
   // Preload leads cache in background
   ensureLeadsLoaded();
 });
