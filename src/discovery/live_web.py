@@ -32,6 +32,8 @@ TECHNOLOGY_SEEDS = {
         "finisterre.com", "howies.co.uk", "passenger-clothing.com", "dryrobe.com", "redoriginal.com"
     ],
     "shopify": [
+        "aloyoga.com", "meundies.com", "quadlockcase.com", "spigen.com", "ridge.com",
+        "solostove.com", "rothy.com", "cupshe.com",
         "gymshark.com", "allbirds.com", "redcon1.com", "tigerfitness.com", "bulletproof.com",
         "chubbiesshorts.com", "colourpop.com", "fashionnova.com", "kith.com", "brooklinen.com",
         "mvmtwatches.com", "stevemadden.com", "glossier.com", "puravidabracelets.com", "cotopaxi.com",
@@ -67,7 +69,7 @@ TECHNOLOGY_SEEDS = {
         "gardeningexpress.co.uk", "jparkers.co.uk", "hayloft.co.uk", "vanmeuwen.com", "you-garden.com"
     ],
     "magento": [
-        "magento.com", "hyva.io", "mageworx.com", "amasty.com", "mirasvit.com",
+        "blendtec.com", "magento.com", "hyva.io", "mageworx.com", "amasty.com", "mirasvit.com",
         "meetanshi.com", "bsscommerce.com", "paulsmith.com", "hellyhansen.com", "sigmabeauty.com",
         "landrover.com", "ford.co.uk", "olympus-lifescience.com", "monin.com", "graze.com",
         "shoezone.com", "charleskeith.com", "brewers.co.uk", "coxandcox.co.uk", "sofa.com",
