@@ -1306,10 +1306,11 @@ function escapeHtml(str) {
 }
 
 // Global Initialization
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  state.activeRoute = getInitialRoute();
   applyTheme(state.theme);
+  await checkBackendHealth();
   renderActiveRoute();
-  checkBackendHealth();
   // Preload leads cache in background
   ensureLeadsLoaded();
 });
