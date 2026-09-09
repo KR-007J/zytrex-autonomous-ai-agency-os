@@ -203,6 +203,7 @@ class Lead(Base):
     discovered_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     last_verified_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     last_changed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    address = Column(Text, nullable=True)
 
     # Relationships
     organization = relationship("Organization", back_populates="leads")
@@ -246,6 +247,7 @@ class Lead(Base):
             "discovered_at": self.discovered_at.isoformat() if self.discovered_at else None,
             "last_verified_at": self.last_verified_at.isoformat() if self.last_verified_at else None,
             "last_changed_at": self.last_changed_at.isoformat() if self.last_changed_at else None,
+            "address": self.address,
         }
 
 
