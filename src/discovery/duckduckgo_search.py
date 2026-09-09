@@ -85,8 +85,9 @@ class DuckDuckGoProvider(DiscoveryProvider):
 
         count = 0
         seen_domains = set(exclude_domains or [])
+        consecutive_errors = 0
 
-        async with AsyncSession(impersonate="chrome124", timeout=12.0) as session:
+        async with AsyncSession(impersonate="chrome124", timeout=4.0) as session:
             for query in queries:
                 if count >= limit:
                     break
@@ -97,7 +98,11 @@ class DuckDuckGoProvider(DiscoveryProvider):
                     url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
                     resp = await session.get(url)
                     if resp.status_code != 200:
+                        consecutive_errors += 1
+                        if consecutive_errors >= 2:
+                            break
                         continue
+                    consecutive_errors = 0
 
                     soup = BeautifulSoup(resp.text, "html.parser")
                     results = soup.select(".web-result")
@@ -184,6 +189,9 @@ class DuckDuckGoProvider(DiscoveryProvider):
 
                 except Exception as e:
                     print(f"DuckDuckGo live query failed for '{query}': {e}")
+                    consecutive_errors += 1
+                    if consecutive_errors >= 2:
+                        break
                     continue
 
     async def health(self) -> Dict[str, Any]:

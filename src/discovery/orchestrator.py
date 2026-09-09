@@ -17,8 +17,8 @@ class DiscoveryOrchestrator:
 
     def __init__(self):
         self.providers: List[DiscoveryProvider] = [
-            DuckDuckGoProvider(),
             LiveWebProvider(),
+            DuckDuckGoProvider(),
             CertificateTransparencyProvider(),
             CommonCrawlProvider(),
             DNSDiscoveryProvider(),

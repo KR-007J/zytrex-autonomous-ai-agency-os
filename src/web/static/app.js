@@ -1174,7 +1174,9 @@ async function reverifyCurrentLead() {
     await openLeadDossier(state.activeLeadId);
     loadLeadsTable();
   } catch (err) {
-    showToast('Lead re-verified successfully! (Live HTTP 200 OK)', 'success');
+    console.error('Re-verification failed:', err);
+    playHapticSound('error');
+    showToast(`Live re-verification failed: ${err.message || 'Network error'}`, 'error');
   } finally {
     if (btn) btn.classList.remove('opacity-50', 'pointer-events-none');
   }
@@ -1188,7 +1190,9 @@ async function reverifyLeadInline(leadId) {
     showToast('Lead re-verified successfully! (Live HTTP 200 OK)', 'success');
     loadLeadsTable();
   } catch (err) {
-    showToast('Lead re-verified successfully! (Live HTTP 200 OK)', 'success');
+    console.error('Inline re-verification failed:', err);
+    playHapticSound('error');
+    showToast(`Live re-verification failed: ${err.message || 'Network error'}`, 'error');
   }
 }
 
