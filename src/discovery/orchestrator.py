@@ -10,6 +10,7 @@ from src.discovery.common_crawl import CommonCrawlProvider
 from src.discovery.dns_discovery import DNSDiscoveryProvider
 from src.discovery.sitemap import SitemapProvider
 from src.discovery.duckduckgo_search import DuckDuckGoProvider
+from src.discovery.scrapling_provider import ScraplingProvider
 
 
 class DiscoveryOrchestrator:
@@ -17,6 +18,7 @@ class DiscoveryOrchestrator:
 
     def __init__(self):
         self.providers: List[DiscoveryProvider] = [
+            ScraplingProvider(),
             LiveWebProvider(),
             DuckDuckGoProvider(),
             CertificateTransparencyProvider(),

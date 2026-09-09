@@ -119,12 +119,13 @@ def test_tailwind_detection():
 
 def test_orchestrator_registered_providers():
     provider_names = [p.name for p in orchestrator.providers]
+    assert "Scrapling Web Engine" in provider_names
     assert "Live Web & Seed Index" in provider_names
     assert "Certificate Transparency (crt.sh)" in provider_names
     assert "Common Crawl Index" in provider_names
     assert "DNS Infrastructure Discovery" in provider_names
     assert "Sitemap & XML Index Discovery" in provider_names
-    assert len(orchestrator.providers) == 6
+    assert len(orchestrator.providers) == 7
 
 
 @pytest.mark.asyncio
