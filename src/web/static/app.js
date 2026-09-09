@@ -1097,11 +1097,17 @@ async function openLeadDossier(leadId) {
         <div class="space-y-2 text-xs font-mono">
           <div class="flex items-center gap-2 text-neutral-300">
             <span class="text-neutral-500 w-20">Email:</span>
-            ${emails.length > 0 ? emails.map(em => `<a href="mailto:${escapeHtml(em)}" class="text-[#ef4d23] hover:underline">${escapeHtml(em)}</a>`).join(', ') : '<span class="text-neutral-500">None detected</span>'}
+            ${emails.length > 0 ? emails.map(em => {
+              const val = (typeof em === 'object' && em !== null) ? (em.value || em.email || '') : em;
+              return `<a href="mailto:${escapeHtml(val)}" class="text-[#ef4d23] hover:underline">${escapeHtml(val)}</a>`;
+            }).join(', ') : '<span class="text-neutral-500">None detected</span>'}
           </div>
           <div class="flex items-center gap-2 text-neutral-300">
             <span class="text-neutral-500 w-20">Phone:</span>
-            ${phones.length > 0 ? phones.map(ph => `<a href="tel:${escapeHtml(ph)}" class="text-neutral-200 hover:underline">${escapeHtml(ph)}</a>`).join(', ') : '<span class="text-neutral-500">None detected</span>'}
+            ${phones.length > 0 ? phones.map(ph => {
+              const val = (typeof ph === 'object' && ph !== null) ? (ph.value || ph.phone || '') : ph;
+              return `<a href="tel:${escapeHtml(val)}" class="text-neutral-200 hover:underline">${escapeHtml(val)}</a>`;
+            }).join(', ') : '<span class="text-neutral-500">None detected</span>'}
           </div>
           ${lead.address ? `
             <div class="flex items-center gap-2 text-neutral-300">
