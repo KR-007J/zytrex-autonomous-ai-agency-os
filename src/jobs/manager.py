@@ -87,58 +87,16 @@ class JobManager:
             with get_db() as session:
                 old_domains = {r[0] for r in session.query(Lead.domain).all()}
 
-        # Stream candidate domains, excluding previously seen domains
-        async for candidate in orchestrator.stream_candidates(
-            technology=technology, country=country, industry=industry, limit=limit, exclude_domains=old_domains
-        ):
-            candidates.append(candidate.domain)
-
-            with get_db() as session:
-                job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
-                if job:
-                    job.candidates_count = len(candidates)
-
-            # Update job progress
-            await broadcaster.publish(
-                job_id,
-                {
-                    "event": "CANDIDATE_DISCOVERED",
-                    "domain": candidate.domain,
-                    "source": candidate.source,
-                    "count": len(candidates),
-                },
-            )
-
-        total_candidates = len(candidates)
-        if total_candidates == 0:
-            with get_db() as session:
-                job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
-                if job:
-                    job.status = "COMPLETED"
-                    job.completed_at = datetime.now(timezone.utc)
-            await broadcaster.publish(
-                job_id,
-                {
-                    "event": "JOB_COMPLETED",
-                    "status": "COMPLETED",
-                    "message": "No new candidates found for criteria.",
-                    "job_id": job_id,
-                    "candidates_count": 0,
-                    "verified_count": 0,
-                    "qualified_count": 0,
-                },
-            )
-            return
-
-        # Concurrent verification worker pool with Semaphore(15)
-        sem = asyncio.Semaphore(15)
+        # Concurrent verification worker pool with Semaphore(25)
+        sem = asyncio.Semaphore(25)
         lock = asyncio.Lock()
+        tasks: List[asyncio.Task] = []
 
         async def verify_and_process(domain: str):
             nonlocal verified_count, qualified_count, processed_count
             try:
                 async with sem:
-                    v_res = await LiveVerifier.verify(domain, timeout=6.5)
+                    v_res = await LiveVerifier.verify(domain, timeout=3.5)
 
                     detected_techs = []
                     primary_tech = None
@@ -189,7 +147,8 @@ class JobManager:
                         if is_qualified:
                             qualified_count += 1
                         processed_count += 1
-                        progress_pct = int((processed_count / total_candidates) * 100)
+                        curr_total = max(len(candidates), 1)
+                        progress_pct = min(int((processed_count / curr_total) * 100), 99)
 
                         with get_db() as session:
                             lead, created = LeadRepository.upsert_lead(
@@ -226,7 +185,7 @@ class JobManager:
                                 job.verified_count = verified_count
                                 job.qualified_count = qualified_count
 
-                        # Broadcast SSE lead processed event
+                        # Broadcast SSE lead processed event immediately to UI
                         await broadcaster.publish(
                             job_id,
                             {
@@ -242,8 +201,58 @@ class JobManager:
                 async with lock:
                     processed_count += 1
 
-        # Concurrently probe all candidates
-        await asyncio.gather(*(verify_and_process(d) for d in candidates), return_exceptions=True)
+        # Stream candidate domains and immediately dispatch verification concurrently
+        async for candidate in orchestrator.stream_candidates(
+            technology=technology, country=country, industry=industry, limit=limit, exclude_domains=old_domains
+        ):
+            candidates.append(candidate.domain)
+
+            with get_db() as session:
+                job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
+                if job:
+                    job.candidates_count = len(candidates)
+
+            # Update job progress
+            await broadcaster.publish(
+                job_id,
+                {
+                    "event": "CANDIDATE_DISCOVERED",
+                    "domain": candidate.domain,
+                    "source": candidate.source,
+                    "count": len(candidates),
+                },
+            )
+
+            # Launch verification worker immediately in background (Producer-Consumer)
+            tasks.append(asyncio.create_task(verify_and_process(candidate.domain)))
+
+            if qualified_count >= limit:
+                break
+
+        # Await remaining in-flight verification tasks
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+        total_candidates = len(candidates)
+        if total_candidates == 0:
+            with get_db() as session:
+                job = session.query(DiscoveryJob).filter(DiscoveryJob.id == job_id).first()
+                if job:
+                    job.status = "COMPLETED"
+                    job.completed_at = datetime.now(timezone.utc)
+            await broadcaster.publish(
+                job_id,
+                {
+                    "event": "JOB_COMPLETED",
+                    "status": "COMPLETED",
+                    "message": "No new candidates found for criteria.",
+                    "job_id": job_id,
+                    "candidates_count": 0,
+                    "verified_count": 0,
+                    "qualified_count": 0,
+                },
+            )
+            return
 
         # Mark job completed
         with get_db() as session:

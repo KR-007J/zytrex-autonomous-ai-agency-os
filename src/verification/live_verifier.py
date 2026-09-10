@@ -113,7 +113,7 @@ class LiveVerifier:
                 verify=True,
                 follow_redirects=True,
                 max_redirects=4,
-                timeout=httpx.Timeout(timeout, connect=5.0),
+                timeout=httpx.Timeout(min(timeout, 3.5), connect=2.0),
             ) as client:
                 resp = await client.get(safe_url, headers=headers)
                 elapsed_ms = (time.perf_counter() - start_time) * 1000

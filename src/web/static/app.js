@@ -481,10 +481,10 @@ async function triggerAutoRefreshBatch(limit = 100) {
   if (leadsLimitSelect) {
     limit = parseInt(leadsLimitSelect.value, 10) || limit;
   }
-  const tech = document.getElementById('leads-tech-filter')?.value || 'opencart';
+  const tech = document.getElementById('leads-tech-filter')?.value || 'shopify';
   const country = document.getElementById('leads-country-filter')?.value || 'United States';
 
-  showToast(`Auto-refreshing: Purging previous batch and live-verifying ${limit} fresh leads...`, 'info');
+  showToast(`Auto-refreshing: Live-verifying ${limit} fresh leads...`, 'info');
 
   navigateRoute(null, 'discover');
 
@@ -496,9 +496,9 @@ async function triggerAutoRefreshBatch(limit = 100) {
   if (discTech) discTech.value = tech;
   if (discCountry) discCountry.value = country;
   if (discLimit) discLimit.value = limit.toString();
-  if (discReplace) discReplace.checked = true;
+  if (discReplace) discReplace.checked = false;
 
-  startDiscoveryJob(tech, country, 'E-commerce', limit, false, true);
+  startDiscoveryJob(tech, country, 'E-commerce', limit, false, false);
 }
 
 // =========================================================================
