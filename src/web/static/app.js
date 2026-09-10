@@ -1343,9 +1343,13 @@ async function openOutreachModal(leadId) {
   const modal = document.getElementById('outreach-modal');
   if (!modal) return;
 
-  let lead = (state.leads || []).find(l => l.id === leadId);
+  let lead = (state.leads || []).find(l => l.id == leadId);
   if (!lead && state.cachedLeads) {
-    lead = state.cachedLeads.find(l => l.id === leadId);
+    lead = state.cachedLeads.find(l => l.id == leadId);
+  }
+  if (!lead) {
+    const all = await ensureLeadsLoaded();
+    lead = (all || []).find(l => l.id == leadId) || (state.leads || []).find(l => l.id == leadId);
   }
   if (!lead) {
     showToast('Lead details not found', 'error');
