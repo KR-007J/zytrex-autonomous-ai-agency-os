@@ -24,6 +24,7 @@ from src.api.routes_organization import router as org_router
 from src.api.routes_audit import router as audit_router
 from src.api.routes_jobs import router as jobs_router
 from src.api.routes_dashboard import router as dashboard_router
+from src.api.routes_outreach import router as outreach_router
 
 from src.security.middleware import SecurityHeadersMiddleware, RateLimiterMiddleware
 
@@ -76,6 +77,7 @@ app.include_router(org_router, prefix="/api/v1")
 app.include_router(audit_router, prefix="/api/v1")
 app.include_router(jobs_router, prefix="/api/v1")
 app.include_router(dashboard_router, prefix="/api/v1")
+app.include_router(outreach_router, prefix="/api/v1")
 
 # Mount web frontend static assets if directory exists
 web_dir = Path(__file__).parent.parent / "web"

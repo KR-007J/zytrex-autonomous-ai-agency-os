@@ -980,9 +980,14 @@ function renderLeadTableRow(lead) {
         <span class="badge-status ${scoreClass} text-[10px] font-mono font-bold">${escapeHtml(lead.score_label || 'LOW')} ${lead.lead_score || 0}</span>
       </td>
       <td class="px-3 py-3.5 pr-4 text-right">
-        <button onclick="event.stopPropagation(); openLeadDossier(${lead.id})" class="btn-chamfer text-xs py-1 px-2.5" title="View forensic intelligence dossier">
-          Dossier →
-        </button>
+        <div class="flex items-center justify-end gap-1.5">
+          <button onclick="event.stopPropagation(); openOutreachModal(${lead.id})" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 text-xs font-mono font-medium inline-flex items-center gap-1 transition" title="Generate AI Cold Outreach Sequence">
+            <i data-lucide="sparkles" class="w-3 h-3 text-emerald-400"></i> AI Pitch
+          </button>
+          <button onclick="event.stopPropagation(); openLeadDossier(${lead.id})" class="btn-chamfer text-xs py-1 px-2.5" title="View forensic intelligence dossier">
+            Dossier →
+          </button>
+        </div>
       </td>
     </tr>
   `;
@@ -1048,6 +1053,21 @@ async function openLeadDossier(leadId) {
     ];
 
     content.innerHTML = `
+      <!-- AI Outreach Banner -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-cyan-500/10 to-transparent border border-emerald-500/30 flex items-center justify-between gap-4">
+        <div>
+          <div class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5 font-mono">
+            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i> AI Outreach Sequence Ready
+          </div>
+          <p class="text-xs text-neutral-300 mt-0.5">
+            Auto-generate a 3-step cold email pitch citing ${escapeHtml(lead.primary_technology || 'Web Platform')} and ${Math.round(lead.response_time_ms || 180)}ms latency.
+          </p>
+        </div>
+        <button onclick="closeLeadDossier(); openOutreachModal(${lead.id})" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-semibold text-xs font-mono flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition whitespace-nowrap">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i> Draft Pitch
+        </button>
+      </div>
+
       <!-- Live Network Probes -->
       <div class="glass-surface p-4 rounded-2xl space-y-3">
         <h4 class="text-xs font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
@@ -1307,6 +1327,230 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+// =========================================================================
+// 12. AI Outreach Sequence Engine (Claygent / Apollo Style)
+// =========================================================================
+state.outreach = {
+  activeLead: null,
+  tone: 'direct',
+  activeStep: 1,
+  sequenceData: null
+};
+
+async function openOutreachModal(leadId) {
+  const modal = document.getElementById('outreach-modal');
+  if (!modal) return;
+
+  let lead = (state.leads || []).find(l => l.id === leadId);
+  if (!lead && state.cachedLeads) {
+    lead = state.cachedLeads.find(l => l.id === leadId);
+  }
+  if (!lead) {
+    showToast('Lead details not found', 'error');
+    return;
+  }
+
+  state.outreach.activeLead = lead;
+  state.outreach.activeStep = 1;
+  
+  const techEl = document.getElementById('outreach-target-tech');
+  const speedEl = document.getElementById('outreach-target-speed');
+  const busEl = document.getElementById('outreach-target-business');
+  const domEl = document.getElementById('outreach-target-domain');
+  const emEl = document.getElementById('outreach-target-email');
+
+  if (techEl) techEl.textContent = lead.primary_technology || 'Web Platform';
+  if (speedEl) speedEl.textContent = `${Math.round(lead.response_time_ms || 180)}ms`;
+  if (busEl) busEl.textContent = lead.business_name || lead.domain;
+  if (domEl) domEl.textContent = lead.domain;
+  if (emEl) emEl.textContent = lead.primary_email || ('contact@' + lead.domain);
+
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+
+  await generateOutreachSequence();
+}
+
+function closeOutreachModal() {
+  const modal = document.getElementById('outreach-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function setOutreachTone(tone) {
+  state.outreach.tone = tone;
+  ['direct', 'consultative', 'founder'].forEach(t => {
+    const btn = document.getElementById(`tone-${t}`);
+    if (btn) {
+      if (t === tone) {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-mono bg-emerald-500/30 text-emerald-300 border border-emerald-500/40';
+      } else {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300';
+      }
+    }
+  });
+  await generateOutreachSequence();
+}
+
+function switchOutreachStep(step) {
+  state.outreach.activeStep = step;
+  [1, 2, 3].forEach(s => {
+    const btn = document.getElementById(`step-tab-${s}`);
+    if (btn) {
+      if (s === step) {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-mono bg-white/20 text-white font-medium';
+      } else {
+        btn.className = 'px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300';
+      }
+    }
+  });
+
+  const stepBadge = document.getElementById('outreach-step-badge');
+  const stepTitle = document.getElementById('outreach-step-title');
+  const bodyText = document.getElementById('outreach-email-body');
+
+  const titles = {
+    1: 'Step 1: The Technical Audit Hook',
+    2: 'Step 2: The Value Proposition Case Study',
+    3: 'Step 3: The 5-Minute Technical Teardown Close'
+  };
+
+  if (stepTitle) stepTitle.textContent = titles[step] || `Step ${step}`;
+
+  if (state.outreach.sequenceData && bodyText) {
+    if (step === 1) bodyText.value = state.outreach.sequenceData.step1_hook_email || '';
+    else if (step === 2) bodyText.value = state.outreach.sequenceData.step2_followup_email || '';
+    else if (step === 3) bodyText.value = state.outreach.sequenceData.step3_breakup_email || '';
+  }
+}
+
+async function generateOutreachSequence() {
+  const lead = state.outreach.activeLead;
+  if (!lead) return;
+
+  const bodyText = document.getElementById('outreach-email-body');
+  const chipsContainer = document.getElementById('outreach-subject-chips');
+  const summaryEl = document.getElementById('outreach-audit-summary');
+
+  if (bodyText) bodyText.value = 'Generating tailored 3-step outreach sequence...';
+
+  try {
+    const resp = await safeJsonFetch('/api/v1/outreach/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        lead_id: lead.id,
+        domain: lead.domain,
+        business_name: lead.business_name,
+        primary_technology: lead.primary_technology,
+        country: lead.country,
+        industry: lead.industry,
+        response_time_ms: lead.response_time_ms || 0,
+        tone: state.outreach.tone
+      })
+    });
+
+    if (resp && resp.step1_hook_email) {
+      state.outreach.sequenceData = resp;
+      switchOutreachStep(state.outreach.activeStep);
+
+      if (chipsContainer && Array.isArray(resp.subject_lines)) {
+        chipsContainer.innerHTML = resp.subject_lines.map((subj, idx) => `
+          <button onclick="copySubjectLine('${escapeHtml(subj)}')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-neutral-300 hover:text-white flex items-center gap-1.5 transition text-left" title="Click to copy subject line">
+            <span class="text-emerald-400 font-bold text-[10px]">#${idx + 1}</span>
+            <span>${escapeHtml(subj)}</span>
+            <i data-lucide="copy" class="w-3 h-3 text-neutral-400"></i>
+          </button>
+        `).join('');
+      }
+
+      if (summaryEl) {
+        summaryEl.textContent = resp.technical_audit_summary || 'Target verified active over live HTTP inspection.';
+      }
+      if (window.lucide) lucide.createIcons();
+    } else {
+      fallbackClientSideSequence(lead);
+    }
+  } catch (e) {
+    fallbackClientSideSequence(lead);
+  }
+}
+
+function fallbackClientSideSequence(lead) {
+  const bName = lead.business_name || lead.domain;
+  const tech = lead.primary_technology || 'Web Platform';
+  const speed = Math.round(lead.response_time_ms || 180);
+
+  const fallback = {
+    subject_lines: [
+      `Idea for ${lead.domain}'s ${tech} stack`,
+      `Quick question about ${lead.domain}'s checkout`,
+      `${bName} site performance audit`
+    ],
+    step1_hook_email: `Hi ${bName} team,\n\nI noticed you are running ${lead.domain} on ${tech} with a current server response time of ${speed}ms.\n\nWe specialize in helping ${tech} storefronts eliminate mobile checkout drop-offs and optimize Core Web Vitals. Our clients typically see an immediate 10–14% increase in conversion rates.\n\nWould you be open to a quick 5-minute chat this week to review our technical audit?\n\nBest,\nLeadForge Studio Team`,
+    step2_followup_email: `Hi team,\n\nFollowing up on my note regarding ${lead.domain}. Did you have a chance to review the ${tech} performance metrics I mentioned?\n\nHappy to forward our technical teardown notes to your lead developer if helpful.\n\nBest,\nLeadForge Studio Team`,
+    step3_breakup_email: `Hi team,\n\nAssuming your technical roadmap for ${lead.domain} is fully set for this quarter, so I will respectfully close out this thread.\n\nIf you ever need a second pair of eyes on ${tech} scaling down the road, feel free to reach out.\n\nBest,\nLeadForge Studio Team`,
+    technical_audit_summary: `Target ${lead.domain} confirmed active on ${tech} (${speed}ms latency).`
+  };
+
+  state.outreach.sequenceData = fallback;
+  switchOutreachStep(state.outreach.activeStep);
+
+  const chipsContainer = document.getElementById('outreach-subject-chips');
+  if (chipsContainer) {
+    chipsContainer.innerHTML = fallback.subject_lines.map((subj, idx) => `
+      <button onclick="copySubjectLine('${escapeHtml(subj)}')" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-neutral-300 hover:text-white flex items-center gap-1.5 transition text-left">
+        <span class="text-emerald-400 font-bold text-[10px]">#${idx + 1}</span>
+        <span>${escapeHtml(subj)}</span>
+        <i data-lucide="copy" class="w-3 h-3 text-neutral-400"></i>
+      </button>
+    `).join('');
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function copyCurrentOutreachEmail() {
+  const bodyText = document.getElementById('outreach-email-body');
+  if (bodyText && bodyText.value) {
+    navigator.clipboard.writeText(bodyText.value);
+    showToast('Email copy copied to clipboard!', 'success');
+  }
+}
+
+function copySubjectLine(subj) {
+  navigator.clipboard.writeText(subj);
+  showToast(`Copied subject line: "${subj}"`, 'success');
+}
+
+function downloadSequenceCSV() {
+  const lead = state.outreach.activeLead;
+  const seq = state.outreach.sequenceData;
+  if (!lead || !seq) return;
+
+  const rows = [
+    ['Domain', 'Business Name', 'Primary Tech', 'Target Email', 'Subject', 'Step 1 Hook', 'Step 2 Followup', 'Step 3 Breakup'],
+    [
+      lead.domain,
+      lead.business_name || lead.domain,
+      lead.primary_technology || 'Web Platform',
+      lead.primary_email || '',
+      seq.subject_lines[0] || '',
+      seq.step1_hook_email || '',
+      seq.step2_followup_email || '',
+      seq.step3_breakup_email || ''
+    ]
+  ];
+
+  const csvContent = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `sequence_${lead.domain}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Downloaded outreach sequence for ${lead.domain}`, 'success');
 }
 
 // Global Initialization

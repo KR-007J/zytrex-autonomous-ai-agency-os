@@ -127,10 +127,10 @@
     <!-- Top Navigation Bar -->
     <header class="nav-bar">
       <div class="flex items-center gap-4">
-        <button id="menu-open" class="flex items-center gap-2 text-sm font-medium tracking-wide hover:text-[#ef4d23] transition-colors" aria-label="Open main menu">
-          <i data-lucide="menu" class="w-5 h-5"></i>
-          <span class="font-semibold tracking-tight text-base">LeadForge</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-[#ef4d23]/20 text-[#ef4d23] font-mono font-medium">LIVE</span>
+        <button id="menu-open" class="flex items-center gap-2 text-sm font-medium tracking-wide hover:text-emerald-400 transition-colors" aria-label="Open main menu">
+          <i data-lucide="sparkles" class="w-5 h-5 text-emerald-400"></i>
+          <span class="font-semibold tracking-tight text-base">LeadForge <span class="text-emerald-400 font-bold">Studio</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-semibold uppercase tracking-wider">v3.0 AI</span>
         </button>
       </div>
 
@@ -991,6 +991,105 @@
           Close
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- AI OUTREACH SEQUENCE MODAL (Apollo / Claygent Style 3-Step Cold Email)     -->
+  <!-- ========================================================================= -->
+  <div id="outreach-modal" class="hidden modal-backdrop" role="dialog" aria-modal="true">
+    <div class="glass-surface max-w-3xl w-full max-h-[92vh] overflow-y-auto rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl relative border border-emerald-500/20">
+      
+      <!-- Header -->
+      <div class="flex items-start justify-between border-b border-white/10 pb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border border-emerald-500/30">
+              <i data-lucide="sparkles" class="w-3 h-3 text-emerald-400"></i> AI Outreach Studio
+            </span>
+            <span id="outreach-target-tech" class="px-2 py-0.5 rounded-full bg-white/10 text-neutral-300 font-mono text-[10px]">Shopify</span>
+            <span id="outreach-target-speed" class="px-2 py-0.5 rounded-full bg-white/10 text-neutral-400 font-mono text-[10px]">180ms</span>
+          </div>
+          <h2 id="outreach-target-business" class="text-2xl font-light tracking-tight text-white">Target Company</h2>
+          <div class="text-xs font-mono text-neutral-400 flex items-center gap-2 mt-0.5">
+            <span id="outreach-target-domain" class="text-emerald-400 font-semibold">domain.com</span>
+            <span class="text-neutral-600">•</span>
+            <span id="outreach-target-email" class="text-neutral-300">contact@domain.com</span>
+          </div>
+        </div>
+        <button onclick="closeOutreachModal()" class="p-2 rounded-full hover:bg-white/10 text-neutral-400 hover:text-white" aria-label="Close modal">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Controls: Tone Selection & Sequence Step Tabs -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white/5 p-3 rounded-2xl border border-white/10">
+        <!-- Tone Selector -->
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs text-neutral-400 font-mono">Tone:</span>
+          <button id="tone-direct" onclick="setOutreachTone('direct')" class="px-3 py-1 rounded-lg text-xs font-mono bg-emerald-500/30 text-emerald-300 border border-emerald-500/40">Direct</button>
+          <button id="tone-consultative" onclick="setOutreachTone('consultative')" class="px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300">Consultative</button>
+          <button id="tone-founder" onclick="setOutreachTone('founder')" class="px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300">Founder</button>
+        </div>
+
+        <!-- Step Tabs -->
+        <div class="flex items-center gap-1">
+          <button id="step-tab-1" onclick="switchOutreachStep(1)" class="px-3 py-1 rounded-lg text-xs font-mono bg-white/20 text-white font-medium">Step 1: Hook</button>
+          <button id="step-tab-2" onclick="switchOutreachStep(2)" class="px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300">Step 2: Value Case</button>
+          <button id="step-tab-3" onclick="switchOutreachStep(3)" class="px-3 py-1 rounded-lg text-xs font-mono bg-white/5 hover:bg-white/10 text-neutral-300">Step 3: Breakup</button>
+        </div>
+      </div>
+
+      <!-- Subject Lines Recommendations -->
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-mono uppercase tracking-wider text-neutral-400">Subject Line Suggestions (Click to copy)</label>
+        <div id="outreach-subject-chips" class="flex flex-wrap gap-2">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Email Body Preview Area -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
+            <span id="outreach-step-badge" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="outreach-step-title">Step 1: The Technical Audit Hook</span>
+          </label>
+          <button onclick="copyCurrentOutreachEmail()" class="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-mono">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Email
+          </button>
+        </div>
+        <div class="relative">
+          <textarea id="outreach-email-body" rows="9" class="w-full p-4 rounded-2xl bg-black/50 border border-white/15 text-neutral-200 font-mono text-xs leading-relaxed focus:outline-none focus:border-emerald-500 transition" placeholder="Generating tailored pitch..."></textarea>
+        </div>
+      </div>
+
+      <!-- Technical Audit Rationale & Pain Points Found -->
+      <div class="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/20 space-y-2">
+        <div class="text-[11px] font-mono uppercase text-emerald-400 font-semibold flex items-center gap-1">
+          <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Forensic Audit Rationale
+        </div>
+        <p id="outreach-audit-summary" class="text-xs text-neutral-300 leading-relaxed font-sans">
+          Loading audit findings...
+        </p>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="flex items-center justify-between pt-4 border-t border-white/10">
+        <div class="flex items-center gap-2">
+          <button onclick="copyCurrentOutreachEmail()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Full Email
+          </button>
+          <button onclick="downloadSequenceCSV()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-neutral-200 text-xs font-medium flex items-center gap-1.5 transition" title="Export 3-step sequence for Apollo or Instantly">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+          </button>
+        </div>
+
+        <button onclick="closeOutreachModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium text-neutral-400 hover:text-white">
+          Close
+        </button>
+      </div>
+
     </div>
   </div>
 
